@@ -1,2 +1,2 @@
-# Aris-
-Demo Version A.r.i.s
+# ARIS Demo Runtime
+Governed intelligence system demo for repo inspection, runtime truth, and law-bound operation.
