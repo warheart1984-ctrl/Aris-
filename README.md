@@ -40,23 +40,34 @@ It demonstrates structured interaction, capability gating, and law-based executi
 3. Run:
 
 
-Optional:
-
---headless-smokecheck --no-workers
-Platform support
-Windows ✅ (included)
-macOS 🔧 (scripts + CI ready)
-Linux 🔧 (scripts + CI ready)
-Core idea
-
-Capabilities are admitted, not assumed.
-Behavior is enforced, not implied.
-Run (Windows)
-
-Unzip and run:
-
 ARIS Demo.exe
 
+
 Optional:
 
---headless-smokecheck --no-workers
+
+ARIS Demo.exe --headless-smokecheck --no-workers
+
+
+---
+
+## Platform support
+
+- Windows ✅ (release included)
+- macOS 🔧 (build scripts + CI ready)
+- Linux 🔧 (build scripts + CI ready)
+
+---
+
+## Philosophy
+
+Capabilities are admitted, not assumed.  
+Behavior is enforced, not implied.
+
+---
+
+## Notes
+
+- This demo is designed to showcase system behavior in a controlled environment
+- Not all internal components are exposed
+- Feedback and testing are welcome
