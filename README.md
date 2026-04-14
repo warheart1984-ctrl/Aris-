@@ -37,3 +37,12 @@ Core idea
 
 Capabilities are admitted, not assumed.
 Behavior is enforced, not implied.
+Run (Windows)
+
+Unzip and run:
+
+ARIS Demo.exe
+
+Optional:
+
+--headless-smokecheck --no-workers
