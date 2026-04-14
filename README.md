@@ -1,22 +1,39 @@
-# ARIS Demo Runtime
-Governed intelligence system demo for repo inspection, runtime truth, and law-bound operation.
-ARIS (Advanced Repo Intelligence Service) is a governed intelligence system.
+ARIS Demo Desktop
 
-This demo version preserves ARIS governance, Shield of Truth, Mystic sustainment, Mystic Reflection, runtime health, halls, and kill-switch visibility while excluding build and evolution capabilities.
-## Demo Scope
+ARIS Demo Desktop is a cross-platform desktop host for a governed runtime system.
+It demonstrates structured interaction, capability gating, and law-based execution.
 
-Included:
-- Governance review
-- Shield of Truth
-- Mystic sustainment
-- Mystic Reflection
-- Hall of Fame / Shame / Discard
-- Runtime health and kill switch
+What makes ARIS different
+Governed runtime (not free-form AI)
+Capability-based UI (only admitted features appear)
+Law-driven execution (not arbitrary actions)
+Structured and traceable interaction
+What this demo includes
+Desktop host (Windows build included)
+Runtime-backed interaction
+Controlled feature surface
+Verified execution pipeline
+What this demo does NOT include
+Full runtime authority
+Law mutation access
+Unrestricted system control
 
-Excluded:
-- Forge
-- Evolving Engine
-- Protected-core mutation paths
-- ## Demo Route
+This repository provides a controlled demo environment, not the full ARIS system.
 
-Jarvis Blueprint → Operator → Governance Review → Outcome
+Run (Windows)
+
+Unzip and run:
+
+ARIS Demo.exe
+
+Optional:
+
+--headless-smokecheck --no-workers
+Platform support
+Windows ✅ (included)
+macOS 🔧 (scripts + CI ready)
+Linux 🔧 (scripts + CI ready)
+Core idea
+
+Capabilities are admitted, not assumed.
+Behavior is enforced, not implied.
