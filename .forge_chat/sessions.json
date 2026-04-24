@@ -1,0 +1,20 @@
+[
+  {
+    "id": "0d0f61f9ca564738802c1176f9f54c07",
+    "title": "Use agent mode to calculate 2+2",
+    "created_at": "2026-03-30T23:37:30.883427+00:00",
+    "updated_at": "2026-03-30T23:37:31.227265+00:00",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Use agent mode to calculate 2+2",
+        "created_at": "2026-03-30T23:37:30.883927+00:00"
+      },
+      {
+        "role": "assistant",
+        "content": "Running on the built-in mock brain right now. Point `FORGE_API_URL` at your own inference endpoint to switch to your API. Mode: agent Model route: your-local-model Your request was: Use agent mode to calculate 2+2 [welcome.md] ForgeChat is a local-first AI shell that is designed to sit in front of your own model APIs. Quality mode is on with a wider context window.",
+        "created_at": "2026-03-30T23:37:31.227252+00:00"
+      }
+    ]
+  }
+]

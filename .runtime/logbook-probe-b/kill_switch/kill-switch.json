@@ -1,0 +1,11 @@
+{
+  "active": false,
+  "actor": "probe",
+  "diagnostics": {},
+  "mode": "nominal",
+  "reason": "probe reset",
+  "requires_manual_reset": false,
+  "startup_blocker": false,
+  "summary": "ARIS returned to nominal operation after explicit human reset.",
+  "triggered_at": "2026-04-13T17:38:02.080297+00:00"
+}

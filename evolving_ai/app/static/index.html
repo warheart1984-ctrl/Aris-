@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARIS</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="left-rail panel">
+        <div class="brand-block">
+          <p class="eyebrow">Governed Repo Intelligence</p>
+          <h1 id="brandName">ARIS</h1>
+          <p class="brand-copy">
+            Advanced Repo Intelligence Service for the Evolving AI repo, rebound under 1001, guardrails,
+            Operator review, Forge Eval verification, Hall of Discard containment, Hall of Shame correctness
+            tracking, and Hall of Fame verified outcomes.
+          </p>
+          <button id="newSessionButton" class="primary-button">New Session</button>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Sessions</h2>
+            <span id="sessionCount" class="badge">0</span>
+          </div>
+          <div id="sessionList" class="session-list"></div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="workspace-header panel">
+          <div>
+            <p class="eyebrow">Evolving AI Repo Control Surface</p>
+            <h2 id="workspaceTitle">Advanced Repo Intelligence Service</h2>
+          </div>
+          <div class="status-stack">
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span id="providerMode">mock</span>
+            </div>
+            <p id="modelLabel" class="mono muted"></p>
+            <div class="toggle-row">
+              <label class="mode-wrap">
+                <span>Model Router</span>
+                <select id="modelRouterSelect">
+                  <option value="auto">Auto</option>
+                  <option value="manual:general">Pin General</option>
+                  <option value="manual:coding">Pin Coding</option>
+                  <option value="manual:light_coding">Pin Light Coding</option>
+                </select>
+              </label>
+              <button id="applyModelRouterButton" class="secondary-button" type="button">Apply Route</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="aris-console panel">
+          <div class="section-heading-row">
+            <h2>ARIS Console</h2>
+            <span id="arisOutcomeBadge" class="badge badge-muted">idle</span>
+          </div>
+          <p id="arisRouteCopy" class="mono muted">
+            Route: Jarvis blueprint inheritance -> Operator -> Forge -> Forge Eval when required -> output or Hall
+            of Discard, Hall of Shame, or Hall of Fame.
+          </p>
+          <textarea
+            id="arisGoalInput"
+            rows="4"
+            placeholder="Ask ARIS for a governed repo plan or inspection goal..."
+          ></textarea>
+          <input
+            id="arisFocusPathsInput"
+            type="text"
+            placeholder="Focus files or modules (comma or newline separated, optional)"
+          />
+          <div class="attachment-row">
+            <button id="arisPlanButton" class="secondary-button" type="button">Run Governed Plan</button>
+          </div>
+          <div id="arisRouteList" class="context-stack"></div>
+          <pre id="arisPlanOutput" class="code-output muted">ARIS route output will appear here.</pre>
+        </section>
+
+        <section class="aris-console panel">
+          <div class="section-heading-row">
+            <h2>Mystic Sustainment</h2>
+            <span id="mysticSessionBadge" class="badge badge-muted">idle</span>
+          </div>
+          <p class="mono muted">
+            Mystic is the operator sustainment layer. It monitors session strain, cooldown state, reminders, and
+            recovery prompts under ARIS law.
+          </p>
+          <div class="attachment-row">
+            <button id="mysticTickButton" class="secondary-button" type="button">Check In</button>
+            <button id="mysticBreakButton" class="secondary-button" type="button">I Took a Break</button>
+            <button id="mysticAcknowledgeButton" class="secondary-button" type="button">Acknowledge</button>
+            <button id="mysticMuteButton" class="secondary-button" type="button">Mute 10m</button>
+          </div>
+          <pre id="mysticSessionOutput" class="code-output muted">Mystic sustainment state will appear here.</pre>
+        </section>
+
+        <section class="aris-console panel">
+          <div class="section-heading-row">
+            <h2>Mystic Reflection</h2>
+            <span id="mysticStatusBadge" class="badge badge-muted">idle</span>
+          </div>
+          <p class="mono muted">
+            Mystic Reading is a reflective subfeature. It runs through Jarvis inheritance and ARIS governance, but
+            it is not the sustainment authority layer itself.
+          </p>
+          <textarea
+            id="mysticInput"
+            rows="3"
+            placeholder="Ask Mystic Reflection for a reading of the current state and next move..."
+          ></textarea>
+          <div class="attachment-row">
+            <button id="mysticReadButton" class="secondary-button" type="button">Run Mystic Reflection</button>
+          </div>
+          <pre id="mysticOutput" class="code-output muted">Mystic Reflection output will appear here.</pre>
+        </section>
+
+        <section id="chatSurface" class="chat-surface panel">
+          <div id="emptyState" class="empty-state">
+            <p class="eyebrow">Ready</p>
+            <h3>Inspect, govern, and operate the repo through a law-bound command deck.</h3>
+            <p>
+              Use the existing 630 shell for chat, repo work, and mutation review while ARIS exposes live law
+              state, containment, and kill-switch authority in the same interface.
+            </p>
+          </div>
+          <div id="messageList" class="message-list"></div>
+        </section>
+
+        <form id="composer" class="composer panel">
+          <label class="composer-label" for="messageInput">Message</label>
+          <textarea
+            id="messageInput"
+            rows="4"
+            placeholder="Ask about your product, API, roadmap, docs, or operations..."
+          ></textarea>
+          <div class="composer-footer">
+            <div class="toggle-row">
+              <label class="toggle-pill">
+                <input id="fastModeToggle" type="checkbox" />
+                <span>Fast mode</span>
+              </label>
+              <label class="mode-wrap">
+                <span>Mode</span>
+                <select id="modeSelect">
+                  <option value="chat">Chat</option>
+                  <option value="agent">Agent</option>
+                  <option value="deep">Deep Research</option>
+                  <option value="vision">Vision</option>
+                </select>
+              </label>
+              <label class="range-wrap">
+                <span>Retrieval</span>
+                <input id="retrievalRange" type="range" min="1" max="8" value="4" />
+                <strong id="retrievalValue">4</strong>
+              </label>
+            </div>
+            <div class="attachment-row">
+              <label class="secondary-button file-button" for="fileInput">Attach Files</label>
+              <input id="fileInput" type="file" multiple hidden />
+              <div id="attachmentList" class="attachment-list"></div>
+            </div>
+            <button id="sendButton" class="primary-button" type="submit">Send</button>
+          </div>
+        </form>
+      </main>
+
+      <aside class="right-rail panel">
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>ARIS Runtime</h2>
+            <span id="arisLawBadge" class="badge">1001</span>
+          </div>
+          <div id="arisHealthList" class="context-stack"></div>
+          <div class="attachment-row">
+            <button id="arisSoftKillButton" class="secondary-button" type="button">Soft Kill</button>
+            <button id="arisHardKillButton" class="secondary-button danger-button" type="button">Hard Kill</button>
+            <button id="arisResetButton" class="secondary-button" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Guardrails</h2>
+            <span class="badge badge-muted">governed</span>
+          </div>
+          <div id="arisGuardrailList" class="context-stack"></div>
+          <div class="section-heading-row">
+            <h2>Evaluation</h2>
+            <span class="badge badge-muted">live</span>
+          </div>
+          <div id="arisEvaluationList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Hall of Discard</h2>
+            <span id="arisDiscardCount" class="badge badge-muted">0 recent</span>
+          </div>
+          <div id="arisDiscardList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Hall of Shame</h2>
+            <span id="arisShameCount" class="badge badge-muted">0 recent</span>
+          </div>
+          <div id="arisShameList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Hall of Fame</h2>
+            <span id="arisFameCount" class="badge badge-muted">0 recent</span>
+          </div>
+          <div id="arisFameList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Activity</h2>
+            <span id="arisActivityCount" class="badge badge-muted">0 events</span>
+          </div>
+          <div id="arisActivityList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Live Context</h2>
+            <span id="cacheBadge" class="badge badge-muted">cold</span>
+          </div>
+          <div id="agentTrace" class="context-stack"></div>
+          <div id="metaTools" class="context-stack"></div>
+          <div id="metaRetrieval" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Memory</h2>
+            <span class="badge badge-muted">profile</span>
+          </div>
+          <div id="memoryList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Runs</h2>
+            <span id="runCount" class="badge badge-muted">0 runs</span>
+          </div>
+          <div id="runList" class="context-stack"></div>
+          <div class="run-detail">
+            <div class="section-heading-row">
+              <h2>Selected Run</h2>
+              <span id="runStatusBadge" class="badge badge-muted">idle</span>
+            </div>
+            <div id="runMetaList" class="context-stack"></div>
+            <div class="attachment-row">
+              <button id="tailRunButton" class="secondary-button" type="button">Reconnect</button>
+              <button id="cancelRunButton" class="secondary-button danger-button" type="button">
+                Cancel
+              </button>
+              <button id="retryRunButton" class="secondary-button" type="button">Retry</button>
+            </div>
+            <pre id="runFinalMessage" class="code-output muted">
+Select a run to inspect its final answer and live trace.
+            </pre>
+            <div class="section-heading-row">
+              <h2>Trace</h2>
+              <span id="runEventCount" class="badge badge-muted">0 events</span>
+            </div>
+            <div id="runEventList" class="context-stack"></div>
+            <div class="section-heading-row">
+              <h2>Files</h2>
+              <span id="runFileCount" class="badge badge-muted">0 files</span>
+            </div>
+            <div id="runFileList" class="context-stack"></div>
+            <div class="section-heading-row">
+              <h2>Audit</h2>
+              <span id="runAuditCount" class="badge badge-muted">0 entries</span>
+            </div>
+            <div id="runAuditList" class="context-stack"></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Interpreter</h2>
+            <span id="workspaceCount" class="badge badge-muted">0 files</span>
+          </div>
+          <textarea
+            id="codeInput"
+            rows="9"
+            placeholder="print('Hello from ForgeChat')"
+          ></textarea>
+          <div class="attachment-row">
+            <button id="runCodeButton" class="secondary-button" type="button">Run Python</button>
+            <button id="refreshWorkspaceButton" class="secondary-button" type="button">
+              Refresh Workspace
+            </button>
+          </div>
+          <pre id="codeOutput" class="code-output muted">Interpreter output will appear here.</pre>
+          <div id="workspaceFiles" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Repo Import</h2>
+            <span id="importCount" class="badge badge-muted">0 imports</span>
+          </div>
+          <p class="mono muted">
+            Upload a project bundle or clone an allowed HTTPS repo into this session workspace.
+          </p>
+          <label class="secondary-button file-button" for="repoBundleInput">Upload Bundle</label>
+          <input id="repoBundleInput" type="file" hidden />
+          <input id="cloneRepoUrlInput" type="text" placeholder="https://github.com/owner/repo.git" />
+          <div class="review-split compact-split">
+            <input id="cloneRepoBranchInput" type="text" placeholder="branch (optional)" />
+            <input id="cloneRepoTargetInput" type="text" placeholder="target dir (optional)" />
+          </div>
+          <div class="attachment-row">
+            <button id="cloneRepoButton" class="secondary-button" type="button">Clone Repo</button>
+          </div>
+          <pre id="importStatus" class="code-output muted">Import activity will appear here.</pre>
+          <div id="importList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Repo Search</h2>
+            <span id="searchResultCount" class="badge badge-muted">0 hits</span>
+          </div>
+          <input id="searchQueryInput" type="text" placeholder="Find files, text, or symbols in the workspace" />
+          <div class="review-split compact-split">
+            <select id="searchModeSelect">
+              <option value="text">Text</option>
+              <option value="files">Files</option>
+              <option value="symbols">Symbols</option>
+            </select>
+            <input id="searchPathPrefixInput" type="text" placeholder="path prefix (optional)" />
+          </div>
+          <div class="attachment-row">
+            <button id="runSearchButton" class="secondary-button" type="button">Search Workspace</button>
+          </div>
+          <pre id="searchStatus" class="code-output muted">Search results will appear here.</pre>
+          <div id="searchResults" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Project Profile</h2>
+            <span id="projectLanguageCount" class="badge badge-muted">0 languages</span>
+          </div>
+          <p class="mono muted">
+            Auto-detect the repo stack, entrypoints, and suggested install, test, lint, and run commands.
+          </p>
+          <pre id="projectStatus" class="code-output muted">Project detection will appear here.</pre>
+          <div id="projectMeta" class="context-stack"></div>
+          <div id="projectCommands" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Symbol Studio</h2>
+            <span id="symbolCount" class="badge badge-muted">0 symbols</span>
+          </div>
+          <input id="symbolNameInput" type="text" placeholder="Function, class, or symbol name" />
+          <div class="review-split compact-split">
+            <input id="symbolPathInput" type="text" placeholder="path (optional)" />
+            <input id="symbolPathPrefixInput" type="text" placeholder="path prefix (optional)" />
+          </div>
+          <div class="attachment-row">
+            <button id="listSymbolsButton" class="secondary-button" type="button">List Symbols</button>
+            <button id="loadSymbolButton" class="secondary-button" type="button">Read Symbol</button>
+            <button id="findReferencesButton" class="secondary-button" type="button">Find References</button>
+          </div>
+          <pre id="symbolStatus" class="code-output muted">Symbol details will appear here.</pre>
+          <div id="symbolList" class="context-stack"></div>
+          <textarea
+            id="symbolEditor"
+            rows="10"
+            placeholder="Load a symbol to inspect or replace its full definition here."
+          ></textarea>
+          <div class="attachment-row">
+            <button id="applySymbolEditButton" class="secondary-button" type="button">
+              Apply Symbol Edit
+            </button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Snapshots</h2>
+            <span id="snapshotCount" class="badge badge-muted">0 saved</span>
+          </div>
+          <p class="mono muted">
+            Capture the whole session workspace, including repo state, and restore it later.
+          </p>
+          <input id="snapshotLabelInput" type="text" placeholder="Optional snapshot label" />
+          <div class="attachment-row">
+            <button id="createSnapshotButton" class="secondary-button" type="button">Create Snapshot</button>
+          </div>
+          <pre id="snapshotStatus" class="code-output muted">Snapshot activity will appear here.</pre>
+          <div id="snapshotList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Task Runner</h2>
+            <span id="taskCount" class="badge badge-muted">0 tasks</span>
+          </div>
+          <input id="taskTitleInput" type="text" placeholder="Optional task title" />
+          <textarea
+            id="taskGoalInput"
+            rows="4"
+            placeholder="Describe the repo task you want the agent to complete..."
+          ></textarea>
+          <input id="taskCwdInput" type="text" placeholder="Working directory inside the workspace (optional)" />
+          <textarea
+            id="taskCommandsInput"
+            rows="3"
+            placeholder="One required test command per line, for example:&#10;pytest -q"
+          ></textarea>
+          <div class="attachment-row">
+            <button id="runTaskButton" class="secondary-button" type="button">Run Task</button>
+          </div>
+          <pre id="taskOutput" class="code-output muted">Task workflow output will appear here.</pre>
+          <div id="taskList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Approvals</h2>
+            <span id="approvalCount" class="badge badge-muted">0 pending</span>
+          </div>
+          <div id="approvalList" class="context-stack"></div>
+          <p class="mono muted">Higher-tier commands pause here until you approve or reject them.</p>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Change Desk</h2>
+            <span id="patchCount" class="badge badge-muted">0 pending</span>
+          </div>
+          <div class="change-summary-row">
+            <span id="historyCount" class="badge badge-muted">0 applied</span>
+          </div>
+          <p class="mono muted">
+            Inspect pending diffs, approve or reject them, and roll back recent applied edits from one place.
+          </p>
+          <div class="change-lane">
+            <p class="context-label">Pending</p>
+            <div id="patchList" class="context-stack"></div>
+          </div>
+          <div class="change-lane">
+            <p class="context-label">Applied</p>
+            <div id="changeHistoryList" class="context-stack"></div>
+          </div>
+          <div id="changeInspectorMeta" class="context-stack"></div>
+          <div id="changeInspectorActions" class="attachment-row"></div>
+          <pre id="changeInspectorDiff" class="diff-viewer muted">Select a pending patch or applied change to inspect its diff.</pre>
+          <div id="changeInspectorContent" class="code-output muted">Select a pending patch or applied change to inspect the current file.</div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Review</h2>
+            <span id="reviewCount" class="badge badge-muted">clean</span>
+          </div>
+          <div id="reviewSummary" class="context-stack"></div>
+          <div id="changedFileList" class="context-stack"></div>
+          <div class="review-split">
+            <div class="review-pane">
+              <div class="section-heading-row">
+                <h2>Selected File</h2>
+                <span id="selectedFileLabel" class="badge badge-muted">none</span>
+              </div>
+              <textarea
+                id="changedFileEditor"
+                rows="14"
+                placeholder="Select a changed file to inspect or edit it."
+              ></textarea>
+              <div class="attachment-row">
+                <button id="reloadChangedFileButton" class="secondary-button" type="button">
+                  Reload File
+                </button>
+                <button id="stageChangedFileButton" class="secondary-button" type="button">
+                  Stage Review Patch
+                </button>
+              </div>
+            </div>
+            <div class="review-pane">
+              <div class="section-heading-row">
+                <h2>Selected Diff</h2>
+                <span id="selectedDiffLabel" class="badge badge-muted">all changes</span>
+              </div>
+              <pre id="reviewDiff" class="diff-viewer muted">Select a changed file to focus its diff.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Shell</h2>
+            <span id="sandboxBackendBadge" class="badge badge-muted">backend</span>
+          </div>
+          <p id="sandboxStatus" class="mono muted">
+            Shell execution uses the persistent session Docker workspace when available.
+          </p>
+          <input
+            id="commandInput"
+            type="text"
+            placeholder="git status"
+          />
+          <input
+            id="commandCwdInput"
+            type="text"
+            placeholder="Working directory inside the workspace (optional)"
+          />
+          <div class="attachment-row">
+            <button id="runCommandButton" class="secondary-button" type="button">
+              Run Command
+            </button>
+            <button id="resetSandboxButton" class="secondary-button" type="button">
+              Reset Sandbox
+            </button>
+          </div>
+          <pre id="commandOutput" class="code-output muted">Shell output will appear here.</pre>
+          <p id="allowedCommandsHint" class="mono muted"></p>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Knowledge</h2>
+            <span id="knowledgeCount" class="badge">0</span>
+          </div>
+          <div id="knowledgeList" class="knowledge-list"></div>
+        </div>
+
+        <div class="section-block">
+          <h2>Add Knowledge</h2>
+          <input id="docNameInput" type="text" placeholder="team-playbook.md" />
+          <textarea
+            id="docContentInput"
+            rows="7"
+            placeholder="Paste internal docs, API notes, product copy, or operational rules here..."
+          ></textarea>
+          <button id="saveKnowledgeButton" class="secondary-button" type="button">
+            Save to Knowledge Base
+          </button>
+          <p class="mono muted">Documents are stored locally under `.forge_chat/knowledge` by default.</p>
+        </div>
+      </aside>
+    </div>
+
+    <script src="/static/app.js" type="module"></script>
+  </body>
+</html>

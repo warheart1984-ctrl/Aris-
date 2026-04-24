@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ARIS_HANDBOOK_LOCKED",
+    "layer": "foundational",
+    "type": "FOUNDATIONAL_MEMORY",
+    "authority_level": 1100,
+    "source": "foundation_store",
+    "created_at": "2026-04-17T02:42:24.767647+00:00",
+    "updated_at": "2026-04-17T02:42:24.767647+00:00",
+    "status": "locked",
+    "summary": "ARIS Handbook root memory.",
+    "content": "ARIS foundational handbook: 1001 first, immutable laws first, governance before execution, verification before success, halls remain separated, and protected identities require legitimacy.",
+    "tags": [
+      "aris",
+      "handbook",
+      "foundation",
+      "immutable"
+    ]
+  },
+  {
+    "id": "UL_ROOT_LAW_LOCKED",
+    "layer": "foundational",
+    "type": "UL_ROOT_LAW",
+    "authority_level": 1050,
+    "source": "foundation_store",
+    "created_at": "2026-04-17T02:42:24.767647+00:00",
+    "updated_at": "2026-04-17T02:42:24.767647+00:00",
+    "status": "locked",
+    "summary": "UL root law memory.",
+    "content": "UL is the language of identity, law, and structure. CISIV governs formation lifecycle. CISLR governs runtime enforcement. The law spine is immutable, foundational, and always pre-execution. Speech must follow 0001 -> 1000 -> 1001. Identity cannot be copy-claimed without legitimacy. Containment or explicit degradation is required when law cannot be satisfied.",
+    "tags": [
+      "ul",
+      "law",
+      "foundation",
+      "immutable"
+    ]
+  }
+]

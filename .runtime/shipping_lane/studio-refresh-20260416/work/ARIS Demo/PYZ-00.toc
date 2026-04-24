@@ -1,0 +1,4043 @@
+('C:\\Users\\randj\\Desktop\\project '
+ 'infi\\code\\code\\.runtime\\shipping_lane\\studio-refresh-20260416\\work\\ARIS '
+ 'Demo\\PYZ-00.pyz',
+ [('PySide6',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\PySide6\\__init__.py',
+   'PYMODULE'),
+  ('PySide6.support',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\PySide6\\support\\__init__.py',
+   'PYMODULE'),
+  ('PySide6.support.deprecated',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\PySide6\\support\\deprecated.py',
+   'PYMODULE'),
+  ('__future__', 'C:\\Python314\\Lib\\__future__.py', 'PYMODULE'),
+  ('_aix_support', 'C:\\Python314\\Lib\\_aix_support.py', 'PYMODULE'),
+  ('_ast_unparse', 'C:\\Python314\\Lib\\_ast_unparse.py', 'PYMODULE'),
+  ('_colorize', 'C:\\Python314\\Lib\\_colorize.py', 'PYMODULE'),
+  ('_compat_pickle', 'C:\\Python314\\Lib\\_compat_pickle.py', 'PYMODULE'),
+  ('_distutils_hack',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\_distutils_hack\\__init__.py',
+   'PYMODULE'),
+  ('_distutils_hack.override',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\_distutils_hack\\override.py',
+   'PYMODULE'),
+  ('_ios_support', 'C:\\Python314\\Lib\\_ios_support.py', 'PYMODULE'),
+  ('_markupbase', 'C:\\Python314\\Lib\\_markupbase.py', 'PYMODULE'),
+  ('_opcode_metadata', 'C:\\Python314\\Lib\\_opcode_metadata.py', 'PYMODULE'),
+  ('_py_abc', 'C:\\Python314\\Lib\\_py_abc.py', 'PYMODULE'),
+  ('_py_warnings', 'C:\\Python314\\Lib\\_py_warnings.py', 'PYMODULE'),
+  ('_pydatetime', 'C:\\Python314\\Lib\\_pydatetime.py', 'PYMODULE'),
+  ('_pydecimal', 'C:\\Python314\\Lib\\_pydecimal.py', 'PYMODULE'),
+  ('_pyi_rth_utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\PyInstaller\\fake-modules\\_pyi_rth_utils\\__init__.py',
+   'PYMODULE'),
+  ('_pyi_rth_utils.qt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\PyInstaller\\fake-modules\\_pyi_rth_utils\\qt.py',
+   'PYMODULE'),
+  ('_pyrepl', 'C:\\Python314\\Lib\\_pyrepl\\__init__.py', 'PYMODULE'),
+  ('_pyrepl._module_completer',
+   'C:\\Python314\\Lib\\_pyrepl\\_module_completer.py',
+   'PYMODULE'),
+  ('_pyrepl._threading_handler',
+   'C:\\Python314\\Lib\\_pyrepl\\_threading_handler.py',
+   'PYMODULE'),
+  ('_pyrepl.base_eventqueue',
+   'C:\\Python314\\Lib\\_pyrepl\\base_eventqueue.py',
+   'PYMODULE'),
+  ('_pyrepl.commands', 'C:\\Python314\\Lib\\_pyrepl\\commands.py', 'PYMODULE'),
+  ('_pyrepl.completing_reader',
+   'C:\\Python314\\Lib\\_pyrepl\\completing_reader.py',
+   'PYMODULE'),
+  ('_pyrepl.console', 'C:\\Python314\\Lib\\_pyrepl\\console.py', 'PYMODULE'),
+  ('_pyrepl.fancy_termios',
+   'C:\\Python314\\Lib\\_pyrepl\\fancy_termios.py',
+   'PYMODULE'),
+  ('_pyrepl.historical_reader',
+   'C:\\Python314\\Lib\\_pyrepl\\historical_reader.py',
+   'PYMODULE'),
+  ('_pyrepl.input', 'C:\\Python314\\Lib\\_pyrepl\\input.py', 'PYMODULE'),
+  ('_pyrepl.keymap', 'C:\\Python314\\Lib\\_pyrepl\\keymap.py', 'PYMODULE'),
+  ('_pyrepl.main', 'C:\\Python314\\Lib\\_pyrepl\\main.py', 'PYMODULE'),
+  ('_pyrepl.pager', 'C:\\Python314\\Lib\\_pyrepl\\pager.py', 'PYMODULE'),
+  ('_pyrepl.reader', 'C:\\Python314\\Lib\\_pyrepl\\reader.py', 'PYMODULE'),
+  ('_pyrepl.readline', 'C:\\Python314\\Lib\\_pyrepl\\readline.py', 'PYMODULE'),
+  ('_pyrepl.simple_interact',
+   'C:\\Python314\\Lib\\_pyrepl\\simple_interact.py',
+   'PYMODULE'),
+  ('_pyrepl.terminfo', 'C:\\Python314\\Lib\\_pyrepl\\terminfo.py', 'PYMODULE'),
+  ('_pyrepl.trace', 'C:\\Python314\\Lib\\_pyrepl\\trace.py', 'PYMODULE'),
+  ('_pyrepl.types', 'C:\\Python314\\Lib\\_pyrepl\\types.py', 'PYMODULE'),
+  ('_pyrepl.unix_console',
+   'C:\\Python314\\Lib\\_pyrepl\\unix_console.py',
+   'PYMODULE'),
+  ('_pyrepl.unix_eventqueue',
+   'C:\\Python314\\Lib\\_pyrepl\\unix_eventqueue.py',
+   'PYMODULE'),
+  ('_pyrepl.utils', 'C:\\Python314\\Lib\\_pyrepl\\utils.py', 'PYMODULE'),
+  ('_pyrepl.windows_console',
+   'C:\\Python314\\Lib\\_pyrepl\\windows_console.py',
+   'PYMODULE'),
+  ('_pyrepl.windows_eventqueue',
+   'C:\\Python314\\Lib\\_pyrepl\\windows_eventqueue.py',
+   'PYMODULE'),
+  ('_sitebuiltins', 'C:\\Python314\\Lib\\_sitebuiltins.py', 'PYMODULE'),
+  ('_strptime', 'C:\\Python314\\Lib\\_strptime.py', 'PYMODULE'),
+  ('_threading_local', 'C:\\Python314\\Lib\\_threading_local.py', 'PYMODULE'),
+  ('annotated_doc',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\annotated_doc\\__init__.py',
+   'PYMODULE'),
+  ('annotated_doc.main',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\annotated_doc\\main.py',
+   'PYMODULE'),
+  ('annotated_types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\annotated_types\\__init__.py',
+   'PYMODULE'),
+  ('annotationlib', 'C:\\Python314\\Lib\\annotationlib.py', 'PYMODULE'),
+  ('anyio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\__init__.py',
+   'PYMODULE'),
+  ('anyio._backends',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_backends\\__init__.py',
+   'PYMODULE'),
+  ('anyio._backends._asyncio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_backends\\_asyncio.py',
+   'PYMODULE'),
+  ('anyio._backends._trio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_backends\\_trio.py',
+   'PYMODULE'),
+  ('anyio._core',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\__init__.py',
+   'PYMODULE'),
+  ('anyio._core._asyncio_selector_thread',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_asyncio_selector_thread.py',
+   'PYMODULE'),
+  ('anyio._core._contextmanagers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_contextmanagers.py',
+   'PYMODULE'),
+  ('anyio._core._eventloop',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_eventloop.py',
+   'PYMODULE'),
+  ('anyio._core._exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_exceptions.py',
+   'PYMODULE'),
+  ('anyio._core._fileio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_fileio.py',
+   'PYMODULE'),
+  ('anyio._core._resources',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_resources.py',
+   'PYMODULE'),
+  ('anyio._core._signals',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_signals.py',
+   'PYMODULE'),
+  ('anyio._core._sockets',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_sockets.py',
+   'PYMODULE'),
+  ('anyio._core._streams',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_streams.py',
+   'PYMODULE'),
+  ('anyio._core._subprocesses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_subprocesses.py',
+   'PYMODULE'),
+  ('anyio._core._synchronization',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_synchronization.py',
+   'PYMODULE'),
+  ('anyio._core._tasks',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_tasks.py',
+   'PYMODULE'),
+  ('anyio._core._tempfile',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_tempfile.py',
+   'PYMODULE'),
+  ('anyio._core._testing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_testing.py',
+   'PYMODULE'),
+  ('anyio._core._typedattr',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\_core\\_typedattr.py',
+   'PYMODULE'),
+  ('anyio.abc',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\__init__.py',
+   'PYMODULE'),
+  ('anyio.abc._eventloop',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_eventloop.py',
+   'PYMODULE'),
+  ('anyio.abc._resources',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_resources.py',
+   'PYMODULE'),
+  ('anyio.abc._sockets',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_sockets.py',
+   'PYMODULE'),
+  ('anyio.abc._streams',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_streams.py',
+   'PYMODULE'),
+  ('anyio.abc._subprocesses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_subprocesses.py',
+   'PYMODULE'),
+  ('anyio.abc._tasks',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_tasks.py',
+   'PYMODULE'),
+  ('anyio.abc._testing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\abc\\_testing.py',
+   'PYMODULE'),
+  ('anyio.from_thread',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\from_thread.py',
+   'PYMODULE'),
+  ('anyio.lowlevel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\lowlevel.py',
+   'PYMODULE'),
+  ('anyio.streams',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\streams\\__init__.py',
+   'PYMODULE'),
+  ('anyio.streams.memory',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\streams\\memory.py',
+   'PYMODULE'),
+  ('anyio.streams.stapled',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\streams\\stapled.py',
+   'PYMODULE'),
+  ('anyio.streams.tls',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\streams\\tls.py',
+   'PYMODULE'),
+  ('anyio.to_thread',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\anyio\\to_thread.py',
+   'PYMODULE'),
+  ('argparse', 'C:\\Python314\\Lib\\argparse.py', 'PYMODULE'),
+  ('ast', 'C:\\Python314\\Lib\\ast.py', 'PYMODULE'),
+  ('asyncio', 'C:\\Python314\\Lib\\asyncio\\__init__.py', 'PYMODULE'),
+  ('asyncio.base_events',
+   'C:\\Python314\\Lib\\asyncio\\base_events.py',
+   'PYMODULE'),
+  ('asyncio.base_futures',
+   'C:\\Python314\\Lib\\asyncio\\base_futures.py',
+   'PYMODULE'),
+  ('asyncio.base_subprocess',
+   'C:\\Python314\\Lib\\asyncio\\base_subprocess.py',
+   'PYMODULE'),
+  ('asyncio.base_tasks',
+   'C:\\Python314\\Lib\\asyncio\\base_tasks.py',
+   'PYMODULE'),
+  ('asyncio.constants',
+   'C:\\Python314\\Lib\\asyncio\\constants.py',
+   'PYMODULE'),
+  ('asyncio.coroutines',
+   'C:\\Python314\\Lib\\asyncio\\coroutines.py',
+   'PYMODULE'),
+  ('asyncio.events', 'C:\\Python314\\Lib\\asyncio\\events.py', 'PYMODULE'),
+  ('asyncio.exceptions',
+   'C:\\Python314\\Lib\\asyncio\\exceptions.py',
+   'PYMODULE'),
+  ('asyncio.format_helpers',
+   'C:\\Python314\\Lib\\asyncio\\format_helpers.py',
+   'PYMODULE'),
+  ('asyncio.futures', 'C:\\Python314\\Lib\\asyncio\\futures.py', 'PYMODULE'),
+  ('asyncio.graph', 'C:\\Python314\\Lib\\asyncio\\graph.py', 'PYMODULE'),
+  ('asyncio.locks', 'C:\\Python314\\Lib\\asyncio\\locks.py', 'PYMODULE'),
+  ('asyncio.log', 'C:\\Python314\\Lib\\asyncio\\log.py', 'PYMODULE'),
+  ('asyncio.mixins', 'C:\\Python314\\Lib\\asyncio\\mixins.py', 'PYMODULE'),
+  ('asyncio.proactor_events',
+   'C:\\Python314\\Lib\\asyncio\\proactor_events.py',
+   'PYMODULE'),
+  ('asyncio.protocols',
+   'C:\\Python314\\Lib\\asyncio\\protocols.py',
+   'PYMODULE'),
+  ('asyncio.queues', 'C:\\Python314\\Lib\\asyncio\\queues.py', 'PYMODULE'),
+  ('asyncio.runners', 'C:\\Python314\\Lib\\asyncio\\runners.py', 'PYMODULE'),
+  ('asyncio.selector_events',
+   'C:\\Python314\\Lib\\asyncio\\selector_events.py',
+   'PYMODULE'),
+  ('asyncio.sslproto', 'C:\\Python314\\Lib\\asyncio\\sslproto.py', 'PYMODULE'),
+  ('asyncio.staggered',
+   'C:\\Python314\\Lib\\asyncio\\staggered.py',
+   'PYMODULE'),
+  ('asyncio.streams', 'C:\\Python314\\Lib\\asyncio\\streams.py', 'PYMODULE'),
+  ('asyncio.subprocess',
+   'C:\\Python314\\Lib\\asyncio\\subprocess.py',
+   'PYMODULE'),
+  ('asyncio.taskgroups',
+   'C:\\Python314\\Lib\\asyncio\\taskgroups.py',
+   'PYMODULE'),
+  ('asyncio.tasks', 'C:\\Python314\\Lib\\asyncio\\tasks.py', 'PYMODULE'),
+  ('asyncio.threads', 'C:\\Python314\\Lib\\asyncio\\threads.py', 'PYMODULE'),
+  ('asyncio.timeouts', 'C:\\Python314\\Lib\\asyncio\\timeouts.py', 'PYMODULE'),
+  ('asyncio.transports',
+   'C:\\Python314\\Lib\\asyncio\\transports.py',
+   'PYMODULE'),
+  ('asyncio.trsock', 'C:\\Python314\\Lib\\asyncio\\trsock.py', 'PYMODULE'),
+  ('asyncio.unix_events',
+   'C:\\Python314\\Lib\\asyncio\\unix_events.py',
+   'PYMODULE'),
+  ('asyncio.windows_events',
+   'C:\\Python314\\Lib\\asyncio\\windows_events.py',
+   'PYMODULE'),
+  ('asyncio.windows_utils',
+   'C:\\Python314\\Lib\\asyncio\\windows_utils.py',
+   'PYMODULE'),
+  ('base64', 'C:\\Python314\\Lib\\base64.py', 'PYMODULE'),
+  ('bdb', 'C:\\Python314\\Lib\\bdb.py', 'PYMODULE'),
+  ('bisect', 'C:\\Python314\\Lib\\bisect.py', 'PYMODULE'),
+  ('bs4',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\__init__.py',
+   'PYMODULE'),
+  ('bs4._deprecation',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\_deprecation.py',
+   'PYMODULE'),
+  ('bs4._typing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\_typing.py',
+   'PYMODULE'),
+  ('bs4._warnings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\_warnings.py',
+   'PYMODULE'),
+  ('bs4.builder',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\builder\\__init__.py',
+   'PYMODULE'),
+  ('bs4.builder._html5lib',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\builder\\_html5lib.py',
+   'PYMODULE'),
+  ('bs4.builder._htmlparser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\builder\\_htmlparser.py',
+   'PYMODULE'),
+  ('bs4.builder._lxml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\builder\\_lxml.py',
+   'PYMODULE'),
+  ('bs4.css',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\css.py',
+   'PYMODULE'),
+  ('bs4.dammit',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\dammit.py',
+   'PYMODULE'),
+  ('bs4.element',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\element.py',
+   'PYMODULE'),
+  ('bs4.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\exceptions.py',
+   'PYMODULE'),
+  ('bs4.filter',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\filter.py',
+   'PYMODULE'),
+  ('bs4.formatter',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\bs4\\formatter.py',
+   'PYMODULE'),
+  ('bz2', 'C:\\Python314\\Lib\\bz2.py', 'PYMODULE'),
+  ('calendar', 'C:\\Python314\\Lib\\calendar.py', 'PYMODULE'),
+  ('certifi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\certifi\\__init__.py',
+   'PYMODULE'),
+  ('certifi.core',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\certifi\\core.py',
+   'PYMODULE'),
+  ('charset_normalizer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\__init__.py',
+   'PYMODULE'),
+  ('charset_normalizer.api',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\api.py',
+   'PYMODULE'),
+  ('charset_normalizer.constant',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\constant.py',
+   'PYMODULE'),
+  ('charset_normalizer.legacy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\legacy.py',
+   'PYMODULE'),
+  ('charset_normalizer.models',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\models.py',
+   'PYMODULE'),
+  ('charset_normalizer.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\utils.py',
+   'PYMODULE'),
+  ('charset_normalizer.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\charset_normalizer\\version.py',
+   'PYMODULE'),
+  ('click',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\__init__.py',
+   'PYMODULE'),
+  ('click._compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\_compat.py',
+   'PYMODULE'),
+  ('click._termui_impl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\_termui_impl.py',
+   'PYMODULE'),
+  ('click._textwrap',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\_textwrap.py',
+   'PYMODULE'),
+  ('click._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\_utils.py',
+   'PYMODULE'),
+  ('click._winconsole',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\_winconsole.py',
+   'PYMODULE'),
+  ('click.core',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\core.py',
+   'PYMODULE'),
+  ('click.decorators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\decorators.py',
+   'PYMODULE'),
+  ('click.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\exceptions.py',
+   'PYMODULE'),
+  ('click.formatting',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\formatting.py',
+   'PYMODULE'),
+  ('click.globals',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\globals.py',
+   'PYMODULE'),
+  ('click.parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\parser.py',
+   'PYMODULE'),
+  ('click.shell_completion',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\shell_completion.py',
+   'PYMODULE'),
+  ('click.termui',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\termui.py',
+   'PYMODULE'),
+  ('click.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\types.py',
+   'PYMODULE'),
+  ('click.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\click\\utils.py',
+   'PYMODULE'),
+  ('cmd', 'C:\\Python314\\Lib\\cmd.py', 'PYMODULE'),
+  ('code', 'C:\\Python314\\Lib\\code.py', 'PYMODULE'),
+  ('codeop', 'C:\\Python314\\Lib\\codeop.py', 'PYMODULE'),
+  ('colorama',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\colorama\\__init__.py',
+   'PYMODULE'),
+  ('colorama.ansi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\colorama\\ansi.py',
+   'PYMODULE'),
+  ('colorama.ansitowin32',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\colorama\\ansitowin32.py',
+   'PYMODULE'),
+  ('colorama.initialise',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\colorama\\initialise.py',
+   'PYMODULE'),
+  ('colorama.win32',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\colorama\\win32.py',
+   'PYMODULE'),
+  ('colorama.winterm',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\colorama\\winterm.py',
+   'PYMODULE'),
+  ('colorsys', 'C:\\Python314\\Lib\\colorsys.py', 'PYMODULE'),
+  ('compression', 'C:\\Python314\\Lib\\compression\\__init__.py', 'PYMODULE'),
+  ('compression._common',
+   'C:\\Python314\\Lib\\compression\\_common\\__init__.py',
+   'PYMODULE'),
+  ('compression._common._streams',
+   'C:\\Python314\\Lib\\compression\\_common\\_streams.py',
+   'PYMODULE'),
+  ('compression.zstd',
+   'C:\\Python314\\Lib\\compression\\zstd\\__init__.py',
+   'PYMODULE'),
+  ('compression.zstd._zstdfile',
+   'C:\\Python314\\Lib\\compression\\zstd\\_zstdfile.py',
+   'PYMODULE'),
+  ('concurrent', 'C:\\Python314\\Lib\\concurrent\\__init__.py', 'PYMODULE'),
+  ('concurrent.futures',
+   'C:\\Python314\\Lib\\concurrent\\futures\\__init__.py',
+   'PYMODULE'),
+  ('concurrent.futures._base',
+   'C:\\Python314\\Lib\\concurrent\\futures\\_base.py',
+   'PYMODULE'),
+  ('concurrent.futures.interpreter',
+   'C:\\Python314\\Lib\\concurrent\\futures\\interpreter.py',
+   'PYMODULE'),
+  ('concurrent.futures.process',
+   'C:\\Python314\\Lib\\concurrent\\futures\\process.py',
+   'PYMODULE'),
+  ('concurrent.futures.thread',
+   'C:\\Python314\\Lib\\concurrent\\futures\\thread.py',
+   'PYMODULE'),
+  ('concurrent.interpreters',
+   'C:\\Python314\\Lib\\concurrent\\interpreters\\__init__.py',
+   'PYMODULE'),
+  ('concurrent.interpreters._crossinterp',
+   'C:\\Python314\\Lib\\concurrent\\interpreters\\_crossinterp.py',
+   'PYMODULE'),
+  ('concurrent.interpreters._queues',
+   'C:\\Python314\\Lib\\concurrent\\interpreters\\_queues.py',
+   'PYMODULE'),
+  ('configparser', 'C:\\Python314\\Lib\\configparser.py', 'PYMODULE'),
+  ('contextlib', 'C:\\Python314\\Lib\\contextlib.py', 'PYMODULE'),
+  ('contextvars', 'C:\\Python314\\Lib\\contextvars.py', 'PYMODULE'),
+  ('copy', 'C:\\Python314\\Lib\\copy.py', 'PYMODULE'),
+  ('csv', 'C:\\Python314\\Lib\\csv.py', 'PYMODULE'),
+  ('ctypes', 'C:\\Python314\\Lib\\ctypes\\__init__.py', 'PYMODULE'),
+  ('ctypes._aix', 'C:\\Python314\\Lib\\ctypes\\_aix.py', 'PYMODULE'),
+  ('ctypes._endian', 'C:\\Python314\\Lib\\ctypes\\_endian.py', 'PYMODULE'),
+  ('ctypes._layout', 'C:\\Python314\\Lib\\ctypes\\_layout.py', 'PYMODULE'),
+  ('ctypes.macholib',
+   'C:\\Python314\\Lib\\ctypes\\macholib\\__init__.py',
+   'PYMODULE'),
+  ('ctypes.macholib.dyld',
+   'C:\\Python314\\Lib\\ctypes\\macholib\\dyld.py',
+   'PYMODULE'),
+  ('ctypes.macholib.dylib',
+   'C:\\Python314\\Lib\\ctypes\\macholib\\dylib.py',
+   'PYMODULE'),
+  ('ctypes.macholib.framework',
+   'C:\\Python314\\Lib\\ctypes\\macholib\\framework.py',
+   'PYMODULE'),
+  ('ctypes.util', 'C:\\Python314\\Lib\\ctypes\\util.py', 'PYMODULE'),
+  ('ctypes.wintypes', 'C:\\Python314\\Lib\\ctypes\\wintypes.py', 'PYMODULE'),
+  ('dataclasses', 'C:\\Python314\\Lib\\dataclasses.py', 'PYMODULE'),
+  ('datetime', 'C:\\Python314\\Lib\\datetime.py', 'PYMODULE'),
+  ('decimal', 'C:\\Python314\\Lib\\decimal.py', 'PYMODULE'),
+  ('difflib', 'C:\\Python314\\Lib\\difflib.py', 'PYMODULE'),
+  ('dis', 'C:\\Python314\\Lib\\dis.py', 'PYMODULE'),
+  ('doctest', 'C:\\Python314\\Lib\\doctest.py', 'PYMODULE'),
+  ('docx',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\__init__.py',
+   'PYMODULE'),
+  ('docx.api',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\api.py',
+   'PYMODULE'),
+  ('docx.blkcntnr',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\blkcntnr.py',
+   'PYMODULE'),
+  ('docx.comments',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\comments.py',
+   'PYMODULE'),
+  ('docx.dml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\dml\\__init__.py',
+   'PYMODULE'),
+  ('docx.dml.color',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\dml\\color.py',
+   'PYMODULE'),
+  ('docx.document',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\document.py',
+   'PYMODULE'),
+  ('docx.drawing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\drawing\\__init__.py',
+   'PYMODULE'),
+  ('docx.enum',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\__init__.py',
+   'PYMODULE'),
+  ('docx.enum.base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\base.py',
+   'PYMODULE'),
+  ('docx.enum.dml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\dml.py',
+   'PYMODULE'),
+  ('docx.enum.section',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\section.py',
+   'PYMODULE'),
+  ('docx.enum.shape',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\shape.py',
+   'PYMODULE'),
+  ('docx.enum.style',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\style.py',
+   'PYMODULE'),
+  ('docx.enum.table',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\table.py',
+   'PYMODULE'),
+  ('docx.enum.text',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\enum\\text.py',
+   'PYMODULE'),
+  ('docx.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\exceptions.py',
+   'PYMODULE'),
+  ('docx.image',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\__init__.py',
+   'PYMODULE'),
+  ('docx.image.bmp',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\bmp.py',
+   'PYMODULE'),
+  ('docx.image.constants',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\constants.py',
+   'PYMODULE'),
+  ('docx.image.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\exceptions.py',
+   'PYMODULE'),
+  ('docx.image.gif',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\gif.py',
+   'PYMODULE'),
+  ('docx.image.helpers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\helpers.py',
+   'PYMODULE'),
+  ('docx.image.image',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\image.py',
+   'PYMODULE'),
+  ('docx.image.jpeg',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\jpeg.py',
+   'PYMODULE'),
+  ('docx.image.png',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\png.py',
+   'PYMODULE'),
+  ('docx.image.tiff',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\image\\tiff.py',
+   'PYMODULE'),
+  ('docx.opc',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\__init__.py',
+   'PYMODULE'),
+  ('docx.opc.constants',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\constants.py',
+   'PYMODULE'),
+  ('docx.opc.coreprops',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\coreprops.py',
+   'PYMODULE'),
+  ('docx.opc.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\exceptions.py',
+   'PYMODULE'),
+  ('docx.opc.oxml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\oxml.py',
+   'PYMODULE'),
+  ('docx.opc.package',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\package.py',
+   'PYMODULE'),
+  ('docx.opc.packuri',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\packuri.py',
+   'PYMODULE'),
+  ('docx.opc.part',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\part.py',
+   'PYMODULE'),
+  ('docx.opc.parts',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\parts\\__init__.py',
+   'PYMODULE'),
+  ('docx.opc.parts.coreprops',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\parts\\coreprops.py',
+   'PYMODULE'),
+  ('docx.opc.phys_pkg',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\phys_pkg.py',
+   'PYMODULE'),
+  ('docx.opc.pkgreader',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\pkgreader.py',
+   'PYMODULE'),
+  ('docx.opc.pkgwriter',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\pkgwriter.py',
+   'PYMODULE'),
+  ('docx.opc.rel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\rel.py',
+   'PYMODULE'),
+  ('docx.opc.shared',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\shared.py',
+   'PYMODULE'),
+  ('docx.opc.spec',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\opc\\spec.py',
+   'PYMODULE'),
+  ('docx.oxml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\__init__.py',
+   'PYMODULE'),
+  ('docx.oxml.comments',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\comments.py',
+   'PYMODULE'),
+  ('docx.oxml.coreprops',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\coreprops.py',
+   'PYMODULE'),
+  ('docx.oxml.document',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\document.py',
+   'PYMODULE'),
+  ('docx.oxml.drawing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\drawing.py',
+   'PYMODULE'),
+  ('docx.oxml.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\exceptions.py',
+   'PYMODULE'),
+  ('docx.oxml.ns',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\ns.py',
+   'PYMODULE'),
+  ('docx.oxml.numbering',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\numbering.py',
+   'PYMODULE'),
+  ('docx.oxml.parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\parser.py',
+   'PYMODULE'),
+  ('docx.oxml.section',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\section.py',
+   'PYMODULE'),
+  ('docx.oxml.settings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\settings.py',
+   'PYMODULE'),
+  ('docx.oxml.shape',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\shape.py',
+   'PYMODULE'),
+  ('docx.oxml.shared',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\shared.py',
+   'PYMODULE'),
+  ('docx.oxml.simpletypes',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\simpletypes.py',
+   'PYMODULE'),
+  ('docx.oxml.styles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\styles.py',
+   'PYMODULE'),
+  ('docx.oxml.table',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\table.py',
+   'PYMODULE'),
+  ('docx.oxml.text',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\__init__.py',
+   'PYMODULE'),
+  ('docx.oxml.text.font',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\font.py',
+   'PYMODULE'),
+  ('docx.oxml.text.hyperlink',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\hyperlink.py',
+   'PYMODULE'),
+  ('docx.oxml.text.pagebreak',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\pagebreak.py',
+   'PYMODULE'),
+  ('docx.oxml.text.paragraph',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\paragraph.py',
+   'PYMODULE'),
+  ('docx.oxml.text.parfmt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\parfmt.py',
+   'PYMODULE'),
+  ('docx.oxml.text.run',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\text\\run.py',
+   'PYMODULE'),
+  ('docx.oxml.xmlchemy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\oxml\\xmlchemy.py',
+   'PYMODULE'),
+  ('docx.package',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\package.py',
+   'PYMODULE'),
+  ('docx.parts',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\__init__.py',
+   'PYMODULE'),
+  ('docx.parts.comments',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\comments.py',
+   'PYMODULE'),
+  ('docx.parts.document',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\document.py',
+   'PYMODULE'),
+  ('docx.parts.hdrftr',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\hdrftr.py',
+   'PYMODULE'),
+  ('docx.parts.image',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\image.py',
+   'PYMODULE'),
+  ('docx.parts.numbering',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\numbering.py',
+   'PYMODULE'),
+  ('docx.parts.settings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\settings.py',
+   'PYMODULE'),
+  ('docx.parts.story',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\story.py',
+   'PYMODULE'),
+  ('docx.parts.styles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\parts\\styles.py',
+   'PYMODULE'),
+  ('docx.section',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\section.py',
+   'PYMODULE'),
+  ('docx.settings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\settings.py',
+   'PYMODULE'),
+  ('docx.shape',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\shape.py',
+   'PYMODULE'),
+  ('docx.shared',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\shared.py',
+   'PYMODULE'),
+  ('docx.styles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\styles\\__init__.py',
+   'PYMODULE'),
+  ('docx.styles.latent',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\styles\\latent.py',
+   'PYMODULE'),
+  ('docx.styles.style',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\styles\\style.py',
+   'PYMODULE'),
+  ('docx.styles.styles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\styles\\styles.py',
+   'PYMODULE'),
+  ('docx.table',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\table.py',
+   'PYMODULE'),
+  ('docx.text',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\__init__.py',
+   'PYMODULE'),
+  ('docx.text.font',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\font.py',
+   'PYMODULE'),
+  ('docx.text.hyperlink',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\hyperlink.py',
+   'PYMODULE'),
+  ('docx.text.pagebreak',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\pagebreak.py',
+   'PYMODULE'),
+  ('docx.text.paragraph',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\paragraph.py',
+   'PYMODULE'),
+  ('docx.text.parfmt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\parfmt.py',
+   'PYMODULE'),
+  ('docx.text.run',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\run.py',
+   'PYMODULE'),
+  ('docx.text.tabstops',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\text\\tabstops.py',
+   'PYMODULE'),
+  ('docx.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\docx\\types.py',
+   'PYMODULE'),
+  ('email', 'C:\\Python314\\Lib\\email\\__init__.py', 'PYMODULE'),
+  ('email._encoded_words',
+   'C:\\Python314\\Lib\\email\\_encoded_words.py',
+   'PYMODULE'),
+  ('email._header_value_parser',
+   'C:\\Python314\\Lib\\email\\_header_value_parser.py',
+   'PYMODULE'),
+  ('email._parseaddr', 'C:\\Python314\\Lib\\email\\_parseaddr.py', 'PYMODULE'),
+  ('email._policybase',
+   'C:\\Python314\\Lib\\email\\_policybase.py',
+   'PYMODULE'),
+  ('email.base64mime', 'C:\\Python314\\Lib\\email\\base64mime.py', 'PYMODULE'),
+  ('email.charset', 'C:\\Python314\\Lib\\email\\charset.py', 'PYMODULE'),
+  ('email.contentmanager',
+   'C:\\Python314\\Lib\\email\\contentmanager.py',
+   'PYMODULE'),
+  ('email.encoders', 'C:\\Python314\\Lib\\email\\encoders.py', 'PYMODULE'),
+  ('email.errors', 'C:\\Python314\\Lib\\email\\errors.py', 'PYMODULE'),
+  ('email.feedparser', 'C:\\Python314\\Lib\\email\\feedparser.py', 'PYMODULE'),
+  ('email.generator', 'C:\\Python314\\Lib\\email\\generator.py', 'PYMODULE'),
+  ('email.header', 'C:\\Python314\\Lib\\email\\header.py', 'PYMODULE'),
+  ('email.headerregistry',
+   'C:\\Python314\\Lib\\email\\headerregistry.py',
+   'PYMODULE'),
+  ('email.iterators', 'C:\\Python314\\Lib\\email\\iterators.py', 'PYMODULE'),
+  ('email.message', 'C:\\Python314\\Lib\\email\\message.py', 'PYMODULE'),
+  ('email.parser', 'C:\\Python314\\Lib\\email\\parser.py', 'PYMODULE'),
+  ('email.policy', 'C:\\Python314\\Lib\\email\\policy.py', 'PYMODULE'),
+  ('email.quoprimime', 'C:\\Python314\\Lib\\email\\quoprimime.py', 'PYMODULE'),
+  ('email.utils', 'C:\\Python314\\Lib\\email\\utils.py', 'PYMODULE'),
+  ('evolving_ai',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\__init__.py',
+   'PYMODULE'),
+  ('evolving_ai.advanced_code_agents',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\advanced_code_agents.py',
+   'PYMODULE'),
+  ('evolving_ai.app',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\__init__.py',
+   'PYMODULE'),
+  ('evolving_ai.app.agent',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\agent.py',
+   'PYMODULE'),
+  ('evolving_ai.app.agent_runs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\agent_runs.py',
+   'PYMODULE'),
+  ('evolving_ai.app.approval_state',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\approval_state.py',
+   'PYMODULE'),
+  ('evolving_ai.app.attachments',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\attachments.py',
+   'PYMODULE'),
+  ('evolving_ai.app.cache',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\cache.py',
+   'PYMODULE'),
+  ('evolving_ai.app.change_history',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\change_history.py',
+   'PYMODULE'),
+  ('evolving_ai.app.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\config.py',
+   'PYMODULE'),
+  ('evolving_ai.app.docker_workspace',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\docker_workspace.py',
+   'PYMODULE'),
+  ('evolving_ai.app.execution',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\execution.py',
+   'PYMODULE'),
+  ('evolving_ai.app.execution_backends',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\execution_backends.py',
+   'PYMODULE'),
+  ('evolving_ai.app.files',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\files.py',
+   'PYMODULE'),
+  ('evolving_ai.app.knowledge',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\knowledge.py',
+   'PYMODULE'),
+  ('evolving_ai.app.memory',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\memory.py',
+   'PYMODULE'),
+  ('evolving_ai.app.model_switchboard',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\model_switchboard.py',
+   'PYMODULE'),
+  ('evolving_ai.app.projects',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\projects.py',
+   'PYMODULE'),
+  ('evolving_ai.app.providers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\providers.py',
+   'PYMODULE'),
+  ('evolving_ai.app.review',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\review.py',
+   'PYMODULE'),
+  ('evolving_ai.app.server',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\server.py',
+   'PYMODULE'),
+  ('evolving_ai.app.service',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\service.py',
+   'PYMODULE'),
+  ('evolving_ai.app.tools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\tools.py',
+   'PYMODULE'),
+  ('evolving_ai.app.web',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\web.py',
+   'PYMODULE'),
+  ('evolving_ai.app.workspace_intel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\app\\workspace_intel.py',
+   'PYMODULE'),
+  ('evolving_ai.archive',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\archive.py',
+   'PYMODULE'),
+  ('evolving_ai.aris',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\__init__.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.cognitive_upgrade',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\cognitive_upgrade.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.hall_base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\hall_base.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.hall_of_discard',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\hall_of_discard.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.hall_of_fame',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\hall_of_fame.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.hall_of_shame',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\hall_of_shame.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.integrity',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\integrity.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.jarvis_blueprint',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\jarvis_blueprint.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.kill_switch',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\kill_switch.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.logbook',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\logbook.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.memory_bank',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\memory_bank.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\__init__.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.cooldowns',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\cooldowns.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.escalation',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\escalation.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.reading',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\reading.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.reflection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\reflection.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.session_monitor',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\session_monitor.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.sustainment',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\sustainment.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.ui_controls',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\ui_controls.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.mystic.voice',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\mystic\\voice.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.runtime',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\runtime.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.service',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\service.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.shield',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\shield\\__init__.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.shield.adjudicator_1001',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\shield\\adjudicator_1001.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.shield.laws',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\shield\\laws.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.shield.registries',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\shield\\registries.py',
+   'PYMODULE'),
+  ('evolving_ai.aris.shield.verification',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris\\shield\\verification.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\__init__.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.desktop_app',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\desktop_app.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.desktop_build',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\desktop_build.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.desktop_support',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\desktop_support.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.feedback',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\feedback.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.profiles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\profiles.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.runtime',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\runtime.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.service',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\service.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.shipping_lane',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\shipping_lane.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.voice',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\voice.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.workspace_demo_logic',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\workspace_demo_logic.py',
+   'PYMODULE'),
+  ('evolving_ai.aris_demo.workspace_registry',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\aris_demo\\workspace_registry.py',
+   'PYMODULE'),
+  ('evolving_ai.code_agents',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\code_agents.py',
+   'PYMODULE'),
+  ('evolving_ai.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\config.py',
+   'PYMODULE'),
+  ('evolving_ai.engine',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\engine.py',
+   'PYMODULE'),
+  ('evolving_ai.genome',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\genome.py',
+   'PYMODULE'),
+  ('evolving_ai.network',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\evolving_ai\\network.py',
+   'PYMODULE'),
+  ('evolving_ai.tasks',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\evolving_ai\\tasks.py',
+   'PYMODULE'),
+  ('fastapi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\__init__.py',
+   'PYMODULE'),
+  ('fastapi._compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\_compat\\__init__.py',
+   'PYMODULE'),
+  ('fastapi._compat.shared',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\_compat\\shared.py',
+   'PYMODULE'),
+  ('fastapi._compat.v2',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\_compat\\v2.py',
+   'PYMODULE'),
+  ('fastapi.applications',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\applications.py',
+   'PYMODULE'),
+  ('fastapi.background',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\background.py',
+   'PYMODULE'),
+  ('fastapi.concurrency',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\concurrency.py',
+   'PYMODULE'),
+  ('fastapi.datastructures',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\datastructures.py',
+   'PYMODULE'),
+  ('fastapi.dependencies',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\dependencies\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.dependencies.models',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\dependencies\\models.py',
+   'PYMODULE'),
+  ('fastapi.dependencies.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\dependencies\\utils.py',
+   'PYMODULE'),
+  ('fastapi.encoders',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\encoders.py',
+   'PYMODULE'),
+  ('fastapi.exception_handlers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\exception_handlers.py',
+   'PYMODULE'),
+  ('fastapi.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\exceptions.py',
+   'PYMODULE'),
+  ('fastapi.logger',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\logger.py',
+   'PYMODULE'),
+  ('fastapi.middleware',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\middleware\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.middleware.asyncexitstack',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\middleware\\asyncexitstack.py',
+   'PYMODULE'),
+  ('fastapi.openapi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\openapi\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.openapi.constants',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\openapi\\constants.py',
+   'PYMODULE'),
+  ('fastapi.openapi.docs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\openapi\\docs.py',
+   'PYMODULE'),
+  ('fastapi.openapi.models',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\openapi\\models.py',
+   'PYMODULE'),
+  ('fastapi.openapi.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\openapi\\utils.py',
+   'PYMODULE'),
+  ('fastapi.param_functions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\param_functions.py',
+   'PYMODULE'),
+  ('fastapi.params',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\params.py',
+   'PYMODULE'),
+  ('fastapi.requests',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\requests.py',
+   'PYMODULE'),
+  ('fastapi.responses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\responses.py',
+   'PYMODULE'),
+  ('fastapi.routing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\routing.py',
+   'PYMODULE'),
+  ('fastapi.security',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.security.api_key',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\api_key.py',
+   'PYMODULE'),
+  ('fastapi.security.base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\base.py',
+   'PYMODULE'),
+  ('fastapi.security.http',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\http.py',
+   'PYMODULE'),
+  ('fastapi.security.oauth2',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\oauth2.py',
+   'PYMODULE'),
+  ('fastapi.security.open_id_connect_url',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\open_id_connect_url.py',
+   'PYMODULE'),
+  ('fastapi.security.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\security\\utils.py',
+   'PYMODULE'),
+  ('fastapi.sse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\sse.py',
+   'PYMODULE'),
+  ('fastapi.staticfiles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\staticfiles.py',
+   'PYMODULE'),
+  ('fastapi.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\types.py',
+   'PYMODULE'),
+  ('fastapi.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\utils.py',
+   'PYMODULE'),
+  ('fastapi.websockets',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\fastapi\\websockets.py',
+   'PYMODULE'),
+  ('fnmatch', 'C:\\Python314\\Lib\\fnmatch.py', 'PYMODULE'),
+  ('forge',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\forge\\__init__.py',
+   'PYMODULE'),
+  ('forge.config',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\forge\\config.py',
+   'PYMODULE'),
+  ('forge.handlers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\handlers\\__init__.py',
+   'PYMODULE'),
+  ('forge.handlers.analyze',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\handlers\\analyze.py',
+   'PYMODULE'),
+  ('forge.handlers.generate_code',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\handlers\\generate_code.py',
+   'PYMODULE'),
+  ('forge.handlers.generate_diff',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\handlers\\generate_diff.py',
+   'PYMODULE'),
+  ('forge.handlers.generate_tests',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\handlers\\generate_tests.py',
+   'PYMODULE'),
+  ('forge.handlers.repo_manager',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\handlers\\repo_manager.py',
+   'PYMODULE'),
+  ('forge.profiles',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\forge\\profiles.py',
+   'PYMODULE'),
+  ('forge.schemas',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\forge\\schemas.py',
+   'PYMODULE'),
+  ('forge.service',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\forge\\service.py',
+   'PYMODULE'),
+  ('forge.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\utils\\__init__.py',
+   'PYMODULE'),
+  ('forge.utils.bounded_output',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\utils\\bounded_output.py',
+   'PYMODULE'),
+  ('forge.utils.file_context',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\utils\\file_context.py',
+   'PYMODULE'),
+  ('forge.utils.json_safety',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge\\utils\\json_safety.py',
+   'PYMODULE'),
+  ('forge_eval',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\__init__.py',
+   'PYMODULE'),
+  ('forge_eval.evaluators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\evaluators\\__init__.py',
+   'PYMODULE'),
+  ('forge_eval.evaluators.analyze_shared',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\evaluators\\analyze_shared.py',
+   'PYMODULE'),
+  ('forge_eval.evaluators.io_tests',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\evaluators\\io_tests.py',
+   'PYMODULE'),
+  ('forge_eval.evaluators.llm_rubric',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\evaluators\\llm_rubric.py',
+   'PYMODULE'),
+  ('forge_eval.evaluators.repo_patch',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\evaluators\\repo_patch.py',
+   'PYMODULE'),
+  ('forge_eval.sandbox',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\sandbox\\__init__.py',
+   'PYMODULE'),
+  ('forge_eval.sandbox.local_runner',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\sandbox\\local_runner.py',
+   'PYMODULE'),
+  ('forge_eval.schemas',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\schemas.py',
+   'PYMODULE'),
+  ('forge_eval.service',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\service.py',
+   'PYMODULE'),
+  ('forge_eval.utils', '-', 'PYMODULE'),
+  ('forge_eval.utils.scoring',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\forge_eval\\utils\\scoring.py',
+   'PYMODULE'),
+  ('fractions', 'C:\\Python314\\Lib\\fractions.py', 'PYMODULE'),
+  ('ftplib', 'C:\\Python314\\Lib\\ftplib.py', 'PYMODULE'),
+  ('getopt', 'C:\\Python314\\Lib\\getopt.py', 'PYMODULE'),
+  ('getpass', 'C:\\Python314\\Lib\\getpass.py', 'PYMODULE'),
+  ('gettext', 'C:\\Python314\\Lib\\gettext.py', 'PYMODULE'),
+  ('glob', 'C:\\Python314\\Lib\\glob.py', 'PYMODULE'),
+  ('gzip', 'C:\\Python314\\Lib\\gzip.py', 'PYMODULE'),
+  ('h11',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\__init__.py',
+   'PYMODULE'),
+  ('h11._abnf',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_abnf.py',
+   'PYMODULE'),
+  ('h11._connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_connection.py',
+   'PYMODULE'),
+  ('h11._events',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_events.py',
+   'PYMODULE'),
+  ('h11._headers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_headers.py',
+   'PYMODULE'),
+  ('h11._readers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_readers.py',
+   'PYMODULE'),
+  ('h11._receivebuffer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_receivebuffer.py',
+   'PYMODULE'),
+  ('h11._state',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_state.py',
+   'PYMODULE'),
+  ('h11._util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_util.py',
+   'PYMODULE'),
+  ('h11._version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_version.py',
+   'PYMODULE'),
+  ('h11._writers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\h11\\_writers.py',
+   'PYMODULE'),
+  ('hashlib', 'C:\\Python314\\Lib\\hashlib.py', 'PYMODULE'),
+  ('hmac', 'C:\\Python314\\Lib\\hmac.py', 'PYMODULE'),
+  ('html', 'C:\\Python314\\Lib\\html\\__init__.py', 'PYMODULE'),
+  ('html.entities', 'C:\\Python314\\Lib\\html\\entities.py', 'PYMODULE'),
+  ('html.parser', 'C:\\Python314\\Lib\\html\\parser.py', 'PYMODULE'),
+  ('http', 'C:\\Python314\\Lib\\http\\__init__.py', 'PYMODULE'),
+  ('http.client', 'C:\\Python314\\Lib\\http\\client.py', 'PYMODULE'),
+  ('http.cookiejar', 'C:\\Python314\\Lib\\http\\cookiejar.py', 'PYMODULE'),
+  ('http.cookies', 'C:\\Python314\\Lib\\http\\cookies.py', 'PYMODULE'),
+  ('http.server', 'C:\\Python314\\Lib\\http\\server.py', 'PYMODULE'),
+  ('httpcore',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\__init__.py',
+   'PYMODULE'),
+  ('httpcore._api',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_api.py',
+   'PYMODULE'),
+  ('httpcore._async',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\__init__.py',
+   'PYMODULE'),
+  ('httpcore._async.connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\connection.py',
+   'PYMODULE'),
+  ('httpcore._async.connection_pool',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\connection_pool.py',
+   'PYMODULE'),
+  ('httpcore._async.http11',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\http11.py',
+   'PYMODULE'),
+  ('httpcore._async.http2',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\http2.py',
+   'PYMODULE'),
+  ('httpcore._async.http_proxy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\http_proxy.py',
+   'PYMODULE'),
+  ('httpcore._async.interfaces',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\interfaces.py',
+   'PYMODULE'),
+  ('httpcore._async.socks_proxy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_async\\socks_proxy.py',
+   'PYMODULE'),
+  ('httpcore._backends',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\__init__.py',
+   'PYMODULE'),
+  ('httpcore._backends.anyio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\anyio.py',
+   'PYMODULE'),
+  ('httpcore._backends.auto',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\auto.py',
+   'PYMODULE'),
+  ('httpcore._backends.base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\base.py',
+   'PYMODULE'),
+  ('httpcore._backends.mock',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\mock.py',
+   'PYMODULE'),
+  ('httpcore._backends.sync',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\sync.py',
+   'PYMODULE'),
+  ('httpcore._backends.trio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_backends\\trio.py',
+   'PYMODULE'),
+  ('httpcore._exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_exceptions.py',
+   'PYMODULE'),
+  ('httpcore._models',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_models.py',
+   'PYMODULE'),
+  ('httpcore._ssl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_ssl.py',
+   'PYMODULE'),
+  ('httpcore._sync',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\__init__.py',
+   'PYMODULE'),
+  ('httpcore._sync.connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\connection.py',
+   'PYMODULE'),
+  ('httpcore._sync.connection_pool',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\connection_pool.py',
+   'PYMODULE'),
+  ('httpcore._sync.http11',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\http11.py',
+   'PYMODULE'),
+  ('httpcore._sync.http2',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\http2.py',
+   'PYMODULE'),
+  ('httpcore._sync.http_proxy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\http_proxy.py',
+   'PYMODULE'),
+  ('httpcore._sync.interfaces',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\interfaces.py',
+   'PYMODULE'),
+  ('httpcore._sync.socks_proxy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_sync\\socks_proxy.py',
+   'PYMODULE'),
+  ('httpcore._synchronization',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_synchronization.py',
+   'PYMODULE'),
+  ('httpcore._trace',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_trace.py',
+   'PYMODULE'),
+  ('httpcore._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpcore\\_utils.py',
+   'PYMODULE'),
+  ('httpx',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\__init__.py',
+   'PYMODULE'),
+  ('httpx.__version__',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\__version__.py',
+   'PYMODULE'),
+  ('httpx._api',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_api.py',
+   'PYMODULE'),
+  ('httpx._auth',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_auth.py',
+   'PYMODULE'),
+  ('httpx._client',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_client.py',
+   'PYMODULE'),
+  ('httpx._config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_config.py',
+   'PYMODULE'),
+  ('httpx._content',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_content.py',
+   'PYMODULE'),
+  ('httpx._decoders',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_decoders.py',
+   'PYMODULE'),
+  ('httpx._exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_exceptions.py',
+   'PYMODULE'),
+  ('httpx._main',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_main.py',
+   'PYMODULE'),
+  ('httpx._models',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_models.py',
+   'PYMODULE'),
+  ('httpx._multipart',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_multipart.py',
+   'PYMODULE'),
+  ('httpx._status_codes',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_status_codes.py',
+   'PYMODULE'),
+  ('httpx._transports',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_transports\\__init__.py',
+   'PYMODULE'),
+  ('httpx._transports.asgi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_transports\\asgi.py',
+   'PYMODULE'),
+  ('httpx._transports.base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_transports\\base.py',
+   'PYMODULE'),
+  ('httpx._transports.default',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_transports\\default.py',
+   'PYMODULE'),
+  ('httpx._transports.mock',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_transports\\mock.py',
+   'PYMODULE'),
+  ('httpx._transports.wsgi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_transports\\wsgi.py',
+   'PYMODULE'),
+  ('httpx._types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_types.py',
+   'PYMODULE'),
+  ('httpx._urlparse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_urlparse.py',
+   'PYMODULE'),
+  ('httpx._urls',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_urls.py',
+   'PYMODULE'),
+  ('httpx._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\httpx\\_utils.py',
+   'PYMODULE'),
+  ('idna',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\idna\\__init__.py',
+   'PYMODULE'),
+  ('idna.core',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\idna\\core.py',
+   'PYMODULE'),
+  ('idna.idnadata',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\idna\\idnadata.py',
+   'PYMODULE'),
+  ('idna.intranges',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\idna\\intranges.py',
+   'PYMODULE'),
+  ('idna.package_data',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\idna\\package_data.py',
+   'PYMODULE'),
+  ('idna.uts46data',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\idna\\uts46data.py',
+   'PYMODULE'),
+  ('importlib', 'C:\\Python314\\Lib\\importlib\\__init__.py', 'PYMODULE'),
+  ('importlib._abc', 'C:\\Python314\\Lib\\importlib\\_abc.py', 'PYMODULE'),
+  ('importlib._bootstrap',
+   'C:\\Python314\\Lib\\importlib\\_bootstrap.py',
+   'PYMODULE'),
+  ('importlib._bootstrap_external',
+   'C:\\Python314\\Lib\\importlib\\_bootstrap_external.py',
+   'PYMODULE'),
+  ('importlib.abc', 'C:\\Python314\\Lib\\importlib\\abc.py', 'PYMODULE'),
+  ('importlib.machinery',
+   'C:\\Python314\\Lib\\importlib\\machinery.py',
+   'PYMODULE'),
+  ('importlib.metadata',
+   'C:\\Python314\\Lib\\importlib\\metadata\\__init__.py',
+   'PYMODULE'),
+  ('importlib.metadata._adapters',
+   'C:\\Python314\\Lib\\importlib\\metadata\\_adapters.py',
+   'PYMODULE'),
+  ('importlib.metadata._collections',
+   'C:\\Python314\\Lib\\importlib\\metadata\\_collections.py',
+   'PYMODULE'),
+  ('importlib.metadata._functools',
+   'C:\\Python314\\Lib\\importlib\\metadata\\_functools.py',
+   'PYMODULE'),
+  ('importlib.metadata._itertools',
+   'C:\\Python314\\Lib\\importlib\\metadata\\_itertools.py',
+   'PYMODULE'),
+  ('importlib.metadata._meta',
+   'C:\\Python314\\Lib\\importlib\\metadata\\_meta.py',
+   'PYMODULE'),
+  ('importlib.metadata._text',
+   'C:\\Python314\\Lib\\importlib\\metadata\\_text.py',
+   'PYMODULE'),
+  ('importlib.readers',
+   'C:\\Python314\\Lib\\importlib\\readers.py',
+   'PYMODULE'),
+  ('importlib.resources',
+   'C:\\Python314\\Lib\\importlib\\resources\\__init__.py',
+   'PYMODULE'),
+  ('importlib.resources._adapters',
+   'C:\\Python314\\Lib\\importlib\\resources\\_adapters.py',
+   'PYMODULE'),
+  ('importlib.resources._common',
+   'C:\\Python314\\Lib\\importlib\\resources\\_common.py',
+   'PYMODULE'),
+  ('importlib.resources._functional',
+   'C:\\Python314\\Lib\\importlib\\resources\\_functional.py',
+   'PYMODULE'),
+  ('importlib.resources._itertools',
+   'C:\\Python314\\Lib\\importlib\\resources\\_itertools.py',
+   'PYMODULE'),
+  ('importlib.resources.abc',
+   'C:\\Python314\\Lib\\importlib\\resources\\abc.py',
+   'PYMODULE'),
+  ('importlib.resources.readers',
+   'C:\\Python314\\Lib\\importlib\\resources\\readers.py',
+   'PYMODULE'),
+  ('importlib.util', 'C:\\Python314\\Lib\\importlib\\util.py', 'PYMODULE'),
+  ('inspect', 'C:\\Python314\\Lib\\inspect.py', 'PYMODULE'),
+  ('ipaddress', 'C:\\Python314\\Lib\\ipaddress.py', 'PYMODULE'),
+  ('json', 'C:\\Python314\\Lib\\json\\__init__.py', 'PYMODULE'),
+  ('json.decoder', 'C:\\Python314\\Lib\\json\\decoder.py', 'PYMODULE'),
+  ('json.encoder', 'C:\\Python314\\Lib\\json\\encoder.py', 'PYMODULE'),
+  ('json.scanner', 'C:\\Python314\\Lib\\json\\scanner.py', 'PYMODULE'),
+  ('logging', 'C:\\Python314\\Lib\\logging\\__init__.py', 'PYMODULE'),
+  ('logging.config', 'C:\\Python314\\Lib\\logging\\config.py', 'PYMODULE'),
+  ('logging.handlers', 'C:\\Python314\\Lib\\logging\\handlers.py', 'PYMODULE'),
+  ('lxml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\__init__.py',
+   'PYMODULE'),
+  ('lxml.ElementInclude',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\ElementInclude.py',
+   'PYMODULE'),
+  ('lxml.cssselect',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\cssselect.py',
+   'PYMODULE'),
+  ('lxml.doctestcompare',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\doctestcompare.py',
+   'PYMODULE'),
+  ('lxml.html',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\__init__.py',
+   'PYMODULE'),
+  ('lxml.html.ElementSoup',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\ElementSoup.py',
+   'PYMODULE'),
+  ('lxml.html._diffcommand',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\_diffcommand.py',
+   'PYMODULE'),
+  ('lxml.html._html5builder',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\_html5builder.py',
+   'PYMODULE'),
+  ('lxml.html._setmixin',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\_setmixin.py',
+   'PYMODULE'),
+  ('lxml.html.builder',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\builder.py',
+   'PYMODULE'),
+  ('lxml.html.clean',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\clean.py',
+   'PYMODULE'),
+  ('lxml.html.defs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\defs.py',
+   'PYMODULE'),
+  ('lxml.html.formfill',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\formfill.py',
+   'PYMODULE'),
+  ('lxml.html.html5parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\html5parser.py',
+   'PYMODULE'),
+  ('lxml.html.soupparser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\soupparser.py',
+   'PYMODULE'),
+  ('lxml.html.usedoctest',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\html\\usedoctest.py',
+   'PYMODULE'),
+  ('lxml.includes',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\includes\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.extlibs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\includes\\extlibs\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.libexslt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\includes\\libexslt\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.libxml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\includes\\libxml\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.libxslt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\includes\\libxslt\\__init__.py',
+   'PYMODULE'),
+  ('lxml.isoschematron',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\isoschematron\\__init__.py',
+   'PYMODULE'),
+  ('lxml.pyclasslookup',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\pyclasslookup.py',
+   'PYMODULE'),
+  ('lxml.usedoctest',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\lxml\\usedoctest.py',
+   'PYMODULE'),
+  ('lzma', 'C:\\Python314\\Lib\\lzma.py', 'PYMODULE'),
+  ('mimetypes', 'C:\\Python314\\Lib\\mimetypes.py', 'PYMODULE'),
+  ('multipart',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\multipart\\__init__.py',
+   'PYMODULE'),
+  ('multipart.multipart',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\multipart\\multipart.py',
+   'PYMODULE'),
+  ('multiprocessing',
+   'C:\\Python314\\Lib\\multiprocessing\\__init__.py',
+   'PYMODULE'),
+  ('multiprocessing.connection',
+   'C:\\Python314\\Lib\\multiprocessing\\connection.py',
+   'PYMODULE'),
+  ('multiprocessing.context',
+   'C:\\Python314\\Lib\\multiprocessing\\context.py',
+   'PYMODULE'),
+  ('multiprocessing.dummy',
+   'C:\\Python314\\Lib\\multiprocessing\\dummy\\__init__.py',
+   'PYMODULE'),
+  ('multiprocessing.dummy.connection',
+   'C:\\Python314\\Lib\\multiprocessing\\dummy\\connection.py',
+   'PYMODULE'),
+  ('multiprocessing.forkserver',
+   'C:\\Python314\\Lib\\multiprocessing\\forkserver.py',
+   'PYMODULE'),
+  ('multiprocessing.heap',
+   'C:\\Python314\\Lib\\multiprocessing\\heap.py',
+   'PYMODULE'),
+  ('multiprocessing.managers',
+   'C:\\Python314\\Lib\\multiprocessing\\managers.py',
+   'PYMODULE'),
+  ('multiprocessing.pool',
+   'C:\\Python314\\Lib\\multiprocessing\\pool.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_fork',
+   'C:\\Python314\\Lib\\multiprocessing\\popen_fork.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_forkserver',
+   'C:\\Python314\\Lib\\multiprocessing\\popen_forkserver.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_spawn_posix',
+   'C:\\Python314\\Lib\\multiprocessing\\popen_spawn_posix.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_spawn_win32',
+   'C:\\Python314\\Lib\\multiprocessing\\popen_spawn_win32.py',
+   'PYMODULE'),
+  ('multiprocessing.process',
+   'C:\\Python314\\Lib\\multiprocessing\\process.py',
+   'PYMODULE'),
+  ('multiprocessing.queues',
+   'C:\\Python314\\Lib\\multiprocessing\\queues.py',
+   'PYMODULE'),
+  ('multiprocessing.reduction',
+   'C:\\Python314\\Lib\\multiprocessing\\reduction.py',
+   'PYMODULE'),
+  ('multiprocessing.resource_sharer',
+   'C:\\Python314\\Lib\\multiprocessing\\resource_sharer.py',
+   'PYMODULE'),
+  ('multiprocessing.resource_tracker',
+   'C:\\Python314\\Lib\\multiprocessing\\resource_tracker.py',
+   'PYMODULE'),
+  ('multiprocessing.shared_memory',
+   'C:\\Python314\\Lib\\multiprocessing\\shared_memory.py',
+   'PYMODULE'),
+  ('multiprocessing.sharedctypes',
+   'C:\\Python314\\Lib\\multiprocessing\\sharedctypes.py',
+   'PYMODULE'),
+  ('multiprocessing.spawn',
+   'C:\\Python314\\Lib\\multiprocessing\\spawn.py',
+   'PYMODULE'),
+  ('multiprocessing.synchronize',
+   'C:\\Python314\\Lib\\multiprocessing\\synchronize.py',
+   'PYMODULE'),
+  ('multiprocessing.util',
+   'C:\\Python314\\Lib\\multiprocessing\\util.py',
+   'PYMODULE'),
+  ('netrc', 'C:\\Python314\\Lib\\netrc.py', 'PYMODULE'),
+  ('numbers', 'C:\\Python314\\Lib\\numbers.py', 'PYMODULE'),
+  ('opcode', 'C:\\Python314\\Lib\\opcode.py', 'PYMODULE'),
+  ('optparse', 'C:\\Python314\\Lib\\optparse.py', 'PYMODULE'),
+  ('packaging',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\__init__.py',
+   'PYMODULE'),
+  ('packaging._elffile',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\_elffile.py',
+   'PYMODULE'),
+  ('packaging._manylinux',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\_manylinux.py',
+   'PYMODULE'),
+  ('packaging._musllinux',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\_musllinux.py',
+   'PYMODULE'),
+  ('packaging._parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\_parser.py',
+   'PYMODULE'),
+  ('packaging._tokenizer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\_tokenizer.py',
+   'PYMODULE'),
+  ('packaging.licenses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\licenses\\__init__.py',
+   'PYMODULE'),
+  ('packaging.licenses._spdx',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\licenses\\_spdx.py',
+   'PYMODULE'),
+  ('packaging.markers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\markers.py',
+   'PYMODULE'),
+  ('packaging.requirements',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\requirements.py',
+   'PYMODULE'),
+  ('packaging.specifiers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\specifiers.py',
+   'PYMODULE'),
+  ('packaging.tags',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\tags.py',
+   'PYMODULE'),
+  ('packaging.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\utils.py',
+   'PYMODULE'),
+  ('packaging.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\packaging\\version.py',
+   'PYMODULE'),
+  ('pathlib', 'C:\\Python314\\Lib\\pathlib\\__init__.py', 'PYMODULE'),
+  ('pathlib._os', 'C:\\Python314\\Lib\\pathlib\\_os.py', 'PYMODULE'),
+  ('pdb', 'C:\\Python314\\Lib\\pdb.py', 'PYMODULE'),
+  ('pickle', 'C:\\Python314\\Lib\\pickle.py', 'PYMODULE'),
+  ('pkgutil', 'C:\\Python314\\Lib\\pkgutil.py', 'PYMODULE'),
+  ('platform', 'C:\\Python314\\Lib\\platform.py', 'PYMODULE'),
+  ('pprint', 'C:\\Python314\\Lib\\pprint.py', 'PYMODULE'),
+  ('py_compile', 'C:\\Python314\\Lib\\py_compile.py', 'PYMODULE'),
+  ('pydantic',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\__init__.py',
+   'PYMODULE'),
+  ('pydantic._internal',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\__init__.py',
+   'PYMODULE'),
+  ('pydantic._internal._config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_config.py',
+   'PYMODULE'),
+  ('pydantic._internal._core_metadata',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_core_metadata.py',
+   'PYMODULE'),
+  ('pydantic._internal._core_utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_core_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._dataclasses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_dataclasses.py',
+   'PYMODULE'),
+  ('pydantic._internal._decorators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_decorators.py',
+   'PYMODULE'),
+  ('pydantic._internal._decorators_v1',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_decorators_v1.py',
+   'PYMODULE'),
+  ('pydantic._internal._discriminated_union',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_discriminated_union.py',
+   'PYMODULE'),
+  ('pydantic._internal._docs_extraction',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_docs_extraction.py',
+   'PYMODULE'),
+  ('pydantic._internal._fields',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_fields.py',
+   'PYMODULE'),
+  ('pydantic._internal._forward_ref',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_forward_ref.py',
+   'PYMODULE'),
+  ('pydantic._internal._generate_schema',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_generate_schema.py',
+   'PYMODULE'),
+  ('pydantic._internal._generics',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_generics.py',
+   'PYMODULE'),
+  ('pydantic._internal._git',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_git.py',
+   'PYMODULE'),
+  ('pydantic._internal._import_utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_import_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._internal_dataclass',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_internal_dataclass.py',
+   'PYMODULE'),
+  ('pydantic._internal._known_annotated_metadata',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_known_annotated_metadata.py',
+   'PYMODULE'),
+  ('pydantic._internal._mock_val_ser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_mock_val_ser.py',
+   'PYMODULE'),
+  ('pydantic._internal._model_construction',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_model_construction.py',
+   'PYMODULE'),
+  ('pydantic._internal._namespace_utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_namespace_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._repr',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_repr.py',
+   'PYMODULE'),
+  ('pydantic._internal._schema_gather',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_schema_gather.py',
+   'PYMODULE'),
+  ('pydantic._internal._schema_generation_shared',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_schema_generation_shared.py',
+   'PYMODULE'),
+  ('pydantic._internal._serializers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_serializers.py',
+   'PYMODULE'),
+  ('pydantic._internal._signature',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_signature.py',
+   'PYMODULE'),
+  ('pydantic._internal._typing_extra',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_typing_extra.py',
+   'PYMODULE'),
+  ('pydantic._internal._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._validate_call',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_validate_call.py',
+   'PYMODULE'),
+  ('pydantic._internal._validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_internal\\_validators.py',
+   'PYMODULE'),
+  ('pydantic._migration',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\_migration.py',
+   'PYMODULE'),
+  ('pydantic.alias_generators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\alias_generators.py',
+   'PYMODULE'),
+  ('pydantic.aliases',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\aliases.py',
+   'PYMODULE'),
+  ('pydantic.annotated_handlers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\annotated_handlers.py',
+   'PYMODULE'),
+  ('pydantic.class_validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\class_validators.py',
+   'PYMODULE'),
+  ('pydantic.color',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\color.py',
+   'PYMODULE'),
+  ('pydantic.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\config.py',
+   'PYMODULE'),
+  ('pydantic.dataclasses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\dataclasses.py',
+   'PYMODULE'),
+  ('pydantic.datetime_parse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\datetime_parse.py',
+   'PYMODULE'),
+  ('pydantic.decorator',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\decorator.py',
+   'PYMODULE'),
+  ('pydantic.deprecated',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.class_validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\class_validators.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\config.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.copy_internals',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\copy_internals.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.decorator',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\decorator.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.json',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\json.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.parse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\parse.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.tools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\deprecated\\tools.py',
+   'PYMODULE'),
+  ('pydantic.env_settings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\env_settings.py',
+   'PYMODULE'),
+  ('pydantic.error_wrappers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\error_wrappers.py',
+   'PYMODULE'),
+  ('pydantic.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\errors.py',
+   'PYMODULE'),
+  ('pydantic.experimental',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\experimental\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.experimental.arguments_schema',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\experimental\\arguments_schema.py',
+   'PYMODULE'),
+  ('pydantic.experimental.missing_sentinel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\experimental\\missing_sentinel.py',
+   'PYMODULE'),
+  ('pydantic.experimental.pipeline',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\experimental\\pipeline.py',
+   'PYMODULE'),
+  ('pydantic.fields',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\fields.py',
+   'PYMODULE'),
+  ('pydantic.functional_serializers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\functional_serializers.py',
+   'PYMODULE'),
+  ('pydantic.functional_validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\functional_validators.py',
+   'PYMODULE'),
+  ('pydantic.generics',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\generics.py',
+   'PYMODULE'),
+  ('pydantic.json',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\json.py',
+   'PYMODULE'),
+  ('pydantic.json_schema',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\json_schema.py',
+   'PYMODULE'),
+  ('pydantic.main',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\main.py',
+   'PYMODULE'),
+  ('pydantic.mypy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\mypy.py',
+   'PYMODULE'),
+  ('pydantic.networks',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\networks.py',
+   'PYMODULE'),
+  ('pydantic.parse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\parse.py',
+   'PYMODULE'),
+  ('pydantic.plugin',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\plugin\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.plugin._loader',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\plugin\\_loader.py',
+   'PYMODULE'),
+  ('pydantic.plugin._schema_validator',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\plugin\\_schema_validator.py',
+   'PYMODULE'),
+  ('pydantic.root_model',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\root_model.py',
+   'PYMODULE'),
+  ('pydantic.schema',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\schema.py',
+   'PYMODULE'),
+  ('pydantic.tools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\tools.py',
+   'PYMODULE'),
+  ('pydantic.type_adapter',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\type_adapter.py',
+   'PYMODULE'),
+  ('pydantic.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\types.py',
+   'PYMODULE'),
+  ('pydantic.typing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\typing.py',
+   'PYMODULE'),
+  ('pydantic.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\utils.py',
+   'PYMODULE'),
+  ('pydantic.v1',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.v1._hypothesis_plugin',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\_hypothesis_plugin.py',
+   'PYMODULE'),
+  ('pydantic.v1.annotated_types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\annotated_types.py',
+   'PYMODULE'),
+  ('pydantic.v1.class_validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\class_validators.py',
+   'PYMODULE'),
+  ('pydantic.v1.color',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\color.py',
+   'PYMODULE'),
+  ('pydantic.v1.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\config.py',
+   'PYMODULE'),
+  ('pydantic.v1.dataclasses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\dataclasses.py',
+   'PYMODULE'),
+  ('pydantic.v1.datetime_parse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\datetime_parse.py',
+   'PYMODULE'),
+  ('pydantic.v1.decorator',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\decorator.py',
+   'PYMODULE'),
+  ('pydantic.v1.env_settings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\env_settings.py',
+   'PYMODULE'),
+  ('pydantic.v1.error_wrappers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\error_wrappers.py',
+   'PYMODULE'),
+  ('pydantic.v1.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\errors.py',
+   'PYMODULE'),
+  ('pydantic.v1.fields',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\fields.py',
+   'PYMODULE'),
+  ('pydantic.v1.generics',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\generics.py',
+   'PYMODULE'),
+  ('pydantic.v1.json',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\json.py',
+   'PYMODULE'),
+  ('pydantic.v1.main',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\main.py',
+   'PYMODULE'),
+  ('pydantic.v1.mypy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\mypy.py',
+   'PYMODULE'),
+  ('pydantic.v1.networks',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\networks.py',
+   'PYMODULE'),
+  ('pydantic.v1.parse',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\parse.py',
+   'PYMODULE'),
+  ('pydantic.v1.schema',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\schema.py',
+   'PYMODULE'),
+  ('pydantic.v1.tools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\tools.py',
+   'PYMODULE'),
+  ('pydantic.v1.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\types.py',
+   'PYMODULE'),
+  ('pydantic.v1.typing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\typing.py',
+   'PYMODULE'),
+  ('pydantic.v1.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\utils.py',
+   'PYMODULE'),
+  ('pydantic.v1.validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\validators.py',
+   'PYMODULE'),
+  ('pydantic.v1.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\v1\\version.py',
+   'PYMODULE'),
+  ('pydantic.validate_call_decorator',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\validate_call_decorator.py',
+   'PYMODULE'),
+  ('pydantic.validators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\validators.py',
+   'PYMODULE'),
+  ('pydantic.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\version.py',
+   'PYMODULE'),
+  ('pydantic.warnings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic\\warnings.py',
+   'PYMODULE'),
+  ('pydantic_core',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic_core\\__init__.py',
+   'PYMODULE'),
+  ('pydantic_core.core_schema',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pydantic_core\\core_schema.py',
+   'PYMODULE'),
+  ('pydoc', 'C:\\Python314\\Lib\\pydoc.py', 'PYMODULE'),
+  ('pydoc_data', 'C:\\Python314\\Lib\\pydoc_data\\__init__.py', 'PYMODULE'),
+  ('pydoc_data.module_docs',
+   'C:\\Python314\\Lib\\pydoc_data\\module_docs.py',
+   'PYMODULE'),
+  ('pydoc_data.topics',
+   'C:\\Python314\\Lib\\pydoc_data\\topics.py',
+   'PYMODULE'),
+  ('pypdf',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\__init__.py',
+   'PYMODULE'),
+  ('pypdf._cmap',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_cmap.py',
+   'PYMODULE'),
+  ('pypdf._codecs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\__init__.py',
+   'PYMODULE'),
+  ('pypdf._codecs._codecs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\_codecs.py',
+   'PYMODULE'),
+  ('pypdf._codecs.adobe_glyphs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\adobe_glyphs.py',
+   'PYMODULE'),
+  ('pypdf._codecs.core_font_metrics',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\core_font_metrics.py',
+   'PYMODULE'),
+  ('pypdf._codecs.pdfdoc',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\pdfdoc.py',
+   'PYMODULE'),
+  ('pypdf._codecs.std',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\std.py',
+   'PYMODULE'),
+  ('pypdf._codecs.symbol',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\symbol.py',
+   'PYMODULE'),
+  ('pypdf._codecs.zapfding',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_codecs\\zapfding.py',
+   'PYMODULE'),
+  ('pypdf._crypt_providers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_crypt_providers\\__init__.py',
+   'PYMODULE'),
+  ('pypdf._crypt_providers._base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_crypt_providers\\_base.py',
+   'PYMODULE'),
+  ('pypdf._crypt_providers._cryptography',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_crypt_providers\\_cryptography.py',
+   'PYMODULE'),
+  ('pypdf._crypt_providers._fallback',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_crypt_providers\\_fallback.py',
+   'PYMODULE'),
+  ('pypdf._crypt_providers._pycryptodome',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_crypt_providers\\_pycryptodome.py',
+   'PYMODULE'),
+  ('pypdf._doc_common',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_doc_common.py',
+   'PYMODULE'),
+  ('pypdf._encryption',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_encryption.py',
+   'PYMODULE'),
+  ('pypdf._font',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_font.py',
+   'PYMODULE'),
+  ('pypdf._page',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_page.py',
+   'PYMODULE'),
+  ('pypdf._page_labels',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_page_labels.py',
+   'PYMODULE'),
+  ('pypdf._protocols',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_protocols.py',
+   'PYMODULE'),
+  ('pypdf._reader',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_reader.py',
+   'PYMODULE'),
+  ('pypdf._text_extraction',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_text_extraction\\__init__.py',
+   'PYMODULE'),
+  ('pypdf._text_extraction._layout_mode',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_text_extraction\\_layout_mode\\__init__.py',
+   'PYMODULE'),
+  ('pypdf._text_extraction._layout_mode._fixed_width_page',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_text_extraction\\_layout_mode\\_fixed_width_page.py',
+   'PYMODULE'),
+  ('pypdf._text_extraction._layout_mode._text_state_manager',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_text_extraction\\_layout_mode\\_text_state_manager.py',
+   'PYMODULE'),
+  ('pypdf._text_extraction._layout_mode._text_state_params',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_text_extraction\\_layout_mode\\_text_state_params.py',
+   'PYMODULE'),
+  ('pypdf._text_extraction._text_extractor',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_text_extraction\\_text_extractor.py',
+   'PYMODULE'),
+  ('pypdf._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_utils.py',
+   'PYMODULE'),
+  ('pypdf._version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_version.py',
+   'PYMODULE'),
+  ('pypdf._writer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\_writer.py',
+   'PYMODULE'),
+  ('pypdf.constants',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\constants.py',
+   'PYMODULE'),
+  ('pypdf.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\errors.py',
+   'PYMODULE'),
+  ('pypdf.filters',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\filters.py',
+   'PYMODULE'),
+  ('pypdf.generic',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\__init__.py',
+   'PYMODULE'),
+  ('pypdf.generic._appearance_stream',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_appearance_stream.py',
+   'PYMODULE'),
+  ('pypdf.generic._base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_base.py',
+   'PYMODULE'),
+  ('pypdf.generic._data_structures',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_data_structures.py',
+   'PYMODULE'),
+  ('pypdf.generic._files',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_files.py',
+   'PYMODULE'),
+  ('pypdf.generic._fit',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_fit.py',
+   'PYMODULE'),
+  ('pypdf.generic._image_inline',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_image_inline.py',
+   'PYMODULE'),
+  ('pypdf.generic._image_xobject',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_image_xobject.py',
+   'PYMODULE'),
+  ('pypdf.generic._link',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_link.py',
+   'PYMODULE'),
+  ('pypdf.generic._outline',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_outline.py',
+   'PYMODULE'),
+  ('pypdf.generic._rectangle',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_rectangle.py',
+   'PYMODULE'),
+  ('pypdf.generic._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_utils.py',
+   'PYMODULE'),
+  ('pypdf.generic._viewerpref',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\generic\\_viewerpref.py',
+   'PYMODULE'),
+  ('pypdf.pagerange',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\pagerange.py',
+   'PYMODULE'),
+  ('pypdf.papersizes',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\papersizes.py',
+   'PYMODULE'),
+  ('pypdf.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\types.py',
+   'PYMODULE'),
+  ('pypdf.xmp',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\pypdf\\xmp.py',
+   'PYMODULE'),
+  ('python_multipart',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\python_multipart\\__init__.py',
+   'PYMODULE'),
+  ('python_multipart.decoders',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\python_multipart\\decoders.py',
+   'PYMODULE'),
+  ('python_multipart.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\python_multipart\\exceptions.py',
+   'PYMODULE'),
+  ('python_multipart.multipart',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\python_multipart\\multipart.py',
+   'PYMODULE'),
+  ('queue', 'C:\\Python314\\Lib\\queue.py', 'PYMODULE'),
+  ('quopri', 'C:\\Python314\\Lib\\quopri.py', 'PYMODULE'),
+  ('random', 'C:\\Python314\\Lib\\random.py', 'PYMODULE'),
+  ('requests',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\__init__.py',
+   'PYMODULE'),
+  ('requests.__version__',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\__version__.py',
+   'PYMODULE'),
+  ('requests._internal_utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\_internal_utils.py',
+   'PYMODULE'),
+  ('requests.adapters',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\adapters.py',
+   'PYMODULE'),
+  ('requests.api',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\api.py',
+   'PYMODULE'),
+  ('requests.auth',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\auth.py',
+   'PYMODULE'),
+  ('requests.certs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\certs.py',
+   'PYMODULE'),
+  ('requests.compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\compat.py',
+   'PYMODULE'),
+  ('requests.cookies',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\cookies.py',
+   'PYMODULE'),
+  ('requests.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\exceptions.py',
+   'PYMODULE'),
+  ('requests.hooks',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\hooks.py',
+   'PYMODULE'),
+  ('requests.models',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\models.py',
+   'PYMODULE'),
+  ('requests.packages',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\packages.py',
+   'PYMODULE'),
+  ('requests.sessions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\sessions.py',
+   'PYMODULE'),
+  ('requests.status_codes',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\status_codes.py',
+   'PYMODULE'),
+  ('requests.structures',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\structures.py',
+   'PYMODULE'),
+  ('requests.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\requests\\utils.py',
+   'PYMODULE'),
+  ('rlcompleter', 'C:\\Python314\\Lib\\rlcompleter.py', 'PYMODULE'),
+  ('runpy', 'C:\\Python314\\Lib\\runpy.py', 'PYMODULE'),
+  ('secrets', 'C:\\Python314\\Lib\\secrets.py', 'PYMODULE'),
+  ('selectors', 'C:\\Python314\\Lib\\selectors.py', 'PYMODULE'),
+  ('setuptools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._core_metadata',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_core_metadata.py',
+   'PYMODULE'),
+  ('setuptools._discovery',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_discovery.py',
+   'PYMODULE'),
+  ('setuptools._distutils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils._log',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\_log.py',
+   'PYMODULE'),
+  ('setuptools._distutils._modified',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\_modified.py',
+   'PYMODULE'),
+  ('setuptools._distutils._msvccompiler',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\_msvccompiler.py',
+   'PYMODULE'),
+  ('setuptools._distutils.archive_util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\archive_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.ccompiler',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\ccompiler.py',
+   'PYMODULE'),
+  ('setuptools._distutils.cmd',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\cmd.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\command\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.bdist',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\command\\bdist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.build',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\command\\build.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.build_ext',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\command\\build_ext.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.sdist',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\command\\sdist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat.numpy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\compat\\numpy.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat.py39',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\compat\\py39.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.C', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.C.base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\base.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.msvc',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\msvc.py',
+   'PYMODULE'),
+  ('setuptools._distutils.core',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\core.py',
+   'PYMODULE'),
+  ('setuptools._distutils.debug',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\debug.py',
+   'PYMODULE'),
+  ('setuptools._distutils.dir_util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\dir_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.dist',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\dist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.extension',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\extension.py',
+   'PYMODULE'),
+  ('setuptools._distutils.fancy_getopt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\fancy_getopt.py',
+   'PYMODULE'),
+  ('setuptools._distutils.file_util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\file_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.filelist',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\filelist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.log',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\log.py',
+   'PYMODULE'),
+  ('setuptools._distutils.spawn',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\spawn.py',
+   'PYMODULE'),
+  ('setuptools._distutils.sysconfig',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\sysconfig.py',
+   'PYMODULE'),
+  ('setuptools._distutils.text_file',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\text_file.py',
+   'PYMODULE'),
+  ('setuptools._distutils.util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\version.py',
+   'PYMODULE'),
+  ('setuptools._distutils.versionpredicate',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_distutils\\versionpredicate.py',
+   'PYMODULE'),
+  ('setuptools._entry_points',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_entry_points.py',
+   'PYMODULE'),
+  ('setuptools._imp',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_imp.py',
+   'PYMODULE'),
+  ('setuptools._importlib',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_importlib.py',
+   'PYMODULE'),
+  ('setuptools._itertools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_itertools.py',
+   'PYMODULE'),
+  ('setuptools._normalization',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_normalization.py',
+   'PYMODULE'),
+  ('setuptools._path',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_path.py',
+   'PYMODULE'),
+  ('setuptools._reqs',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_reqs.py',
+   'PYMODULE'),
+  ('setuptools._shutil',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_shutil.py',
+   'PYMODULE'),
+  ('setuptools._static',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_static.py',
+   'PYMODULE'),
+  ('setuptools._vendor', '-', 'PYMODULE'),
+  ('setuptools._vendor.backports',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\backports\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile.compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile.compat.py38',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\compat\\py38.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._adapters',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_adapters.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._collections',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_collections.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_compat.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._functools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_functools.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._itertools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_itertools.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._meta',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_meta.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._text',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_text.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata._typing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\_typing.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata.compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata.compat.py311',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\compat\\py311.py',
+   'PYMODULE'),
+  ('setuptools._vendor.importlib_metadata.compat.py39',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\importlib_metadata\\compat\\py39.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco', '-', 'PYMODULE'),
+  ('setuptools._vendor.jaraco.context',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\context\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco.functools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\functools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco.text',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\text\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools.more',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\more.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools.recipes',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\recipes.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._elffile',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_elffile.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._manylinux',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_manylinux.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._musllinux',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_musllinux.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_parser.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._structures',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_structures.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._tokenizer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_tokenizer.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.markers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\markers.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.requirements',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\requirements.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.specifiers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\specifiers.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.tags',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\tags.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\utils.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\version.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_parser.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._re',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_re.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_types.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp._functools',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\_functools.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp.compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp.compat.overlay',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\compat\\overlay.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp.compat.py310',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\compat\\py310.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp.compat.py313',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\compat\\py313.py',
+   'PYMODULE'),
+  ('setuptools._vendor.zipp.glob',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\_vendor\\zipp\\glob.py',
+   'PYMODULE'),
+  ('setuptools.archive_util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\archive_util.py',
+   'PYMODULE'),
+  ('setuptools.command',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.command._requirestxt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\_requirestxt.py',
+   'PYMODULE'),
+  ('setuptools.command.bdist_egg',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\bdist_egg.py',
+   'PYMODULE'),
+  ('setuptools.command.bdist_wheel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\bdist_wheel.py',
+   'PYMODULE'),
+  ('setuptools.command.build',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\build.py',
+   'PYMODULE'),
+  ('setuptools.command.egg_info',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\egg_info.py',
+   'PYMODULE'),
+  ('setuptools.command.sdist',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\sdist.py',
+   'PYMODULE'),
+  ('setuptools.command.setopt',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\command\\setopt.py',
+   'PYMODULE'),
+  ('setuptools.compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.compat.py310',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\compat\\py310.py',
+   'PYMODULE'),
+  ('setuptools.compat.py311',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\compat\\py311.py',
+   'PYMODULE'),
+  ('setuptools.compat.py39',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\compat\\py39.py',
+   'PYMODULE'),
+  ('setuptools.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.config._apply_pyprojecttoml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_apply_pyprojecttoml.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.error_reporting',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\error_reporting.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.extra_validations',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\extra_validations.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.fastjsonschema_exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\fastjsonschema_exceptions.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.fastjsonschema_validations',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\fastjsonschema_validations.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.formats',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\formats.py',
+   'PYMODULE'),
+  ('setuptools.config.expand',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\expand.py',
+   'PYMODULE'),
+  ('setuptools.config.pyprojecttoml',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\pyprojecttoml.py',
+   'PYMODULE'),
+  ('setuptools.config.setupcfg',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\config\\setupcfg.py',
+   'PYMODULE'),
+  ('setuptools.depends',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\depends.py',
+   'PYMODULE'),
+  ('setuptools.discovery',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\discovery.py',
+   'PYMODULE'),
+  ('setuptools.dist',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\dist.py',
+   'PYMODULE'),
+  ('setuptools.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\errors.py',
+   'PYMODULE'),
+  ('setuptools.extension',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\extension.py',
+   'PYMODULE'),
+  ('setuptools.glob',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\glob.py',
+   'PYMODULE'),
+  ('setuptools.installer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\installer.py',
+   'PYMODULE'),
+  ('setuptools.logging',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\logging.py',
+   'PYMODULE'),
+  ('setuptools.monkey',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\monkey.py',
+   'PYMODULE'),
+  ('setuptools.msvc',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\msvc.py',
+   'PYMODULE'),
+  ('setuptools.unicode_utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\unicode_utils.py',
+   'PYMODULE'),
+  ('setuptools.version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\version.py',
+   'PYMODULE'),
+  ('setuptools.warnings',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\warnings.py',
+   'PYMODULE'),
+  ('setuptools.wheel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\wheel.py',
+   'PYMODULE'),
+  ('setuptools.windows_support',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\setuptools\\windows_support.py',
+   'PYMODULE'),
+  ('shiboken6',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\shiboken6\\__init__.py',
+   'PYMODULE'),
+  ('shlex', 'C:\\Python314\\Lib\\shlex.py', 'PYMODULE'),
+  ('shutil', 'C:\\Python314\\Lib\\shutil.py', 'PYMODULE'),
+  ('signal', 'C:\\Python314\\Lib\\signal.py', 'PYMODULE'),
+  ('site', 'C:\\Python314\\Lib\\site.py', 'PYMODULE'),
+  ('smtplib', 'C:\\Python314\\Lib\\smtplib.py', 'PYMODULE'),
+  ('socket', 'C:\\Python314\\Lib\\socket.py', 'PYMODULE'),
+  ('socketserver', 'C:\\Python314\\Lib\\socketserver.py', 'PYMODULE'),
+  ('soupsieve',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\__init__.py',
+   'PYMODULE'),
+  ('soupsieve.__meta__',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\__meta__.py',
+   'PYMODULE'),
+  ('soupsieve.css_match',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\css_match.py',
+   'PYMODULE'),
+  ('soupsieve.css_parser',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\css_parser.py',
+   'PYMODULE'),
+  ('soupsieve.css_types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\css_types.py',
+   'PYMODULE'),
+  ('soupsieve.pretty',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\pretty.py',
+   'PYMODULE'),
+  ('soupsieve.util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\soupsieve\\util.py',
+   'PYMODULE'),
+  ('sqlite3', 'C:\\Python314\\Lib\\sqlite3\\__init__.py', 'PYMODULE'),
+  ('sqlite3.__main__', 'C:\\Python314\\Lib\\sqlite3\\__main__.py', 'PYMODULE'),
+  ('sqlite3.dbapi2', 'C:\\Python314\\Lib\\sqlite3\\dbapi2.py', 'PYMODULE'),
+  ('sqlite3.dump', 'C:\\Python314\\Lib\\sqlite3\\dump.py', 'PYMODULE'),
+  ('src',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\__init__.py',
+   'PYMODULE'),
+  ('src.adapter_protocol',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\adapter_protocol.py',
+   'PYMODULE'),
+  ('src.api',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\api.py',
+   'PYMODULE'),
+  ('src.bootstrap_law',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\bootstrap_law.py',
+   'PYMODULE'),
+  ('src.cisiv',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\cisiv.py',
+   'PYMODULE'),
+  ('src.constants_runtime',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\constants_runtime.py',
+   'PYMODULE'),
+  ('src.conversation_memory',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\conversation_memory.py',
+   'PYMODULE'),
+  ('src.forge_client',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\forge_client.py',
+   'PYMODULE'),
+  ('src.forge_eval_client',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\forge_eval_client.py',
+   'PYMODULE'),
+  ('src.foundation_store',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\foundation_store.py',
+   'PYMODULE'),
+  ('src.host_attestation',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\host_attestation.py',
+   'PYMODULE'),
+  ('src.identity_registry',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\identity_registry.py',
+   'PYMODULE'),
+  ('src.identity_verifier',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\identity_verifier.py',
+   'PYMODULE'),
+  ('src.jarvis_operator',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\jarvis_operator.py',
+   'PYMODULE'),
+  ('src.law_context_builder',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\law_context_builder.py',
+   'PYMODULE'),
+  ('src.law_decorators',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\law_decorators.py',
+   'PYMODULE'),
+  ('src.law_ledger',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\law_ledger.py',
+   'PYMODULE'),
+  ('src.law_spine',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\law_spine.py',
+   'PYMODULE'),
+  ('src.mutation_broker',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\mutation_broker.py',
+   'PYMODULE'),
+  ('src.mutation_gate',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\mutation_gate.py',
+   'PYMODULE'),
+  ('src.runtime_law',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\runtime_law.py',
+   'PYMODULE'),
+  ('src.ul_runtime',
+   'C:\\Users\\randj\\Desktop\\project infi\\code\\code\\src\\ul_runtime.py',
+   'PYMODULE'),
+  ('src.verification_engine',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\src\\verification_engine.py',
+   'PYMODULE'),
+  ('ssl', 'C:\\Python314\\Lib\\ssl.py', 'PYMODULE'),
+  ('starlette',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\__init__.py',
+   'PYMODULE'),
+  ('starlette._exception_handler',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\_exception_handler.py',
+   'PYMODULE'),
+  ('starlette._utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\_utils.py',
+   'PYMODULE'),
+  ('starlette.applications',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\applications.py',
+   'PYMODULE'),
+  ('starlette.background',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\background.py',
+   'PYMODULE'),
+  ('starlette.concurrency',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\concurrency.py',
+   'PYMODULE'),
+  ('starlette.convertors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\convertors.py',
+   'PYMODULE'),
+  ('starlette.datastructures',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\datastructures.py',
+   'PYMODULE'),
+  ('starlette.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\exceptions.py',
+   'PYMODULE'),
+  ('starlette.formparsers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\formparsers.py',
+   'PYMODULE'),
+  ('starlette.middleware',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\middleware\\__init__.py',
+   'PYMODULE'),
+  ('starlette.middleware.base',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\middleware\\base.py',
+   'PYMODULE'),
+  ('starlette.middleware.errors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\middleware\\errors.py',
+   'PYMODULE'),
+  ('starlette.middleware.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\middleware\\exceptions.py',
+   'PYMODULE'),
+  ('starlette.middleware.sessions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\middleware\\sessions.py',
+   'PYMODULE'),
+  ('starlette.requests',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\requests.py',
+   'PYMODULE'),
+  ('starlette.responses',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\responses.py',
+   'PYMODULE'),
+  ('starlette.routing',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\routing.py',
+   'PYMODULE'),
+  ('starlette.staticfiles',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\staticfiles.py',
+   'PYMODULE'),
+  ('starlette.status',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\status.py',
+   'PYMODULE'),
+  ('starlette.types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\types.py',
+   'PYMODULE'),
+  ('starlette.websockets',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\starlette\\websockets.py',
+   'PYMODULE'),
+  ('statistics', 'C:\\Python314\\Lib\\statistics.py', 'PYMODULE'),
+  ('string', 'C:\\Python314\\Lib\\string\\__init__.py', 'PYMODULE'),
+  ('stringprep', 'C:\\Python314\\Lib\\stringprep.py', 'PYMODULE'),
+  ('subprocess', 'C:\\Python314\\Lib\\subprocess.py', 'PYMODULE'),
+  ('sysconfig', 'C:\\Python314\\Lib\\sysconfig\\__init__.py', 'PYMODULE'),
+  ('tarfile', 'C:\\Python314\\Lib\\tarfile.py', 'PYMODULE'),
+  ('tempfile', 'C:\\Python314\\Lib\\tempfile.py', 'PYMODULE'),
+  ('textwrap', 'C:\\Python314\\Lib\\textwrap.py', 'PYMODULE'),
+  ('threading', 'C:\\Python314\\Lib\\threading.py', 'PYMODULE'),
+  ('tkinter', 'C:\\Python314\\Lib\\tkinter\\__init__.py', 'PYMODULE'),
+  ('tkinter.commondialog',
+   'C:\\Python314\\Lib\\tkinter\\commondialog.py',
+   'PYMODULE'),
+  ('tkinter.constants',
+   'C:\\Python314\\Lib\\tkinter\\constants.py',
+   'PYMODULE'),
+  ('tkinter.dialog', 'C:\\Python314\\Lib\\tkinter\\dialog.py', 'PYMODULE'),
+  ('tkinter.filedialog',
+   'C:\\Python314\\Lib\\tkinter\\filedialog.py',
+   'PYMODULE'),
+  ('tkinter.messagebox',
+   'C:\\Python314\\Lib\\tkinter\\messagebox.py',
+   'PYMODULE'),
+  ('tkinter.simpledialog',
+   'C:\\Python314\\Lib\\tkinter\\simpledialog.py',
+   'PYMODULE'),
+  ('token', 'C:\\Python314\\Lib\\token.py', 'PYMODULE'),
+  ('tokenize', 'C:\\Python314\\Lib\\tokenize.py', 'PYMODULE'),
+  ('tomllib', 'C:\\Python314\\Lib\\tomllib\\__init__.py', 'PYMODULE'),
+  ('tomllib._parser', 'C:\\Python314\\Lib\\tomllib\\_parser.py', 'PYMODULE'),
+  ('tomllib._re', 'C:\\Python314\\Lib\\tomllib\\_re.py', 'PYMODULE'),
+  ('tomllib._types', 'C:\\Python314\\Lib\\tomllib\\_types.py', 'PYMODULE'),
+  ('tracemalloc', 'C:\\Python314\\Lib\\tracemalloc.py', 'PYMODULE'),
+  ('tty', 'C:\\Python314\\Lib\\tty.py', 'PYMODULE'),
+  ('typing', 'C:\\Python314\\Lib\\typing.py', 'PYMODULE'),
+  ('typing_extensions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\typing_extensions.py',
+   'PYMODULE'),
+  ('typing_inspection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\typing_inspection\\__init__.py',
+   'PYMODULE'),
+  ('typing_inspection.introspection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\typing_inspection\\introspection.py',
+   'PYMODULE'),
+  ('typing_inspection.typing_objects',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\typing_inspection\\typing_objects.py',
+   'PYMODULE'),
+  ('unittest', 'C:\\Python314\\Lib\\unittest\\__init__.py', 'PYMODULE'),
+  ('unittest._log', 'C:\\Python314\\Lib\\unittest\\_log.py', 'PYMODULE'),
+  ('unittest.async_case',
+   'C:\\Python314\\Lib\\unittest\\async_case.py',
+   'PYMODULE'),
+  ('unittest.case', 'C:\\Python314\\Lib\\unittest\\case.py', 'PYMODULE'),
+  ('unittest.loader', 'C:\\Python314\\Lib\\unittest\\loader.py', 'PYMODULE'),
+  ('unittest.main', 'C:\\Python314\\Lib\\unittest\\main.py', 'PYMODULE'),
+  ('unittest.mock', 'C:\\Python314\\Lib\\unittest\\mock.py', 'PYMODULE'),
+  ('unittest.result', 'C:\\Python314\\Lib\\unittest\\result.py', 'PYMODULE'),
+  ('unittest.runner', 'C:\\Python314\\Lib\\unittest\\runner.py', 'PYMODULE'),
+  ('unittest.signals', 'C:\\Python314\\Lib\\unittest\\signals.py', 'PYMODULE'),
+  ('unittest.suite', 'C:\\Python314\\Lib\\unittest\\suite.py', 'PYMODULE'),
+  ('unittest.util', 'C:\\Python314\\Lib\\unittest\\util.py', 'PYMODULE'),
+  ('urllib', 'C:\\Python314\\Lib\\urllib\\__init__.py', 'PYMODULE'),
+  ('urllib.error', 'C:\\Python314\\Lib\\urllib\\error.py', 'PYMODULE'),
+  ('urllib.parse', 'C:\\Python314\\Lib\\urllib\\parse.py', 'PYMODULE'),
+  ('urllib.request', 'C:\\Python314\\Lib\\urllib\\request.py', 'PYMODULE'),
+  ('urllib.response', 'C:\\Python314\\Lib\\urllib\\response.py', 'PYMODULE'),
+  ('urllib3',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\__init__.py',
+   'PYMODULE'),
+  ('urllib3._base_connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\_base_connection.py',
+   'PYMODULE'),
+  ('urllib3._collections',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\_collections.py',
+   'PYMODULE'),
+  ('urllib3._request_methods',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\_request_methods.py',
+   'PYMODULE'),
+  ('urllib3._version',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\_version.py',
+   'PYMODULE'),
+  ('urllib3.connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\connection.py',
+   'PYMODULE'),
+  ('urllib3.connectionpool',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\connectionpool.py',
+   'PYMODULE'),
+  ('urllib3.contrib',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\connection.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.fetch',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\fetch.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.request',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\request.py',
+   'PYMODULE'),
+  ('urllib3.contrib.emscripten.response',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\emscripten\\response.py',
+   'PYMODULE'),
+  ('urllib3.contrib.pyopenssl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\pyopenssl.py',
+   'PYMODULE'),
+  ('urllib3.contrib.socks',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\contrib\\socks.py',
+   'PYMODULE'),
+  ('urllib3.exceptions',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\exceptions.py',
+   'PYMODULE'),
+  ('urllib3.fields',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\fields.py',
+   'PYMODULE'),
+  ('urllib3.filepost',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\filepost.py',
+   'PYMODULE'),
+  ('urllib3.http2',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\http2\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.http2.connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\http2\\connection.py',
+   'PYMODULE'),
+  ('urllib3.http2.probe',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\http2\\probe.py',
+   'PYMODULE'),
+  ('urllib3.poolmanager',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\poolmanager.py',
+   'PYMODULE'),
+  ('urllib3.response',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\response.py',
+   'PYMODULE'),
+  ('urllib3.util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\__init__.py',
+   'PYMODULE'),
+  ('urllib3.util.connection',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\connection.py',
+   'PYMODULE'),
+  ('urllib3.util.proxy',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\proxy.py',
+   'PYMODULE'),
+  ('urllib3.util.request',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\request.py',
+   'PYMODULE'),
+  ('urllib3.util.response',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\response.py',
+   'PYMODULE'),
+  ('urllib3.util.retry',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\retry.py',
+   'PYMODULE'),
+  ('urllib3.util.ssl_',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\ssl_.py',
+   'PYMODULE'),
+  ('urllib3.util.ssl_match_hostname',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\ssl_match_hostname.py',
+   'PYMODULE'),
+  ('urllib3.util.ssltransport',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\ssltransport.py',
+   'PYMODULE'),
+  ('urllib3.util.timeout',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\timeout.py',
+   'PYMODULE'),
+  ('urllib3.util.url',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\url.py',
+   'PYMODULE'),
+  ('urllib3.util.util',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\util.py',
+   'PYMODULE'),
+  ('urllib3.util.wait',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\urllib3\\util\\wait.py',
+   'PYMODULE'),
+  ('uuid', 'C:\\Python314\\Lib\\uuid.py', 'PYMODULE'),
+  ('uvicorn',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.__main__',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\__main__.py',
+   'PYMODULE'),
+  ('uvicorn._compat',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\_compat.py',
+   'PYMODULE'),
+  ('uvicorn._subprocess',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\_subprocess.py',
+   'PYMODULE'),
+  ('uvicorn._types',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\_types.py',
+   'PYMODULE'),
+  ('uvicorn.config',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\config.py',
+   'PYMODULE'),
+  ('uvicorn.importer',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\importer.py',
+   'PYMODULE'),
+  ('uvicorn.lifespan',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\lifespan\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.lifespan.off',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\lifespan\\off.py',
+   'PYMODULE'),
+  ('uvicorn.lifespan.on',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\lifespan\\on.py',
+   'PYMODULE'),
+  ('uvicorn.logging',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\logging.py',
+   'PYMODULE'),
+  ('uvicorn.loops',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\loops\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.loops.asyncio',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\loops\\asyncio.py',
+   'PYMODULE'),
+  ('uvicorn.loops.auto',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\loops\\auto.py',
+   'PYMODULE'),
+  ('uvicorn.loops.uvloop',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\loops\\uvloop.py',
+   'PYMODULE'),
+  ('uvicorn.main',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\main.py',
+   'PYMODULE'),
+  ('uvicorn.middleware',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\middleware\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.middleware.asgi2',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\middleware\\asgi2.py',
+   'PYMODULE'),
+  ('uvicorn.middleware.message_logger',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\middleware\\message_logger.py',
+   'PYMODULE'),
+  ('uvicorn.middleware.proxy_headers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\middleware\\proxy_headers.py',
+   'PYMODULE'),
+  ('uvicorn.middleware.wsgi',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\middleware\\wsgi.py',
+   'PYMODULE'),
+  ('uvicorn.protocols',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.http',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\http\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.http.auto',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\http\\auto.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.http.flow_control',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\http\\flow_control.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.http.h11_impl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\http\\h11_impl.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.http.httptools_impl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\http\\httptools_impl.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.utils',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\utils.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.websockets',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\websockets\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.websockets.auto',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\websockets\\auto.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.websockets.websockets_impl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\websockets\\websockets_impl.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.websockets.websockets_sansio_impl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\websockets\\websockets_sansio_impl.py',
+   'PYMODULE'),
+  ('uvicorn.protocols.websockets.wsproto_impl',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\protocols\\websockets\\wsproto_impl.py',
+   'PYMODULE'),
+  ('uvicorn.server',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\server.py',
+   'PYMODULE'),
+  ('uvicorn.supervisors',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\supervisors\\__init__.py',
+   'PYMODULE'),
+  ('uvicorn.supervisors.basereload',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\supervisors\\basereload.py',
+   'PYMODULE'),
+  ('uvicorn.supervisors.multiprocess',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\supervisors\\multiprocess.py',
+   'PYMODULE'),
+  ('uvicorn.supervisors.statreload',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\supervisors\\statreload.py',
+   'PYMODULE'),
+  ('uvicorn.supervisors.watchfilesreload',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\supervisors\\watchfilesreload.py',
+   'PYMODULE'),
+  ('uvicorn.workers',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\uvicorn\\workers.py',
+   'PYMODULE'),
+  ('webbrowser', 'C:\\Python314\\Lib\\webbrowser.py', 'PYMODULE'),
+  ('wheel',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\wheel\\__init__.py',
+   'PYMODULE'),
+  ('wheel.macosx_libfile',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\wheel\\macosx_libfile.py',
+   'PYMODULE'),
+  ('wheel.wheelfile',
+   'C:\\Users\\randj\\Desktop\\project '
+   'infi\\code\\code\\.runtime\\ul_desktop_runtime\\venv\\Lib\\site-packages\\wheel\\wheelfile.py',
+   'PYMODULE'),
+  ('xml', 'C:\\Python314\\Lib\\xml\\__init__.py', 'PYMODULE'),
+  ('xml.dom', 'C:\\Python314\\Lib\\xml\\dom\\__init__.py', 'PYMODULE'),
+  ('xml.dom.NodeFilter',
+   'C:\\Python314\\Lib\\xml\\dom\\NodeFilter.py',
+   'PYMODULE'),
+  ('xml.dom.domreg', 'C:\\Python314\\Lib\\xml\\dom\\domreg.py', 'PYMODULE'),
+  ('xml.dom.expatbuilder',
+   'C:\\Python314\\Lib\\xml\\dom\\expatbuilder.py',
+   'PYMODULE'),
+  ('xml.dom.minicompat',
+   'C:\\Python314\\Lib\\xml\\dom\\minicompat.py',
+   'PYMODULE'),
+  ('xml.dom.minidom', 'C:\\Python314\\Lib\\xml\\dom\\minidom.py', 'PYMODULE'),
+  ('xml.dom.pulldom', 'C:\\Python314\\Lib\\xml\\dom\\pulldom.py', 'PYMODULE'),
+  ('xml.dom.xmlbuilder',
+   'C:\\Python314\\Lib\\xml\\dom\\xmlbuilder.py',
+   'PYMODULE'),
+  ('xml.parsers', 'C:\\Python314\\Lib\\xml\\parsers\\__init__.py', 'PYMODULE'),
+  ('xml.parsers.expat',
+   'C:\\Python314\\Lib\\xml\\parsers\\expat.py',
+   'PYMODULE'),
+  ('xml.sax', 'C:\\Python314\\Lib\\xml\\sax\\__init__.py', 'PYMODULE'),
+  ('xml.sax._exceptions',
+   'C:\\Python314\\Lib\\xml\\sax\\_exceptions.py',
+   'PYMODULE'),
+  ('xml.sax.expatreader',
+   'C:\\Python314\\Lib\\xml\\sax\\expatreader.py',
+   'PYMODULE'),
+  ('xml.sax.handler', 'C:\\Python314\\Lib\\xml\\sax\\handler.py', 'PYMODULE'),
+  ('xml.sax.saxutils', 'C:\\Python314\\Lib\\xml\\sax\\saxutils.py', 'PYMODULE'),
+  ('xml.sax.xmlreader',
+   'C:\\Python314\\Lib\\xml\\sax\\xmlreader.py',
+   'PYMODULE'),
+  ('xmlrpc', 'C:\\Python314\\Lib\\xmlrpc\\__init__.py', 'PYMODULE'),
+  ('xmlrpc.client', 'C:\\Python314\\Lib\\xmlrpc\\client.py', 'PYMODULE'),
+  ('zipfile', 'C:\\Python314\\Lib\\zipfile\\__init__.py', 'PYMODULE'),
+  ('zipfile._path',
+   'C:\\Python314\\Lib\\zipfile\\_path\\__init__.py',
+   'PYMODULE'),
+  ('zipfile._path.glob',
+   'C:\\Python314\\Lib\\zipfile\\_path\\glob.py',
+   'PYMODULE'),
+  ('zipimport', 'C:\\Python314\\Lib\\zipimport.py', 'PYMODULE'),
+  ('zoneinfo', 'C:\\Python314\\Lib\\zoneinfo\\__init__.py', 'PYMODULE'),
+  ('zoneinfo._common', 'C:\\Python314\\Lib\\zoneinfo\\_common.py', 'PYMODULE'),
+  ('zoneinfo._tzpath', 'C:\\Python314\\Lib\\zoneinfo\\_tzpath.py', 'PYMODULE'),
+  ('zoneinfo._zoneinfo',
+   'C:\\Python314\\Lib\\zoneinfo\\_zoneinfo.py',
+   'PYMODULE')])

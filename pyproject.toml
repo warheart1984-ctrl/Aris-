@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evolving-ai"
+version = "0.1.0"
+description = "A modular evolutionary AI framework built in pure Python."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "beautifulsoup4>=4.12",
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "pypdf>=6.0",
+  "python-docx>=1.1",
+  "python-multipart>=0.0.9",
+  "requests>=2.32",
+  "uvicorn>=0.30",
+]
+authors = [{ name = "OpenAI Codex" }]
+license = { text = "MIT" }
+keywords = ["ai", "evolution", "genetic-algorithm", "neural-networks"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+evolving-ai = "evolving_ai.cli:main"
+forge-chat = "evolving_ai.app.server:main"
+aris = "evolving_ai.aris.launcher:main"
+aris-demo = "evolving_ai.aris_demo.launcher:main"
+aris-demo-desktop = "evolving_ai.aris_demo.desktop:main"
+aris-demo-desktop-v1 = "evolving_ai.aris_demo.desktop_v1:main"
+aris-demo-desktop-v2 = "evolving_ai.aris_demo.desktop_v2:main"
+aris-demo-desktop-build = "evolving_ai.aris_demo.desktop_build:main"
+aris-demo-desktop-runtime = "evolving_ai.aris_demo.desktop_runtime:main"
+aris-demo-ship-release = "evolving_ai.aris_demo.shipping_lane:main"
+
+[project.optional-dependencies]
+desktop = [
+  "PySide6>=6.7",
+  "pyttsx3>=2.90",
+]
+desktop-build = [
+  "PyInstaller>=6.11",
+  "PySide6>=6.7",
+  "pyttsx3>=2.90",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["evolving_ai*", "forge*", "forge_eval*", "src*"]
+
+[tool.setuptools.package-data]
+"evolving_ai.app" = ["static/*"]

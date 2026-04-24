@@ -1,0 +1,32 @@
+{
+  "trace_id": "39b04e6d-0e07-4268-8a4d-d3c33835d84b",
+  "task_id": "aris_repo_91d952455f",
+  "kind": "repo_manager",
+  "recorded_at": "2026-04-13T19:37:45.762795+00:00",
+  "model": "claude-3-7-sonnet-20250219",
+  "context": {
+    "file_count": 11,
+    "files": [
+      "evolving_ai/aris/runtime.py",
+      "evolving_ai/aris/service.py",
+      "evolving_ai/aris/launcher.py",
+      "evolving_ai/app/server.py",
+      "evolving_ai/app/service.py",
+      "evolving_ai/app/static/index.html",
+      "evolving_ai/app/static/app.js",
+      "evolving_ai/app/static/app.css",
+      "forge/service.py",
+      "forge_eval/service.py",
+      "tests/test_aris_governance.py"
+    ],
+    "constraint_keys": [
+      "max_output_chars",
+      "profile"
+    ]
+  },
+  "response": {
+    "ok": false,
+    "error_code": "model_error",
+    "result_keys": []
+  }
+}

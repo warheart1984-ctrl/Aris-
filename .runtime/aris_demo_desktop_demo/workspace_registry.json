@@ -1,0 +1,22 @@
+{
+  "workspaces": [
+    {
+      "id": "workspace-project-infi-code",
+      "name": "Project Infi Code",
+      "root_path": "C:\\Users\\randj\\Desktop\\project infi\\code\\code",
+      "type": "repo",
+      "allowed_actions": [
+        "open",
+        "copy_path",
+        "send_to_aris",
+        "inspect",
+        "use_in_task"
+      ],
+      "active": true,
+      "status": "active",
+      "created_at": "2026-04-16T17:39:54+00:00",
+      "updated_at": "2026-04-16T17:39:55+00:00"
+    }
+  ],
+  "updated_at": "2026-04-17T02:42:09+00:00"
+}
