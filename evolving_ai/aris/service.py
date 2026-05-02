@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any, AsyncIterator
 
@@ -342,8 +343,77 @@ class ArisChatService(ChatService):
         health["degraded"] = bool(status.get("shell_execution", {}).get("degraded", False))
         return health
 
-    def aris_activity_payload(self, *, limit: int = 25) -> dict[str, object]:
-        return {"ok": True, "activity": self.aris.list_activity(limit=limit)}
+    @staticmethod
+    def _parse_truth_timestamp(value: object) -> datetime | None:
+        text = str(value or "").strip()
+        if not text:
+            return None
+        try:
+            return datetime.fromisoformat(text.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+
+    def _activity_truth_scope(
+        self,
+        entry: dict[str, object],
+        *,
+        session_id: str,
+        session_started_at: datetime | None,
+    ) -> tuple[bool, str]:
+        kind = str(entry.get("kind") or entry.get("action_type") or "").strip()
+        entry_session = str(entry.get("session_id") or "").strip()
+        is_global = kind in {"runtime_hydration", "forge_repo_plan"}
+        if entry_session and entry_session != session_id and not is_global:
+            return False, "outside_current_session"
+        if session_started_at is None:
+            return True, "current_session"
+        recorded_at = self._parse_truth_timestamp(entry.get("recorded_at"))
+        if recorded_at is None:
+            return True, "current_session"
+        if recorded_at < session_started_at:
+            return False, "pre_session_history"
+        return True, "current_session"
+
+    def _annotate_activity_entries(
+        self,
+        entries: list[dict[str, object]],
+        *,
+        session_id: str,
+    ) -> list[dict[str, object]]:
+        session = self.sessions.sessions.get(session_id)
+        session_started_at = self._parse_truth_timestamp(
+            session.created_at if session is not None else None
+        )
+        annotated: list[dict[str, object]] = []
+        for raw_entry in entries:
+            entry = dict(raw_entry)
+            current_scope, scope_reason = self._activity_truth_scope(
+                entry,
+                session_id=session_id,
+                session_started_at=session_started_at,
+            )
+            entry["current_scope"] = current_scope
+            entry["historical"] = not current_scope
+            entry["scope_reason"] = scope_reason
+            annotated.append(entry)
+        return annotated
+
+    def aris_activity_payload(
+        self,
+        *,
+        limit: int = 25,
+        session_id: str | None = None,
+    ) -> dict[str, object]:
+        normalized_session = str(session_id or "scratchpad").strip() or "scratchpad"
+        entries = self.aris.list_activity(limit=limit)
+        return {
+            "ok": True,
+            "session_id": normalized_session,
+            "activity": self._annotate_activity_entries(
+                entries,
+                session_id=normalized_session,
+            ),
+        }
 
     def aris_discards_payload(self, *, limit: int = 25) -> dict[str, object]:
         return {"ok": True, "entries": self.aris.list_discards(limit=limit)}
@@ -353,6 +423,32 @@ class ArisChatService(ChatService):
 
     def aris_fame_payload(self, *, limit: int = 25) -> dict[str, object]:
         return {"ok": True, "entries": self.aris.list_fame(limit=limit)}
+
+    def aris_truth_payload(
+        self,
+        *,
+        session_id: str | None = None,
+        activity_limit: int = 25,
+        hall_limit: int = 25,
+    ) -> dict[str, object]:
+        normalized_session = str(session_id or "scratchpad").strip() or "scratchpad"
+        status = self.aris_status_payload()
+        health = self.aris_health_payload()
+        activity = self.aris_activity_payload(
+            limit=activity_limit,
+            session_id=normalized_session,
+        )["activity"]
+        return {
+            "ok": True,
+            "session_id": normalized_session,
+            "status": status,
+            "health": health,
+            "activity": activity,
+            "discards": self.aris.list_discards(limit=hall_limit),
+            "shames": self.aris.list_shames(limit=hall_limit),
+            "fame": self.aris.list_fame(limit=hall_limit),
+            "mystic_session": self.aris_mystic_status(session_id=normalized_session),
+        }
 
     def aris_kill_soft(self, *, reason: str) -> dict[str, object]:
         return {"ok": True, "kill_switch": self.aris.activate_soft_kill(reason=reason, actor="manual")}

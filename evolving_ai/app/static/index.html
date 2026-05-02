@@ -27,13 +27,30 @@
           </div>
           <div id="sessionList" class="session-list"></div>
         </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Workspaces</h2>
+            <span id="workspaceRailCount" class="badge badge-muted">0</span>
+          </div>
+          <div id="workspaceRailList" class="context-stack"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading-row">
+            <h2>Recent Tasks</h2>
+            <span id="recentTaskRailCount" class="badge badge-muted">0</span>
+          </div>
+          <div id="recentTaskRailList" class="context-stack"></div>
+        </div>
       </aside>
 
       <main class="workspace">
         <header class="workspace-header panel">
-          <div>
+          <div class="workspace-header-copy">
             <p class="eyebrow">Evolving AI Repo Control Surface</p>
             <h2 id="workspaceTitle">Advanced Repo Intelligence Service</h2>
+            <div id="workspaceHeaderMeta" class="header-meta-row"></div>
           </div>
           <div class="status-stack">
             <div class="status-pill">
@@ -41,6 +58,7 @@
               <span id="providerMode">mock</span>
             </div>
             <p id="modelLabel" class="mono muted"></p>
+            <div id="workspaceStateBadgeRow" class="workspace-state-badge-row"></div>
             <div class="toggle-row">
               <label class="mode-wrap">
                 <span>Model Router</span>
@@ -56,88 +74,188 @@
           </div>
         </header>
 
-        <section class="aris-console panel">
+        <section class="process-loop-shell panel">
           <div class="section-heading-row">
-            <h2>ARIS Console</h2>
-            <span id="arisOutcomeBadge" class="badge badge-muted">idle</span>
+            <div>
+              <p class="eyebrow">Locked Runtime Sequence</p>
+              <h2>ProcessLoopBar</h2>
+            </div>
+            <span id="processLoopBadge" class="badge badge-muted">loop locked</span>
           </div>
+          <p id="processLoopHint" class="mono muted">
+            Input → Forge → Eval → Outcome → Evolve
+          </p>
+          <div id="processLoopBar" class="process-loop-bar"></div>
+        </section>
+
+        <section id="evalGate" class="eval-gate-shell panel">
+          <div class="section-heading-row eval-gate-header">
+            <div>
+              <p class="eyebrow">Evaluation Authority</p>
+              <h2>EvalGate</h2>
+            </div>
+            <div class="eval-gate-meta">
+              <span id="arisOutcomeBadge" class="badge badge-muted">idle</span>
+              <span id="evalGateTimestamp" class="mono muted">No governed decision yet</span>
+              <button id="evalGateTraceButton" class="secondary-button" type="button">Focus Trace</button>
+            </div>
+          </div>
+          <p id="evalGateReason" class="mono muted">
+            The evaluation gate remains visible and non-collapsible. No transition is admitted without review.
+          </p>
           <p id="arisRouteCopy" class="mono muted">
-            Route: Jarvis blueprint inheritance -> Operator -> Forge -> Forge Eval when required -> output or Hall
-            of Discard, Hall of Shame, or Hall of Fame.
+            Route: Input → Forge → Eval → Outcome → Evolve
           </p>
-          <textarea
-            id="arisGoalInput"
-            rows="4"
-            placeholder="Ask ARIS for a governed repo plan or inspection goal..."
-          ></textarea>
-          <input
-            id="arisFocusPathsInput"
-            type="text"
-            placeholder="Focus files or modules (comma or newline separated, optional)"
-          />
-          <div class="attachment-row">
-            <button id="arisPlanButton" class="secondary-button" type="button">Run Governed Plan</button>
+          <div id="evalGateStateStrip" class="eval-gate-state-strip"></div>
+          <div class="eval-gate-grid">
+            <div class="eval-gate-column eval-gate-command">
+              <label class="composer-label" for="arisGoalInput">Governed Goal</label>
+              <textarea
+                id="arisGoalInput"
+                rows="4"
+                placeholder="Ask ARIS for a governed repo plan or inspection goal..."
+              ></textarea>
+              <input
+                id="arisFocusPathsInput"
+                type="text"
+                placeholder="Focus files or modules (comma or newline separated, optional)"
+              />
+              <div class="attachment-row">
+                <button id="arisPlanButton" class="secondary-button" type="button">Run Governed Plan</button>
+              </div>
+              <pre id="arisPlanOutput" class="code-output muted">ARIS route output will appear here.</pre>
+            </div>
+            <div class="eval-gate-column">
+              <div class="section-heading-row">
+                <h2>Loop Trace</h2>
+                <span id="arisLawBadge" class="badge">1001</span>
+              </div>
+              <div id="arisRouteList" class="context-stack"></div>
+            </div>
+            <div class="eval-gate-column">
+              <div class="section-heading-row">
+                <h2>Guardrails</h2>
+                <span class="badge badge-muted">governed</span>
+              </div>
+              <div id="arisGuardrailList" class="context-stack"></div>
+              <div class="section-heading-row">
+                <h2>Violations &amp; Evaluation</h2>
+                <span class="badge badge-muted">live</span>
+              </div>
+              <div id="arisEvaluationList" class="context-stack"></div>
+            </div>
           </div>
-          <div id="arisRouteList" class="context-stack"></div>
-          <pre id="arisPlanOutput" class="code-output muted">ARIS route output will appear here.</pre>
         </section>
 
-        <section class="aris-console panel">
-          <div class="section-heading-row">
-            <h2>Mystic Sustainment</h2>
-            <span id="mysticSessionBadge" class="badge badge-muted">idle</span>
-          </div>
-          <p class="mono muted">
-            Mystic is the operator sustainment layer. It monitors session strain, cooldown state, reminders, and
-            recovery prompts under ARIS law.
-          </p>
-          <div class="attachment-row">
-            <button id="mysticTickButton" class="secondary-button" type="button">Check In</button>
-            <button id="mysticBreakButton" class="secondary-button" type="button">I Took a Break</button>
-            <button id="mysticAcknowledgeButton" class="secondary-button" type="button">Acknowledge</button>
-            <button id="mysticMuteButton" class="secondary-button" type="button">Mute 10m</button>
-          </div>
-          <pre id="mysticSessionOutput" class="code-output muted">Mystic sustainment state will appear here.</pre>
-        </section>
-
-        <section class="aris-console panel">
-          <div class="section-heading-row">
-            <h2>Mystic Reflection</h2>
-            <span id="mysticStatusBadge" class="badge badge-muted">idle</span>
-          </div>
-          <p class="mono muted">
-            Mystic Reading is a reflective subfeature. It runs through Jarvis inheritance and ARIS governance, but
-            it is not the sustainment authority layer itself.
-          </p>
-          <textarea
-            id="mysticInput"
-            rows="3"
-            placeholder="Ask Mystic Reflection for a reading of the current state and next move..."
-          ></textarea>
-          <div class="attachment-row">
-            <button id="mysticReadButton" class="secondary-button" type="button">Run Mystic Reflection</button>
-          </div>
-          <pre id="mysticOutput" class="code-output muted">Mystic Reflection output will appear here.</pre>
-        </section>
-
-        <section id="chatSurface" class="chat-surface panel">
-          <div id="emptyState" class="empty-state">
-            <p class="eyebrow">Ready</p>
-            <h3>Inspect, govern, and operate the repo through a law-bound command deck.</h3>
-            <p>
-              Use the existing 630 shell for chat, repo work, and mutation review while ARIS exposes live law
-              state, containment, and kill-switch authority in the same interface.
+        <section class="system-surface">
+          <section class="task-board-container panel">
+            <div class="section-heading-row">
+              <div>
+                <p class="eyebrow">Queue Strip</p>
+                <h2>Task Board</h2>
+              </div>
+              <span id="taskBoardBadge" class="badge badge-muted">0 surfaces</span>
+            </div>
+            <p class="task-board-copy mono muted">
+              Active repo work, approvals, and review surfaces stay queued here while ARIS keeps the main lane
+              conversational.
             </p>
+            <div class="task-board-grid">
+              <div id="taskBoardList" class="context-stack task-board-strip"></div>
+              <div id="taskBoardMeta" class="context-stack task-board-summary"></div>
+            </div>
+          </section>
+
+          <div class="surface-columns">
+            <section id="chatSurface" class="chat-surface panel">
+              <div class="chat-surface-header">
+                <div class="chat-surface-copy">
+                  <p class="eyebrow">Primary Control Surface</p>
+                  <h2>ARIS Thread</h2>
+                  <p class="muted">
+                    Tell ARIS what to do. Intelligence appears inline here, while deep runtime traces stay inspectable
+                    on the right.
+                  </p>
+                </div>
+                <div class="chat-surface-toolbar">
+                  <div id="chatSurfaceMeta" class="chat-surface-meta"></div>
+                  <div class="attachment-row chat-surface-actions">
+                    <button id="chatInspectButton" class="secondary-button" type="button">Inspect</button>
+                    <button id="chatQueueButton" class="secondary-button" type="button">Queue</button>
+                  </div>
+                </div>
+              </div>
+              <div id="emptyState" class="empty-state">
+                <p class="eyebrow">Ready</p>
+                <h3>Tell ARIS what you want. She will surface the governed intelligence inline.</h3>
+                <p>
+                  Ask for repo work, planning, review, or execution help in plain language. EvalGate, halls, replay,
+                  memory, and operator controls stay present, but deeper details move to Inspect so the main lane stays
+                  fluid.
+                </p>
+              </div>
+              <div id="messageList" class="message-list"></div>
+            </section>
+
+            <div class="mystic-surface">
+              <section class="aris-console panel">
+                <div class="section-heading-row">
+                  <h2>Mystic Sustainment</h2>
+                  <span id="mysticSessionBadge" class="badge badge-muted">idle</span>
+                </div>
+                <p class="mono muted">
+                  Mystic is the operator sustainment layer. It monitors session strain, cooldown state, reminders,
+                  and recovery prompts under ARIS law.
+                </p>
+                <div class="attachment-row">
+                  <button id="mysticTickButton" class="secondary-button" type="button">Check In</button>
+                  <button id="mysticBreakButton" class="secondary-button" type="button">I Took a Break</button>
+                  <button id="mysticAcknowledgeButton" class="secondary-button" type="button">Acknowledge</button>
+                  <button id="mysticMuteButton" class="secondary-button" type="button">Mute 10m</button>
+                </div>
+                <pre id="mysticSessionOutput" class="code-output muted">Mystic sustainment state will appear here.</pre>
+              </section>
+
+              <section class="aris-console panel">
+                <div class="section-heading-row">
+                  <h2>Mystic Reflection</h2>
+                  <span id="mysticStatusBadge" class="badge badge-muted">idle</span>
+                </div>
+                <p class="mono muted">
+                  Mystic Reading is a reflective subfeature. It runs through Jarvis inheritance and ARIS governance,
+                  but it is not the sustainment authority layer itself.
+                </p>
+                <textarea
+                  id="mysticInput"
+                  rows="3"
+                  placeholder="Ask Mystic Reflection for a reading of the current state and next move..."
+                ></textarea>
+                <div class="attachment-row">
+                  <button id="mysticReadButton" class="secondary-button" type="button">Run Mystic Reflection</button>
+                </div>
+                <pre id="mysticOutput" class="code-output muted">Mystic Reflection output will appear here.</pre>
+              </section>
+            </div>
           </div>
-          <div id="messageList" class="message-list"></div>
+
+          <section class="logs-strip-container panel">
+            <div class="section-heading-row">
+              <div>
+                <p class="eyebrow">Persistent Trace</p>
+                <h2>Logs Strip</h2>
+              </div>
+              <span id="logsStripBadge" class="badge badge-muted">0 live</span>
+            </div>
+            <div id="logsStripList" class="logs-strip-list"></div>
+          </section>
         </section>
 
         <form id="composer" class="composer panel">
-          <label class="composer-label" for="messageInput">Message</label>
+          <label class="composer-label" for="messageInput">Command</label>
           <textarea
             id="messageInput"
             rows="4"
-            placeholder="Ask about your product, API, roadmap, docs, or operations..."
+            placeholder="Tell ARIS what to inspect, plan, build, or review..."
           ></textarea>
           <div class="composer-footer">
             <div class="toggle-row">
@@ -165,16 +283,113 @@
               <input id="fileInput" type="file" multiple hidden />
               <div id="attachmentList" class="attachment-list"></div>
             </div>
-            <button id="sendButton" class="primary-button" type="submit">Send</button>
+            <button id="sendButton" class="primary-button" type="submit">Ask ARIS</button>
           </div>
         </form>
       </main>
 
       <aside class="right-rail panel">
+        <div class="inspect-rail-intro">
+          <p class="eyebrow">Deep System Surface</p>
+          <h2>Inspect</h2>
+          <p class="muted">
+            Diff, replay, halls, memory, operator controls, and live runtime traces stay inspectable here so chat can
+            remain primary.
+          </p>
+        </div>
+        <div class="section-block operator-console-block">
+          <div class="section-heading-row">
+            <div>
+              <p class="eyebrow">Inspect Surface</p>
+              <h2>OperatorConsole</h2>
+            </div>
+            <span id="operatorConsoleBadge" class="badge badge-muted">Guard</span>
+          </div>
+          <div class="operator-select-grid">
+            <label class="operator-select">
+              <span>Mode</span>
+              <select id="operatorModeSelect">
+                <option value="Guard">Guard</option>
+                <option value="Build">Build</option>
+                <option value="Review">Review</option>
+                <option value="Release">Release</option>
+              </select>
+            </label>
+            <label class="operator-select">
+              <span>Scope</span>
+              <select id="operatorScopeSelect">
+                <option value="Workspace">Workspace</option>
+                <option value="Repo">Repo</option>
+                <option value="Task">Task</option>
+                <option value="Runtime">Runtime</option>
+              </select>
+            </label>
+            <label class="operator-select">
+              <span>Target</span>
+              <select id="operatorTargetSelect">
+                <option value="Forge">Forge</option>
+                <option value="Eval">Eval</option>
+                <option value="Outcome">Outcome</option>
+                <option value="Evolve">Evolve</option>
+              </select>
+            </label>
+            <label class="operator-select">
+              <span>Tier</span>
+              <select id="operatorTierSelect">
+                <option value="Guard">Guard</option>
+                <option value="Review">Review</option>
+                <option value="Apply">Apply</option>
+                <option value="Release">Release</option>
+              </select>
+            </label>
+          </div>
+          <div id="operatorConsoleSummary" class="context-item"></div>
+
+          <div class="operator-group">
+            <div class="operator-group-header">
+              <h3>Execution</h3>
+              <span class="operator-micro-label">affects runtime</span>
+            </div>
+            <div class="attachment-row">
+              <button id="operatorRunButton" class="secondary-button" type="button">Run</button>
+              <button id="operatorApproveButton" class="secondary-button" type="button">Approve</button>
+              <button id="operatorShipButton" class="secondary-button" type="button">Ship Release</button>
+              <button id="operatorUnlinkButton" class="secondary-button" type="button">Unlink Task</button>
+            </div>
+          </div>
+
+          <div class="operator-group">
+            <div class="operator-group-header">
+              <h3>Control</h3>
+              <span class="operator-micro-label">affects system</span>
+            </div>
+            <div class="attachment-row">
+              <button id="operatorWorkspaceButton" class="secondary-button" type="button">Workspace Cont</button>
+              <button id="operatorApprovalGuardButton" class="secondary-button" type="button">
+                Approval Mode: Guard
+              </button>
+              <button id="operatorVoiceToggleButton" class="secondary-button" type="button">Voice On</button>
+            </div>
+          </div>
+
+          <div class="operator-group">
+            <div class="operator-group-header">
+              <h3>Reporting</h3>
+              <span class="operator-micro-label">affects task</span>
+            </div>
+            <div class="attachment-row">
+              <button id="operatorBugButton" class="secondary-button" type="button">Report Bug</button>
+              <button id="operatorFeedbackButton" class="secondary-button" type="button">Give Feedback</button>
+              <button id="operatorFeatureButton" class="secondary-button" type="button">Request Feature</button>
+              <button id="operatorFormButton" class="secondary-button" type="button">Open Form</button>
+            </div>
+          </div>
+        </div>
+
         <div class="section-block">
           <div class="section-heading-row">
             <h2>ARIS Runtime</h2>
-            <span id="arisLawBadge" class="badge">1001</span>
+            <span class="badge">1001</span>
           </div>
           <div id="arisHealthList" class="context-stack"></div>
           <div class="attachment-row">
@@ -182,19 +397,6 @@
             <button id="arisHardKillButton" class="secondary-button danger-button" type="button">Hard Kill</button>
             <button id="arisResetButton" class="secondary-button" type="button">Reset</button>
           </div>
-        </div>
-
-        <div class="section-block">
-          <div class="section-heading-row">
-            <h2>Guardrails</h2>
-            <span class="badge badge-muted">governed</span>
-          </div>
-          <div id="arisGuardrailList" class="context-stack"></div>
-          <div class="section-heading-row">
-            <h2>Evaluation</h2>
-            <span class="badge badge-muted">live</span>
-          </div>
-          <div id="arisEvaluationList" class="context-stack"></div>
         </div>
 
         <div class="section-block">

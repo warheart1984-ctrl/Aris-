@@ -7,6 +7,7 @@ from typing import Any
 
 from .adapter_protocol import HostDeclaration
 from .constants_runtime import (
+    ARIS_DOC_CHANNEL_ID,
     DISPOSITION_DEGRADED,
     DISPOSITION_REJECTED,
     DISPOSITION_VALID,
@@ -14,6 +15,7 @@ from .constants_runtime import (
     POST_VERIFICATION_COOLDOWN_SECONDS,
     PROTECTED_IDENTITIES,
 )
+from .doc_channel import DocChannel, default_doc_channel, parse_doc_channel_text
 from .law_context_builder import LawContextBuilder, RuntimeLawContext
 from .ul_runtime import ULRuntimeSubstrate
 
@@ -133,12 +135,23 @@ class RuntimeLaw:
         self.identity_verifier = self.substrate.identity_verifier
         self.context_builder = self.substrate.context_builder
         self.foundation_store = self.substrate.foundation_store
+        self.doc_channel = self._load_doc_channel()
         self.cisiv = self.substrate.cisiv
         self.reckoning = OverrideReckoning(self.ledger)
         self.mutation_gate = self.substrate.mutation_gate
         self.mutation_broker = self.substrate.mutation_broker
         self.verification_engine = self.substrate.verification_engine
         self.bootstrap_state = self.bootstrap.load()
+
+    def _load_doc_channel(self) -> DocChannel:
+        entry = self.foundation_store.get(ARIS_DOC_CHANNEL_ID)
+        content = str((entry or {}).get("content") or "").strip()
+        if not content:
+            return default_doc_channel()
+        try:
+            return parse_doc_channel_text(content)
+        except Exception:
+            return default_doc_channel()
 
     def default_host(self, *, session_id: str, actor: str) -> Any:
         host_name = "aris-runtime" if self.system_name.lower().startswith("aris") else "aais-runtime"
@@ -468,4 +481,5 @@ class RuntimeLaw:
             "ledger_path": str(self.ledger.path),
             "primitive_inventory": self.substrate.primitive_inventory().payload(),
             "substrate": self.substrate.status_payload(),
+            "doc_channel": self.doc_channel.payload(),
         }

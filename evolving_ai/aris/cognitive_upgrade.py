@@ -11,6 +11,7 @@ from typing import Any, Protocol
 
 from evolving_ai.app.attachments import Attachment
 from evolving_ai.app.providers import ChatProvider
+from src.doc_channel import DocChannel
 
 
 def _utc_now() -> str:
@@ -122,12 +123,14 @@ class CognitiveUpgradeManager:
         self,
         *,
         history_path: Path,
+        doc_channel: DocChannel | None = None,
         upgrades: list[UpgradeTransformer] | None = None,
     ) -> None:
         self.history_path = history_path.resolve()
         self.history_path.parent.mkdir(parents=True, exist_ok=True)
         if not self.history_path.exists():
             self.history_path.write_text("", encoding="utf-8")
+        self.doc_channel = doc_channel
         self.upgrades = list(upgrades or [IdentityAnchorUpgrade()])
 
     def status_payload(self) -> dict[str, Any]:
@@ -140,6 +143,7 @@ class CognitiveUpgradeManager:
             "last_trial": history[0] if history else None,
             "transformer_only": True,
             "identity_anchor_preserved": True,
+            "doc_channel": self.doc_channel.payload() if self.doc_channel is not None else None,
         }
 
     def history_count(self) -> int:
@@ -168,7 +172,10 @@ class CognitiveUpgradeManager:
         runner: Callable[[list[dict[str, str]]], Awaitable[str]],
         messages: list[dict[str, str]],
     ) -> str:
-        return await runner([dict(message) for message in messages])
+        injected = [dict(message) for message in messages]
+        if self.doc_channel is not None:
+            injected = self.doc_channel.inject_messages(injected)
+        return await runner(injected)
 
     def _baseline_prompt(self, messages: list[dict[str, str]]) -> str:
         for message in reversed(messages):

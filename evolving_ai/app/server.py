@@ -228,8 +228,9 @@ def create_app(build_service: Callable[[], ChatService] | None = None) -> FastAP
     @app.get("/api/aris/activity")
     async def aris_activity(
         limit: int = Query(default=25, ge=1, le=200),
+        session_id: str | None = Query(default=None),
     ) -> JSONResponse:
-        return JSONResponse(service.aris_activity_payload(limit=limit))
+        return JSONResponse(service.aris_activity_payload(limit=limit, session_id=session_id))
 
     @app.get("/api/aris/discards")
     async def aris_discards(
@@ -248,6 +249,20 @@ def create_app(build_service: Callable[[], ChatService] | None = None) -> FastAP
         limit: int = Query(default=25, ge=1, le=200),
     ) -> JSONResponse:
         return JSONResponse(service.aris_fame_payload(limit=limit))
+
+    @app.get("/api/aris/truth")
+    async def aris_truth(
+        session_id: str | None = Query(default=None),
+        activity_limit: int = Query(default=25, ge=1, le=200),
+        hall_limit: int = Query(default=25, ge=1, le=200),
+    ) -> JSONResponse:
+        return JSONResponse(
+            service.aris_truth_payload(
+                session_id=session_id,
+                activity_limit=activity_limit,
+                hall_limit=hall_limit,
+            )
+        )
 
     @app.post("/api/aris/kill/soft")
     async def aris_kill_soft(request: ArisKillRequest) -> JSONResponse:

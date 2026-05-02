@@ -2,6 +2,7 @@ from __future__ import annotations
 
 UL_ROOT_LAW_ID = "UL_ROOT_LAW_LOCKED"
 ARIS_HANDBOOK_ID = "ARIS_HANDBOOK_LOCKED"
+ARIS_DOC_CHANNEL_ID = "ARIS_DOC_CHANNEL_LOCKED"
 UL_IDENTITY_SOURCE = "UL"
 
 LAW_CLASS_ROOT = "UL_ROOT_LAW"
@@ -30,7 +31,7 @@ LAW_MANIFEST_FILENAME = "law_manifest.json"
 HOST_LEGITIMACY_SECRET_ENV = "ARIS_HOST_LEGITIMACY_SECRET"
 
 PROTECTED_IDENTITIES = frozenset({"ARIS", "AAIS"})
-FOUNDATIONAL_MEMORY_IDS = frozenset({UL_ROOT_LAW_ID, ARIS_HANDBOOK_ID})
+FOUNDATIONAL_MEMORY_IDS = frozenset({UL_ROOT_LAW_ID, ARIS_HANDBOOK_ID, ARIS_DOC_CHANNEL_ID})
 
 MUTATION_ACTION_TYPES = frozenset(
     {
@@ -87,9 +88,8 @@ SCOPE_BY_ACTION_TYPE = {
 KNOWN_INTERNAL_HOSTS = frozenset(
     {
         "aris-runtime",
-        "aris-demo-runtime",
         "aris-api",
-        "aris-demo-api",
+        "aris-runtime-api",
         "aais-runtime",
         "aais-api",
     }

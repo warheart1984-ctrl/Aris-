@@ -17,10 +17,17 @@ from src.runtime_law import RuntimeLaw
 from .hall_of_discard import HallOfDiscard
 from .hall_of_fame import HallOfFame
 from .hall_of_shame import HallOfShame
+from .evolve_engine import EvolveEngineTraceStore
 from .integrity import ProtectedComponentIntegrity
 from .jarvis_blueprint import BLUEPRINT_ID, JarvisBlueprintReasoner
 from .kill_switch import ArisKillSwitch
 from .cognitive_upgrade import CognitiveUpgradeManager
+from .log_ingestion import (
+    build_forge_eval_request,
+    classify_evaluation,
+    extract_candidates,
+    normalize_codex_log,
+)
 from .logbook import RepoLogbook
 from .memory_bank import GovernedMemoryBank
 from .shield import DecisionContext, ShieldOfTruth1001, Verdict as ShieldVerdict
@@ -273,14 +280,21 @@ class ArisRuntime:
             self.runtime_root / "memory_bank",
             foundation_root=self.runtime_root / "foundation",
         )
+        self.runtime_law = RuntimeLaw(
+            repo_root=self.repo_root,
+            runtime_root=self.runtime_root,
+            system_name="ARIS",
+        )
         self.cognitive_upgrade = CognitiveUpgradeManager(
             history_path=self.runtime_root / "cognitive_upgrade" / "history.jsonl",
+            doc_channel=self.runtime_law.doc_channel,
         )
         self.reasoner = JarvisBlueprintReasoner()
         self.shield_of_truth = ShieldOfTruth1001()
         self.hall_of_discard = HallOfDiscard(self.runtime_root / "hall_of_discard")
         self.hall_of_shame = HallOfShame(self.runtime_root / "hall_of_shame")
         self.hall_of_fame = HallOfFame(self.runtime_root / "hall_of_fame")
+        self.evolve_engine = EvolveEngineTraceStore(self.runtime_root / "evolve_engine")
         self.kill_switch = ArisKillSwitch(self.runtime_root / "kill_switch")
         self.protected_paths = [
             (self.repo_root / relative).resolve() for relative in PROTECTED_RUNTIME_RELATIVE_PATHS
@@ -288,11 +302,6 @@ class ArisRuntime:
         self.integrity = ProtectedComponentIntegrity(
             manifest_path=self.runtime_root / "integrity-manifest.json",
             protected_paths=self.protected_paths,
-        )
-        self.runtime_law = RuntimeLaw(
-            repo_root=self.repo_root,
-            runtime_root=self.runtime_root,
-            system_name="ARIS",
         )
         self.operator_router = JarvisOperator(self.runtime_law)
         self.mystic = (
@@ -494,6 +503,219 @@ class ArisRuntime:
             ):
                 count += 1
         return count
+
+    def _sanitize_ingestion_packet(self, packet: dict[str, Any]) -> dict[str, Any]:
+        return {
+            str(key): _serialize(value)
+            for key, value in dict(packet or {}).items()
+            if key not in {"output_text", "output_excerpt", "raw_text", "raw_log"}
+        }
+
+    def _build_log_ingestion_action(
+        self,
+        *,
+        packet: dict[str, Any],
+        candidate: dict[str, Any],
+    ) -> dict[str, Any]:
+        request_payload = build_forge_eval_request(candidate, repo_root=str(self.repo_root))
+        action_type = "patch_apply" if str(candidate.get("kind")) == "patch" else "python_execute"
+        payload = dict(request_payload.get("payload") or {})
+        return {
+            "action_id": str(candidate.get("candidate_id") or ""),
+            "action_type": action_type,
+            "session_id": _text(packet.get("session_id")) or "codex-log",
+            "purpose": (
+                "Normalize, evaluate, classify, and store a Codex log candidate under ARIS law "
+                "before it may become reusable experience."
+            ),
+            "target": _text(candidate.get("target")),
+            "source": "codex_log",
+            "operator_decision": "approved",
+            "patch": str(payload.get("patch") or ""),
+            "code": str(payload.get("program") or ""),
+            "command": [],
+            "authorized": True,
+            "observed": True,
+            "bounded": True,
+        }
+
+    def list_evolve_traces(self, *, limit: int = 25) -> list[dict[str, Any]]:
+        return self.evolve_engine.list_entries(limit=limit)
+
+    def ingest_codex_log(
+        self,
+        raw_log: Any,
+        *,
+        session_id: str = "codex-log",
+        source: str = "codex",
+    ) -> dict[str, Any]:
+        packet = normalize_codex_log(raw_log, source=source, session_id=session_id)
+        sanitized_packet = self._sanitize_ingestion_packet(packet)
+        self.runtime_law.ledger.record(
+            "log_ingestion_normalized",
+            {"packet": sanitized_packet},
+            require_success=True,
+        )
+        candidates = extract_candidates(packet)
+        outcomes: list[dict[str, Any]] = []
+        if not candidates:
+            result = {
+                "ok": True,
+                "packet": sanitized_packet,
+                "candidate_count": 0,
+                "results": [],
+                "counts": {"FAME": 0, "SHAME": 0, "DISGRACE": 0},
+            }
+            self._record_activity({**result, "kind": "codex_log_ingestion"})
+            return result
+
+        for candidate in candidates:
+            self.runtime_law.ledger.record(
+                "log_ingestion_candidate",
+                {"packet_id": packet["packet_id"], "candidate": _serialize(candidate)},
+                require_success=True,
+            )
+            action = self._build_log_ingestion_action(packet=packet, candidate=candidate)
+            decision = self.review_action(action)
+            evaluation: dict[str, Any]
+            hall_name = _text(decision.hall_name)
+            hall_entry = decision.hall_entry
+            finalized = decision
+
+            if decision.allowed:
+                forge_eval_entry = next((item for item in decision.forge_eval if isinstance(item, dict)), {})
+                evaluation = classify_evaluation(
+                    dict(forge_eval_entry.get("raw") or {}),
+                    status_code=int(forge_eval_entry.get("status_code", 0) or 0),
+                )
+                if evaluation["classification"] == "FAME":
+                    finalized = self.finalize_action(
+                        decision,
+                        result={
+                            "ok": True,
+                            "verification_artifacts": [
+                                {
+                                    "type": "forge_eval",
+                                    "status_code": evaluation["status_code"],
+                                    "score": evaluation["score"],
+                                },
+                                {
+                                    "type": "doc_channel",
+                                    "namespace": self.runtime_law.doc_channel.namespace,
+                                    "version": self.runtime_law.doc_channel.version,
+                                },
+                            ],
+                            "normalized_packet": sanitized_packet,
+                            "candidate": _serialize(candidate),
+                            "evaluation": _serialize(evaluation),
+                            "classification": evaluation["classification"],
+                        },
+                    )
+                    hall_name = _text(finalized.hall_name)
+                    hall_entry = finalized.hall_entry
+                    if not finalized.verified or hall_name != "hall_of_fame":
+                        evaluation = {
+                            **evaluation,
+                            "classification": "DISGRACE",
+                            "hall_name": hall_name or "hall_of_discard",
+                            "reason": finalized.reason,
+                        }
+                else:
+                    hall_name, hall_entry = self._record_failure_hall(
+                        action=decision.action,
+                        fingerprint=decision.fingerprint,
+                        reason=evaluation["reason"],
+                        law_results=decision.law_results,
+                        guardrails=decision.guardrails,
+                        forge_eval=decision.forge_eval,
+                        operator_decision=decision.operator_decision,
+                        notes=(
+                            "Candidate was lawful enough to evaluate but did not reach the Fame threshold, "
+                            "so it was preserved in Hall of Shame and kept out of live truth."
+                        ),
+                        failure_kind="correctness",
+                        metadata={
+                            "normalized_packet": sanitized_packet,
+                            "candidate": _serialize(candidate),
+                            "evaluation": _serialize(evaluation),
+                        },
+                    )
+            else:
+                forge_eval_entry = next((item for item in decision.forge_eval if isinstance(item, dict)), {})
+                if forge_eval_entry:
+                    evaluation = classify_evaluation(
+                        dict(forge_eval_entry.get("raw") or {}),
+                        status_code=int(forge_eval_entry.get("status_code", 0) or 0),
+                    )
+                else:
+                    evaluation = {
+                        "classification": "DISGRACE",
+                        "hall_name": hall_name or "hall_of_discard",
+                        "reason": decision.reason,
+                        "score": 0.0,
+                        "status_code": 0,
+                        "violations": [],
+                        "failed_checks": [],
+                        "raw": {},
+                    }
+                hall_name = hall_name or _text(evaluation.get("hall_name")) or _text(
+                    (decision.reentry_blocker or {}).get("hall")
+                )
+                hall_entry = hall_entry or decision.reentry_blocker
+
+            trace_id = f"trace_{uuid.uuid4().hex[:12]}"
+            trace_entry = self.evolve_engine.record(
+                trace_id=trace_id,
+                packet=sanitized_packet,
+                candidate=_serialize(candidate),
+                evaluation=_serialize(evaluation),
+                classification=_text(evaluation.get("classification")) or "DISGRACE",
+                hall={
+                    "name": hall_name or _text(evaluation.get("hall_name")),
+                    "entry": _serialize(self._hall_reference(hall_entry) or hall_entry or {}),
+                },
+                source=_text(packet.get("source")) or "codex",
+            )
+            self.runtime_law.ledger.record(
+                "log_ingestion_classification",
+                {
+                    "trace_id": trace_id,
+                    "packet_id": packet["packet_id"],
+                    "candidate_id": candidate["candidate_id"],
+                    "classification": evaluation["classification"],
+                    "hall_name": hall_name or evaluation["hall_name"],
+                },
+                require_success=True,
+            )
+            outcomes.append(
+                {
+                    "trace_id": trace_id,
+                    "candidate_id": candidate["candidate_id"],
+                    "candidate": _serialize(candidate),
+                    "evaluation": _serialize(evaluation),
+                    "classification": evaluation["classification"],
+                    "hall_name": hall_name or evaluation["hall_name"],
+                    "hall_entry": _serialize(self._hall_reference(hall_entry) or hall_entry),
+                    "verified": bool(getattr(finalized, "verified", False)),
+                    "disposition": getattr(finalized, "disposition", decision.disposition),
+                    "reason": getattr(finalized, "reason", decision.reason),
+                    "trace": trace_entry,
+                }
+            )
+
+        counts = {"FAME": 0, "SHAME": 0, "DISGRACE": 0}
+        for item in outcomes:
+            label = _text(item.get("classification")) or "DISGRACE"
+            counts[label] = counts.get(label, 0) + 1
+        result = {
+            "ok": True,
+            "packet": sanitized_packet,
+            "candidate_count": len(candidates),
+            "results": outcomes,
+            "counts": counts,
+        }
+        self._record_activity({**result, "kind": "codex_log_ingestion"})
+        return result
 
     def _current_integrity(self, *, trigger_lockdown: bool) -> dict[str, Any]:
         snapshot = self.integrity.verify_or_initialize(reseal=False)
@@ -2251,7 +2473,9 @@ class ArisRuntime:
             "meta_law_1001_active": status["meta_law_1001_active"],
             "operator_active": status["operator"]["active"],
             "shield_of_truth_active": status["shield_of_truth"]["active"],
+            "doc_channel_active": bool(status.get("doc_channel", {}).get("active", False)),
             "memory_bank_active": status["memory_bank"]["active"],
+            "evolve_engine_active": status["evolve_engine"]["active"],
             "cognitive_upgrade_active": status["cognitive_upgrade"]["active"],
             "mystic_active": status["mystic"]["active"],
             "mystic_reflection_active": status["mystic_reflection"]["active"],
@@ -2315,6 +2539,7 @@ class ArisRuntime:
                 "forge_eval_required_on_risky_paths": True,
             },
             "shield_of_truth": self.shield_of_truth.status_payload(),
+            "doc_channel": self.runtime_law.doc_channel.payload(),
             "runtime_law": {
                 "bootstrap": self.runtime_law.bootstrap_state.payload(),
                 "ledger_path": str(self.runtime_law.ledger.path),
@@ -2322,6 +2547,7 @@ class ArisRuntime:
             },
             "ul_runtime": self.runtime_law.status_payload(),
             "memory_bank": self.memory_bank.status_payload(),
+            "evolve_engine": self.evolve_engine.status_payload(),
             "cognitive_upgrade": self.cognitive_upgrade.status_payload(),
             "mystic": mystic_status,
             "mystic_reflection": mystic_reflection_status,
@@ -2591,14 +2817,33 @@ class ArisRuntime:
             {"stage": "Forge Eval", "status": "proposal_only"},
             {"stage": "Outcome", "status": "proposal_ready" if status_code == 200 else "failed"},
         ]
+        repo_manager = payload.get("result", {}).get("repo_manager", {}) if isinstance(payload.get("result"), dict) else {}
+        plan_reason = (
+            _text(repo_manager.get("repo_summary"))
+            or _text(payload.get("message"))
+            or (
+                _text(payload.get("error", {}).get("message"))
+                if isinstance(payload.get("error"), dict)
+                else _text(payload.get("error"))
+            )
+            or ("Forge repo plan ready for review." if status_code == 200 else "Forge repo plan failed.")
+        )
         self._record_activity(
             {
                 "kind": "forge_repo_plan",
+                "action_type": "forge_repo_plan",
                 "goal": goal,
+                "purpose": "Generate a governed Forge repo plan without applying changes.",
+                "target": "Evolving AI repo",
                 "focus_files": context["focus_files"],
                 "status_code": status_code,
                 "ok": status_code == 200,
                 "trace_id": trace_id,
+                "reason": plan_reason,
+                "disposition": "proposal_ready" if status_code == 200 else "blocked",
+                "requires_forge_eval": False,
+                "verified": False,
+                "route": payload["route"],
             }
         )
         return payload

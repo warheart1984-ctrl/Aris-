@@ -1,0 +1,62 @@
+﻿name: aris-demo-desktop-build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "pyproject.toml"
+      - "LOGBOOK.md"
+      - "evolving_ai/aris_demo/**"
+      - "tests/test_aris_demo.py"
+      - "tests/test_aris_demo_desktop.py"
+
+jobs:
+  build:
+    name: build-${{ matrix.platform.id }}
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - id: windows
+            os: windows-latest
+            artifact_name: aris-demo-desktop-windows
+            bundle_path: artifacts/dist/ARIS Demo
+          - id: macos
+            os: macos-latest
+            artifact_name: aris-demo-desktop-macos
+            bundle_path: artifacts/dist/ARIS Demo.app
+          - id: linux
+            os: ubuntu-latest
+            artifact_name: aris-demo-desktop-linux
+            bundle_path: artifacts/dist/ARIS Demo
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install desktop build dependencies
+        run: python -m pip install -e .[desktop-build]
+
+      - name: Run desktop smokecheck
+        run: python -m evolving_ai.aris_demo.desktop --headless-smokecheck --no-workers
+
+      - name: Build native bundle
+        run: >
+          python -m evolving_ai.aris_demo.desktop_build
+          --build-current
+          --distpath artifacts/dist
+          --workpath artifacts/work
+          --specpath artifacts/spec
+
+      - name: Upload native bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform.artifact_name }}
+          path: ${{ matrix.platform.bundle_path }}
+          if-no-files-found: error

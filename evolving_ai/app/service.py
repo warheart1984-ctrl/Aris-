@@ -757,6 +757,98 @@ class ChatService:
             ),
         }
 
+    def enqueue_agent_run(
+        self,
+        *,
+        session_id: str | None,
+        user_message: str,
+        title: str | None = None,
+        fast_mode: bool = False,
+        retrieval_k: int | None = None,
+        attachments: list[Attachment] | None = None,
+        metadata: dict[str, object] | None = None,
+    ) -> dict[str, object]:
+        normalized_message = str(user_message).strip()
+        if not normalized_message:
+            return {"ok": False, "error": "Queued agent runs require a non-empty message."}
+        session = self.sessions.get_or_create(session_id, title or normalized_message)
+        self.sessions.append_message(session.id, "user", normalized_message)
+        self.memory.remember_from_user_text(normalized_message)
+        normalized_fast_mode = bool(fast_mode)
+        normalized_retrieval_k = max(1, int(retrieval_k or self.config.retrieval_k))
+        normalized_attachments = list(attachments or [])
+        route = self._choose_model_decision(
+            prompt=normalized_message,
+            fast_mode=normalized_fast_mode,
+            mode="agent",
+            attachments=normalized_attachments,
+        )
+        run = self.agent_runs.create_run(
+            session_id=session.id,
+            kind="agent_chat",
+            title=str(title).strip() or session.title or "Queued agent run",
+            mode="agent",
+            user_message=normalized_message,
+            fast_mode=normalized_fast_mode,
+            model=route.model,
+            request={
+                "message": normalized_message,
+                "fast_mode": normalized_fast_mode,
+                "retrieval_k": normalized_retrieval_k,
+                "attachments": [
+                    {
+                        "name": attachment.name,
+                        "mime_type": attachment.mime_type,
+                        "content": attachment.content,
+                        "kind": attachment.kind,
+                    }
+                    for attachment in normalized_attachments
+                ],
+            },
+        )
+        run_id = str(run.get("id", "")).strip()
+        meta_payload = {
+            "session_id": session.id,
+            "mode": "agent",
+            "queued": True,
+            "background": True,
+            "run_id": run_id,
+            "model_router": route.payload(),
+        }
+        if metadata:
+            meta_payload["metadata"] = dict(metadata)
+        after_event_id = self.agent_runs.append_event(
+            run_id=run_id,
+            event_name="meta",
+            payload=meta_payload,
+        )
+        self._enqueue_run_job(
+            run_id=run_id,
+            job_type="agent_chat",
+            payload={
+                "session_id": session.id,
+                "message": normalized_message,
+                "fast_mode": normalized_fast_mode,
+                "retrieval_k": normalized_retrieval_k,
+                "attachments": [
+                    {
+                        "name": attachment.name,
+                        "mime_type": attachment.mime_type,
+                        "content": attachment.content,
+                        "kind": attachment.kind,
+                    }
+                    for attachment in normalized_attachments
+                ],
+            },
+        )
+        return {
+            "ok": True,
+            "session_id": session.id,
+            "run": self.agent_runs.get_run(run_id) or run,
+            "after_event_id": after_event_id,
+            "model_router": route.payload(),
+        }
+
     def get_agent_run(self, run_id: str) -> dict[str, object]:
         run = self.agent_runs.get_run(run_id)
         if run is None:
@@ -2505,23 +2597,20 @@ class ChatService:
             "changed_files": [],
             "status_entries": [],
         }
+        repo_root = self._resolve_host_git_root(cwd=cwd)
+        if repo_root is None:
+            return review
+
         commands = (
-            ("status", ["git", "status", "--short"]),
-            ("diff_stat", ["git", "diff", "--stat"]),
-            ("diff", ["git", "diff", "--no-ext-diff", "--unified=3"]),
+            ("status", ["status", "--short"]),
+            ("diff_stat", ["diff", "--stat"]),
+            ("diff", ["diff", "--no-ext-diff", "--unified=3"]),
         )
-        for field, command in commands:
-            result = self.execute_command(
-                session_id=session_id,
-                command=command,
-                cwd=str(cwd or ".").strip() or ".",
-                timeout_seconds=min(self.config.command_timeout_seconds, 15.0),
-                max_command_tier="read_only",
-                request_source="review",
-            )
-            if result.get("returncode") != 0:
+        for field, arguments in commands:
+            completed = self.project_manager._run_git(repo_root, list(arguments))
+            if completed is None or completed.returncode != 0:
                 continue
-            review[field] = str(result.get("stdout", "") or "").strip()
+            review[field] = (completed.stdout or "").strip()
         status = str(review.get("status", "")).strip()
         if status:
             changed_files: list[str] = []
@@ -2545,6 +2634,28 @@ class ChatService:
             review["changed_files"] = changed_files
             review["status_entries"] = status_entries
         return review
+
+    def _resolve_host_git_root(self, *, cwd: str | None = None) -> Path | None:
+        repo_root = Path(__file__).resolve().parents[2]
+        normalized_cwd = str(cwd or ".").strip() or "."
+        candidate = repo_root
+        if normalized_cwd not in {"", "."}:
+            raw = Path(normalized_cwd)
+            candidate = raw.resolve(strict=False) if raw.is_absolute() else (repo_root / raw).resolve(strict=False)
+            try:
+                candidate.relative_to(repo_root)
+            except ValueError:
+                return None
+            if candidate.exists() and candidate.is_file():
+                candidate = candidate.parent
+
+        for path in [candidate, *candidate.parents]:
+            if path == repo_root.parent:
+                break
+            if path == repo_root or repo_root in path.parents:
+                if (path / ".git").exists():
+                    return path
+        return repo_root if (repo_root / ".git").exists() else None
 
     async def stream_workspace_task(
         self,

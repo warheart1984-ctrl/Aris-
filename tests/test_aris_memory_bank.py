@@ -7,7 +7,7 @@ import unittest
 
 from evolving_ai.app.memory import MemoryStore
 from evolving_ai.aris.memory_bank import GovernedMemoryBank
-from src.constants_runtime import ARIS_HANDBOOK_ID
+from src.constants_runtime import ARIS_DOC_CHANNEL_ID, ARIS_HANDBOOK_ID
 
 
 class GovernedMemoryBankTests(unittest.TestCase):
@@ -22,11 +22,17 @@ class GovernedMemoryBankTests(unittest.TestCase):
         )
 
         handbook = bank.get(ARIS_HANDBOOK_ID)
+        doc_channel = bank.get(ARIS_DOC_CHANNEL_ID)
         self.assertIsNotNone(handbook)
+        self.assertIsNotNone(doc_channel)
         self.assertEqual(handbook.layer, "foundational")
         self.assertEqual(handbook.status, "locked")
+        self.assertEqual(doc_channel.layer, "foundational")
+        self.assertEqual(doc_channel.status, "locked")
         with self.assertRaises(PermissionError):
             bank.update_entry(ARIS_HANDBOOK_ID, summary="overwrite attempt")
+        with self.assertRaises(PermissionError):
+            bank.update_entry(ARIS_DOC_CHANNEL_ID, summary="overwrite attempt")
         with self.assertRaises(PermissionError):
             bank.admit_entry(
                 layer="foundational",

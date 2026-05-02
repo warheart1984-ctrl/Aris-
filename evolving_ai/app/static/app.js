@@ -55,6 +55,26 @@ const state = {
   },
 };
 
+const uiState = {
+  focusedSurface: "eval",
+  operator: {
+    mode: "Guard",
+    scope: "Workspace",
+    target: "Forge",
+    tier: "Guard",
+    voiceEnabled: true,
+  },
+};
+
+let arisBootHydrationPending = false;
+let arisTruthSyncPending = false;
+
+const ARIS_HYDRATION_REASON =
+  "ARIS is hydrating law, halls, and governed runtime state before admitting a decision.";
+const ARIS_TRUTH_SYNC_REASON =
+  "ARIS is resolving governed truth before updating the current decision.";
+const ARIS_DECISION_FRESHNESS_MS = 15 * 60 * 1000;
+
 const elements = {
   brandName: document.querySelector("#brandName"),
   providerMode: document.querySelector("#providerMode"),
@@ -62,7 +82,17 @@ const elements = {
   modelRouterSelect: document.querySelector("#modelRouterSelect"),
   applyModelRouterButton: document.querySelector("#applyModelRouterButton"),
   workspaceTitle: document.querySelector("#workspaceTitle"),
+  workspaceHeaderMeta: document.querySelector("#workspaceHeaderMeta"),
+  workspaceStateBadgeRow: document.querySelector("#workspaceStateBadgeRow"),
+  processLoopBadge: document.querySelector("#processLoopBadge"),
+  processLoopHint: document.querySelector("#processLoopHint"),
+  processLoopBar: document.querySelector("#processLoopBar"),
   arisRouteCopy: document.querySelector("#arisRouteCopy"),
+  evalGate: document.querySelector("#evalGate"),
+  evalGateTimestamp: document.querySelector("#evalGateTimestamp"),
+  evalGateReason: document.querySelector("#evalGateReason"),
+  evalGateTraceButton: document.querySelector("#evalGateTraceButton"),
+  evalGateStateStrip: document.querySelector("#evalGateStateStrip"),
   arisGoalInput: document.querySelector("#arisGoalInput"),
   arisFocusPathsInput: document.querySelector("#arisFocusPathsInput"),
   arisPlanButton: document.querySelector("#arisPlanButton"),
@@ -91,13 +121,44 @@ const elements = {
   arisFameList: document.querySelector("#arisFameList"),
   arisActivityCount: document.querySelector("#arisActivityCount"),
   arisActivityList: document.querySelector("#arisActivityList"),
+  taskBoardBadge: document.querySelector("#taskBoardBadge"),
+  taskBoardList: document.querySelector("#taskBoardList"),
+  taskBoardMeta: document.querySelector("#taskBoardMeta"),
+  logsStripBadge: document.querySelector("#logsStripBadge"),
+  logsStripList: document.querySelector("#logsStripList"),
   arisSoftKillButton: document.querySelector("#arisSoftKillButton"),
   arisHardKillButton: document.querySelector("#arisHardKillButton"),
   arisResetButton: document.querySelector("#arisResetButton"),
+  operatorConsoleBadge: document.querySelector("#operatorConsoleBadge"),
+  operatorConsoleSummary: document.querySelector("#operatorConsoleSummary"),
+  operatorModeSelect: document.querySelector("#operatorModeSelect"),
+  operatorScopeSelect: document.querySelector("#operatorScopeSelect"),
+  operatorTargetSelect: document.querySelector("#operatorTargetSelect"),
+  operatorTierSelect: document.querySelector("#operatorTierSelect"),
+  operatorRunButton: document.querySelector("#operatorRunButton"),
+  operatorApproveButton: document.querySelector("#operatorApproveButton"),
+  operatorShipButton: document.querySelector("#operatorShipButton"),
+  operatorUnlinkButton: document.querySelector("#operatorUnlinkButton"),
+  operatorWorkspaceButton: document.querySelector("#operatorWorkspaceButton"),
+  operatorApprovalGuardButton: document.querySelector("#operatorApprovalGuardButton"),
+  operatorVoiceToggleButton: document.querySelector("#operatorVoiceToggleButton"),
+  operatorBugButton: document.querySelector("#operatorBugButton"),
+  operatorFeedbackButton: document.querySelector("#operatorFeedbackButton"),
+  operatorFeatureButton: document.querySelector("#operatorFeatureButton"),
+  operatorFormButton: document.querySelector("#operatorFormButton"),
+  chatSurface: document.querySelector("#chatSurface"),
+  chatSurfaceMeta: document.querySelector("#chatSurfaceMeta"),
+  chatInspectButton: document.querySelector("#chatInspectButton"),
+  chatQueueButton: document.querySelector("#chatQueueButton"),
+  rightRail: document.querySelector(".right-rail"),
   messageList: document.querySelector("#messageList"),
   emptyState: document.querySelector("#emptyState"),
   sessionList: document.querySelector("#sessionList"),
   sessionCount: document.querySelector("#sessionCount"),
+  workspaceRailCount: document.querySelector("#workspaceRailCount"),
+  workspaceRailList: document.querySelector("#workspaceRailList"),
+  recentTaskRailCount: document.querySelector("#recentTaskRailCount"),
+  recentTaskRailList: document.querySelector("#recentTaskRailList"),
   knowledgeList: document.querySelector("#knowledgeList"),
   knowledgeCount: document.querySelector("#knowledgeCount"),
   agentTrace: document.querySelector("#agentTrace"),
@@ -211,7 +272,7 @@ const elements = {
 };
 
 async function boot() {
-  await Promise.all([loadConfig(), loadSessions(), loadKnowledge(), loadMemory(), loadArisRuntime()]);
+  arisBootHydrationPending = true;
   elements.fastModeToggle.checked = true;
   elements.retrievalRange.addEventListener("input", syncRetrievalValue);
   elements.composer.addEventListener("submit", onSubmit);
@@ -222,10 +283,30 @@ async function boot() {
   elements.mysticAcknowledgeButton?.addEventListener("click", runMysticAcknowledge);
   elements.mysticMuteButton?.addEventListener("click", runMysticMute);
   elements.mysticReadButton?.addEventListener("click", runMysticReading);
+  elements.evalGateTraceButton?.addEventListener("click", () => focusSurface("outcome"));
   elements.arisSoftKillButton?.addEventListener("click", () => triggerArisKill("soft"));
   elements.arisHardKillButton?.addEventListener("click", () => triggerArisKill("hard"));
   elements.arisResetButton?.addEventListener("click", resetArisKillSwitch);
   elements.applyModelRouterButton?.addEventListener("click", applyModelRouterSelection);
+  elements.operatorModeSelect?.addEventListener("change", syncOperatorConsoleControls);
+  elements.operatorScopeSelect?.addEventListener("change", syncOperatorConsoleControls);
+  elements.operatorTargetSelect?.addEventListener("change", previewOperatorTarget);
+  elements.operatorTierSelect?.addEventListener("change", syncOperatorConsoleControls);
+  elements.operatorRunButton?.addEventListener("click", () => focusSurface(surfaceForOperatorTarget()));
+  elements.operatorApproveButton?.addEventListener("click", () => focusSurface("outcome"));
+  elements.operatorShipButton?.addEventListener("click", () => focusSurface("review"));
+  elements.operatorUnlinkButton?.addEventListener("click", unlinkTaskDraft);
+  elements.operatorWorkspaceButton?.addEventListener("click", () => focusSurface("workspace"));
+  elements.operatorApprovalGuardButton?.addEventListener("click", applyApprovalGuardMode);
+  elements.operatorVoiceToggleButton?.addEventListener("click", toggleOperatorVoice);
+  elements.operatorBugButton?.addEventListener("click", prefillBugReport);
+  elements.operatorFeedbackButton?.addEventListener("click", prefillFeedbackNote);
+  elements.operatorFeatureButton?.addEventListener("click", prefillFeatureRequest);
+  elements.operatorFormButton?.addEventListener("click", () => focusSurface("knowledge"));
+  elements.chatInspectButton?.addEventListener("click", inspectCurrentSurface);
+  elements.chatQueueButton?.addEventListener("click", () => focusSurface("forge"));
+  enableOperatorGroupToggles();
+  installKeyboardShortcuts();
   elements.saveKnowledgeButton.addEventListener("click", saveKnowledge);
   elements.fileInput.addEventListener("change", onFilesSelected);
   elements.repoBundleInput.addEventListener("change", uploadWorkspaceBundle);
@@ -240,13 +321,29 @@ async function boot() {
   elements.runCommandButton.addEventListener("click", runCommand);
   elements.runTaskButton.addEventListener("click", runWorkspaceTask);
   elements.resetSandboxButton.addEventListener("click", resetSandbox);
-  elements.refreshWorkspaceButton.addEventListener("click", refreshWorkspace);
+elements.refreshWorkspaceButton.addEventListener("click", () => {
+  void refreshWorkspace({ explicitReview: true });
+});
   elements.reloadChangedFileButton.addEventListener("click", reloadSelectedChangedFile);
   elements.stageChangedFileButton.addEventListener("click", stageSelectedChangedFile);
   elements.tailRunButton.addEventListener("click", reconnectActiveRun);
   elements.cancelRunButton.addEventListener("click", cancelActiveRun);
   elements.retryRunButton.addEventListener("click", retryActiveRun);
   syncRetrievalValue();
+  renderInitialShellState();
+  try {
+    await Promise.all([loadConfig(), loadSessions(), loadKnowledge(), loadMemory(), loadArisRuntime()]);
+  } finally {
+    arisBootHydrationPending = false;
+    if (!state.aris.status) {
+      renderArisStatus(null);
+    }
+    renderProcessLoopBar();
+    syncOperatorConsoleControls();
+  }
+}
+
+function renderInitialShellState() {
   renderWorkspaceFiles([]);
   renderProjectProfile(null);
   renderImports([]);
@@ -267,6 +364,13 @@ async function boot() {
   renderArisShames([]);
   renderArisFame([]);
   renderArisActivity([]);
+  renderTaskBoardDigest();
+  renderWorkspaceRail();
+  renderRecentTaskRail();
+  syncWorkspaceHeaderMeta();
+  renderLogsStrip();
+  renderProcessLoopBar();
+  syncOperatorConsoleControls();
 }
 
 async function loadConfig() {
@@ -292,13 +396,8 @@ async function loadConfig() {
     : "Import activity will appear here.";
   if (state.exec.allowedCommands.length) {
     elements.commandInput.title = `Allowed commands: ${state.exec.allowedCommands.join(", ")}`;
-    elements.allowedCommandsHint.textContent = `Allowed: ${state.exec.allowedCommands.join(", ")}`;
   }
-  if (!state.exec.shellEnabled) {
-    elements.runCommandButton.disabled = true;
-    elements.resetSandboxButton.disabled = true;
-    elements.commandOutput.textContent = "Shell execution requires the Docker backend.";
-  }
+  syncExecutionAffordances();
   if (searchConfig.max_results) {
     elements.searchStatus.textContent = `Search up to ${searchConfig.max_results} workspace hits per query.`;
     elements.symbolStatus.textContent = `Symbol tools read up to ${searchConfig.max_results} matching definitions at a time.`;
@@ -308,10 +407,6 @@ async function loadConfig() {
       `Snapshots keep up to ${snapshotConfig.max_snapshots || 0} saves and ${formatBytes(snapshotConfig.max_total_bytes)} per snapshot.`;
   }
   elements.projectStatus.textContent = "Project detection will appear here.";
-  if (config.aris) {
-    state.aris.status = config.aris;
-    renderArisStatus(config.aris);
-  }
 }
 
 function formatModelRouterLabel(modelRouter, config) {
@@ -378,31 +473,199 @@ async function loadMemory() {
   renderMemory();
 }
 
-async function loadArisRuntime() {
-  const sessionId = state.sessionId || "scratchpad";
-  const [statusResponse, activityResponse, discardResponse, shameResponse, fameResponse, mysticResponse] = await Promise.all([
+function parseUiTimestamp(value) {
+  const text = String(value || "").trim();
+  if (!text) {
+    return null;
+  }
+  const timestamp = Date.parse(text);
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+function arisDecisionFreshnessFloor(status) {
+  const startupTimestamp = parseUiTimestamp(status?.kill_switch?.diagnostics?.startup?.initialized_at);
+  return Math.max(startupTimestamp || 0, Date.now() - ARIS_DECISION_FRESHNESS_MS);
+}
+
+function activeSessionRecord() {
+  return state.sessions.find((item) => item.id === state.sessionId) || null;
+}
+
+function activeDecisionSessionId() {
+  return String(state.sessionId || "scratchpad").trim() || "scratchpad";
+}
+
+function decisionMatchesCurrentSession(decision, activeSessionId = activeDecisionSessionId()) {
+  if (!decision || typeof decision !== "object") {
+    return false;
+  }
+  if (decision.kind === "runtime_hydration" || decision.kind === "forge_repo_plan") {
+    return true;
+  }
+  const decisionSessionId = String(decision.session_id || "").trim();
+  if (!decisionSessionId) {
+    return true;
+  }
+  return decisionSessionId === activeSessionId;
+}
+
+function arisCurrentStateFloor(status, activeSession = activeSessionRecord()) {
+  const sessionTimestamp = parseUiTimestamp(
+    activeSession?.created_at || activeSession?.updated_at
+  );
+  return Math.max(arisDecisionFreshnessFloor(status), sessionTimestamp || 0);
+}
+
+function isRenderableArisDecision(decision, status, options = {}) {
+  if (!decision || typeof decision !== "object") {
+    return false;
+  }
+  if (decision.kind === "runtime_hydration") {
+    return true;
+  }
+  const activeSessionId = options.activeSessionId || activeDecisionSessionId();
+  const activeSession = options.activeSession || activeSessionRecord();
+  if (!decisionMatchesCurrentSession(decision, activeSessionId)) {
+    return false;
+  }
+  const decisionTimestamp = parseUiTimestamp(
+    decision.created_at ||
+      decision.recorded_at ||
+      decision.timestamp
+  );
+  if (decisionTimestamp == null) {
+    return false;
+  }
+  return decisionTimestamp >= arisCurrentStateFloor(status, activeSession);
+}
+
+function resolveLiveArisDecision(status, activity, explicitDecision = null) {
+  const activeSession = activeSessionRecord();
+  const activeSessionId = activeDecisionSessionId();
+  const renderOptions = {
+    activeSession,
+    activeSessionId,
+  };
+  if (isRenderableArisDecision(explicitDecision, status, renderOptions)) {
+    return explicitDecision;
+  }
+  if (isRenderableArisDecision(status?.latest_decision, status, renderOptions)) {
+    return status.latest_decision;
+  }
+  const latestActivityDecision = Array.isArray(activity)
+    ? activity.find(
+        (entry) =>
+          entry.kind === "governance_result" ||
+          entry.kind === "governance_review" ||
+          entry.kind === "forge_repo_plan"
+      ) || null
+    : null;
+  return isRenderableArisDecision(latestActivityDecision, status, renderOptions)
+    ? latestActivityDecision
+    : null;
+}
+
+function currentArisDecision() {
+  if (isArisTruthSyncPending()) {
+    return buildArisTruthSyncDecision();
+  }
+  return resolveLiveArisDecision(state.aris.status, state.aris.activity, state.aris.latestDecision);
+}
+
+function normalizeArisSystemTruth(statusPayload, healthPayload) {
+  const status = statusPayload && typeof statusPayload === "object" ? { ...statusPayload } : {};
+  const health = healthPayload && typeof healthPayload === "object" ? healthPayload : {};
+  if (typeof status.startup_ready !== "boolean" && typeof health.ok === "boolean") {
+    status.startup_ready = health.ok;
+  }
+  if ((!status.kill_switch || typeof status.kill_switch !== "object") && health.kill_switch) {
+    status.kill_switch = health.kill_switch;
+  }
+  if ((!status.execution_backend || typeof status.execution_backend !== "object") && health.execution_backend) {
+    status.execution_backend = health.execution_backend;
+  }
+  if ((!status.shell_execution || typeof status.shell_execution !== "object") && health.shell_execution) {
+    status.shell_execution = health.shell_execution;
+  }
+  return status;
+}
+
+async function getSystemTruthLegacy(sessionId = activeDecisionSessionId()) {
+  const [
+    statusResponse,
+    healthResponse,
+    activityResponse,
+    discardResponse,
+    shameResponse,
+    fameResponse,
+    mysticResponse,
+  ] = await Promise.all([
     fetch("/api/aris/status"),
-    fetch("/api/aris/activity?limit=20"),
+    fetch("/api/health"),
+    fetch(`/api/aris/activity?limit=20&session_id=${encodeURIComponent(sessionId)}`),
     fetch("/api/aris/discards?limit=20"),
     fetch("/api/aris/shame?limit=20"),
     fetch("/api/aris/fame?limit=20"),
     fetch(`/api/aris/mystic/status?session_id=${encodeURIComponent(sessionId)}`),
   ]);
-  state.aris.status = await statusResponse.json();
-  state.aris.activity = (await activityResponse.json()).activity || [];
-  state.aris.discards = (await discardResponse.json()).entries || [];
-  state.aris.shames = (await shameResponse.json()).entries || [];
-  state.aris.fame = (await fameResponse.json()).entries || [];
-  state.aris.mysticSession = await mysticResponse.json();
-  state.aris.latestDecision = state.aris.activity.find(
-    (entry) => entry.kind === "governance_result" || entry.kind === "governance_review"
-  ) || null;
-  renderArisStatus(state.aris.status);
-  renderMysticSession(state.aris.mysticSession);
-  renderArisDiscards(state.aris.discards);
-  renderArisShames(state.aris.shames);
-  renderArisFame(state.aris.fame);
-  renderArisActivity(state.aris.activity);
+  const statusPayload = await statusResponse.json();
+  const healthPayload = await healthResponse.json();
+  return {
+    status: normalizeArisSystemTruth(statusPayload, healthPayload),
+    activity: (await activityResponse.json()).activity || [],
+    discards: (await discardResponse.json()).entries || [],
+    shames: (await shameResponse.json()).entries || [],
+    fame: (await fameResponse.json()).entries || [],
+    mysticSession: await mysticResponse.json(),
+  };
+}
+
+async function getSystemTruth(sessionId = activeDecisionSessionId()) {
+  const response = await fetch(
+    `/api/aris/truth?session_id=${encodeURIComponent(sessionId)}&activity_limit=20&hall_limit=20`
+  );
+  if (!response.ok) {
+    return getSystemTruthLegacy(sessionId);
+  }
+  const payload = await response.json();
+  if (!payload || payload.ok === false) {
+    return getSystemTruthLegacy(sessionId);
+  }
+  return {
+    status: normalizeArisSystemTruth(payload.status || {}, payload.health || {}),
+    activity: Array.isArray(payload.activity) ? payload.activity : [],
+    discards: Array.isArray(payload.discards) ? payload.discards : [],
+    shames: Array.isArray(payload.shames) ? payload.shames : [],
+    fame: Array.isArray(payload.fame) ? payload.fame : [],
+    mysticSession: payload.mystic_session || null,
+  };
+}
+
+async function loadArisRuntime() {
+  const sessionId = state.sessionId || "scratchpad";
+  if (state.aris.status && !isArisBootHydrating()) {
+    arisTruthSyncPending = true;
+    renderArisStatus(state.aris.status);
+  }
+  try {
+    const truth = await getSystemTruth(sessionId);
+    state.aris.status = truth.status;
+    state.aris.activity = truth.activity;
+    state.aris.discards = truth.discards;
+    state.aris.shames = truth.shames;
+    state.aris.fame = truth.fame;
+    state.aris.mysticSession = truth.mysticSession;
+    state.aris.latestDecision = resolveLiveArisDecision(state.aris.status, state.aris.activity, state.aris.latestDecision);
+    arisTruthSyncPending = false;
+    renderArisStatus(state.aris.status);
+    renderMysticSession(state.aris.mysticSession);
+    renderArisDiscards(state.aris.discards);
+    renderArisShames(state.aris.shames);
+    renderArisFame(state.aris.fame);
+    renderArisActivity(state.aris.activity);
+  } finally {
+    arisTruthSyncPending = false;
+  }
 }
 
 async function loadRuns({ selectLatest = false } = {}) {
@@ -465,10 +728,11 @@ function renderSessions() {
       renderSymbols([]);
       elements.symbolStatus.textContent = "Symbol details will appear here.";
       renderSessions();
-      void Promise.all([refreshWorkspace(), loadRuns({ selectLatest: true }), loadRunAudit()]);
+      void Promise.all([refreshWorkspace({ explicitReview: false }), loadRuns({ selectLatest: true }), loadRunAudit()]);
     });
     elements.sessionList.appendChild(item);
   }
+  syncWorkspaceHeaderMeta();
 }
 
 function renderKnowledge() {
@@ -505,23 +769,109 @@ function renderMemory() {
   }
 }
 
+function isArisBootHydrating() {
+  return arisBootHydrationPending && !state.aris.status;
+}
+
+function isArisTruthSyncPending() {
+  return arisTruthSyncPending && !isArisBootHydrating();
+}
+
+function buildArisHydrationDecision() {
+  return {
+    kind: "runtime_hydration",
+    action_type: "runtime_hydration",
+    disposition: "hydrating",
+    reason: ARIS_HYDRATION_REASON,
+    requires_forge_eval: false,
+  };
+}
+
+function buildArisTruthSyncDecision() {
+  return {
+    kind: "runtime_sync",
+    action_type: "runtime_sync",
+    disposition: "syncing",
+    reason: ARIS_TRUTH_SYNC_REASON,
+    requires_forge_eval: false,
+    recorded_at: new Date().toISOString(),
+  };
+}
+
+function buildArisTruthSyncGateState() {
+  return {
+    label: "SYNCING",
+    tone: "review",
+    reason: ARIS_TRUTH_SYNC_REASON,
+    timestamp: "Resolving current governed truth...",
+  };
+}
+
+function buildArisHydrationGateState() {
+  return {
+    label: "SYNCING",
+    tone: "review",
+    reason: ARIS_HYDRATION_REASON,
+    timestamp: "Loading governed runtime...",
+  };
+}
+
 function renderArisStatus(status) {
   elements.arisHealthList.innerHTML = "";
   elements.arisGuardrailList.innerHTML = "";
   elements.arisEvaluationList.innerHTML = "";
   if (!status) {
+    const hydrating = isArisBootHydrating();
+    const gateState = hydrating ? buildArisHydrationGateState() : null;
     if (elements.arisLawBadge) {
-      elements.arisLawBadge.textContent = "offline";
+      elements.arisLawBadge.textContent = hydrating ? "1001 syncing" : "offline";
     }
     if (elements.arisOutcomeBadge) {
-      elements.arisOutcomeBadge.textContent = "idle";
+      elements.arisOutcomeBadge.textContent = hydrating ? gateState.label : "idle";
     }
+    if (elements.evalGateTimestamp) {
+      elements.evalGateTimestamp.textContent = gateState?.timestamp || "No governed decision yet";
+    }
+    if (elements.evalGateReason) {
+      elements.evalGateReason.textContent =
+        gateState?.reason ||
+        "The evaluation gate remains visible and non-collapsible. No transition is admitted without review.";
+    }
+    elements.evalGate?.classList.remove("eval-pass", "eval-block", "eval-review");
+    if (hydrating) {
+      elements.evalGate?.classList.add("eval-review");
+      if (elements.arisPlanButton) {
+        elements.arisPlanButton.disabled = true;
+        elements.arisPlanButton.textContent = "Hydrating Runtime";
+      }
+      const item = document.createElement("div");
+      item.className = "context-item truth-review";
+      item.innerHTML = `
+        <p class="context-label">Runtime Hydration</p>
+        <div class="muted">${escapeHtml(ARIS_HYDRATION_REASON)}</div>
+      `;
+      elements.arisEvaluationList.appendChild(item);
+      renderEvalGateStateStrip({}, buildArisHydrationDecision(), gateState);
+      renderArisRoute(buildArisHydrationDecision());
+    } else {
+      if (elements.evalGateStateStrip) {
+        elements.evalGateStateStrip.innerHTML = "";
+      }
+      renderArisRoute(null);
+    }
+    renderWorkspaceRail();
+    renderRecentTaskRail();
+    syncWorkspaceHeaderMeta();
+    syncChatSurfaceMeta();
+    renderProcessLoopBar();
+    syncOperatorConsoleControls();
+    syncExecutionAffordances(status);
     return;
   }
   const killSwitch = status.kill_switch || {};
   const shellExecution = status.shell_execution || {};
   const executionBackend = status.execution_backend || {};
-  const demoMode = status.demo_mode || {};
+  const runtimeMode = status.runtime_mode || status.demo_mode || {};
   const modelRouter = status.model_router || {};
   const lawBadge = status.meta_law_1001_active ? "1001 active" : "1001 offline";
   elements.brandName.textContent = status.system_name || "ARIS";
@@ -530,15 +880,24 @@ function renderArisStatus(status) {
   elements.modelLabel.textContent = formatModelRouterLabel(modelRouter, status);
   syncModelRouterControl(modelRouter);
   elements.arisLawBadge.textContent = lawBadge;
-  elements.arisOutcomeBadge.textContent = killSwitch.mode || "nominal";
-  if (elements.arisRouteCopy) {
-    elements.arisRouteCopy.textContent = demoMode.active
-      ? `Route: ${(demoMode.route || ["Jarvis Blueprint", "Operator", "Governance Review", "Outcome"]).join(" -> ")}`
-      : "Route: Jarvis blueprint inheritance -> Operator -> Forge -> Forge Eval when required -> output or Hall of Discard, Hall of Shame, or Hall of Fame.";
+  const latestDecision = currentArisDecision();
+  const gateState = deriveEvalGateState(status, latestDecision);
+  elements.arisOutcomeBadge.textContent = gateState.label;
+  if (elements.evalGateTimestamp) {
+    elements.evalGateTimestamp.textContent = gateState.timestamp;
   }
+  if (elements.evalGateReason) {
+    elements.evalGateReason.textContent = gateState.reason;
+  }
+  elements.evalGate?.classList.remove("eval-pass", "eval-block", "eval-review");
+  elements.evalGate?.classList.add(`eval-${gateState.tone}`);
+  if (elements.arisRouteCopy) {
+    elements.arisRouteCopy.textContent = "Route: Input → Forge → Eval → Outcome → Evolve";
+  }
+  renderEvalGateStateStrip(status, latestDecision, gateState);
   if (elements.arisPlanButton) {
-    elements.arisPlanButton.disabled = Boolean(demoMode.active);
-    elements.arisPlanButton.textContent = demoMode.active ? "Forge Stripped In Demo" : "Run Governed Plan";
+    elements.arisPlanButton.disabled = Boolean(runtimeMode.active);
+    elements.arisPlanButton.textContent = runtimeMode.active ? "Forge Unavailable In This Profile" : "Run Governed Plan";
   }
   const healthRows = [
     ["System", status.system_name || "ARIS"],
@@ -627,20 +986,28 @@ function renderArisStatus(status) {
   }
   for (const guardrail of status.guardrails || []) {
     const item = document.createElement("div");
-    item.className = "context-item";
+    item.className = `context-item ${guardrailToneClass(guardrail)}`;
     item.innerHTML = `
       <p class="context-label">${escapeHtml(guardrail.title || guardrail.id || "guardrail")}</p>
       <div class="muted">${escapeHtml(guardrail.summary || "")}</div>
     `;
     elements.arisGuardrailList.appendChild(item);
   }
-  const latest = state.aris.latestDecision;
+  const latest = latestDecision;
   if (!latest) {
     const item = document.createElement("div");
     item.className = "context-item muted";
     item.textContent = "No governed action has been recorded yet.";
     elements.arisEvaluationList.appendChild(item);
     renderArisRoute(null);
+    renderWorkspaceRail();
+    renderRecentTaskRail();
+    syncWorkspaceHeaderMeta();
+    syncChatSurfaceMeta();
+    renderProcessLoopBar();
+    renderTaskBoardDigest();
+    syncOperatorConsoleControls();
+    syncExecutionAffordances(status);
     return;
   }
   renderArisRoute(latest);
@@ -659,9 +1026,22 @@ function renderArisStatus(status) {
       : []),
     ...(latest.forge_eval || []),
   ];
+  if (!evalSections.length && latest.kind === "forge_repo_plan") {
+    evalSections.push({
+      title: "Repo Plan",
+      reason: latest.reason || latest.disposition || (latest.ok ? "Forge repo plan ready for review." : "Forge repo plan failed."),
+      passed: latest.ok ? undefined : false,
+    });
+  }
+  if (!evalSections.length && latest.kind === "runtime_sync") {
+    evalSections.push({
+      title: "Governed Truth Sync",
+      reason: latest.reason || ARIS_TRUTH_SYNC_REASON,
+    });
+  }
   for (const section of evalSections) {
     const item = document.createElement("div");
-    item.className = "context-item";
+    item.className = `context-item ${evaluationToneClass(section)}`;
     item.innerHTML = `
       <p class="context-label">${escapeHtml(section.title || section.id || section.mode || "check")}</p>
       <div class="muted">${escapeHtml(section.reason || "")}</div>
@@ -670,13 +1050,784 @@ function renderArisStatus(status) {
   }
   if (latest.hall_name) {
     const item = document.createElement("div");
-    item.className = "context-item";
+    item.className = `context-item ${latest.hall_name === "hall_of_fame" ? "truth-pass" : "truth-block"}`;
     item.innerHTML = `
       <p class="context-label">Disposition Hall</p>
       <div class="muted">${escapeHtml(latest.hall_name)}</div>
     `;
     elements.arisEvaluationList.appendChild(item);
   }
+  renderWorkspaceRail();
+  renderRecentTaskRail();
+  syncWorkspaceHeaderMeta();
+  syncChatSurfaceMeta();
+  renderProcessLoopBar();
+  renderTaskBoardDigest();
+  syncOperatorConsoleControls();
+  syncExecutionAffordances(status);
+}
+
+function deriveEvalGateState(status, latest) {
+  const killMode = String(status?.kill_switch?.mode || "nominal").toLowerCase();
+  const reason =
+    latest?.reason ||
+    status?.kill_switch?.summary ||
+    "The evaluation gate remains visible and non-collapsible. No transition is admitted without review.";
+  if (latest?.kind === "runtime_hydration" || latest?.kind === "runtime_sync" || latest?.disposition === "syncing") {
+    return {
+      label: "SYNCING",
+      tone: "review",
+      reason,
+      timestamp: formatTimestamp(latest?.created_at || latest?.recorded_at || ""),
+    };
+  }
+  if (latest?.verified || latest?.hall_name === "hall_of_fame") {
+    return {
+      label: "PASS",
+      tone: "pass",
+      reason,
+      timestamp: formatTimestamp(latest.created_at || latest.recorded_at || ""),
+    };
+  }
+  if (
+    killMode !== "nominal" ||
+    latest?.hall_name === "hall_of_discard" ||
+    latest?.disposition === "blocked" ||
+    latest?.disposition === "discarded"
+  ) {
+    return {
+      label: "BLOCK",
+      tone: "block",
+      reason,
+      timestamp: formatTimestamp(latest?.created_at || latest?.recorded_at || ""),
+    };
+  }
+  return {
+    label: "REVIEW",
+    tone: "review",
+    reason,
+    timestamp: formatTimestamp(latest?.created_at || latest?.recorded_at || ""),
+  };
+}
+
+function guardrailToneClass(guardrail) {
+  if (guardrail?.passed === false) {
+    return "truth-block";
+  }
+  if (guardrail?.passed === true) {
+    return "truth-pass";
+  }
+  return "truth-review";
+}
+
+function evaluationToneClass(section) {
+  if (section?.passed === false) {
+    return "truth-block";
+  }
+  if (section?.passed === true) {
+    return "truth-pass";
+  }
+  return "truth-review";
+}
+
+function processLoopSteps() {
+  if (isArisBootHydrating()) {
+    return [
+      { id: "input", title: "Input", status: "syncing", detail: state.sessionId ? "session context ready" : "scratchpad context ready" },
+      { id: "forge", title: "Forge", status: "syncing", detail: "loading worker state" },
+      { id: "eval", title: "Eval", status: "syncing", detail: ARIS_HYDRATION_REASON },
+      { id: "outcome", title: "Outcome", status: "syncing", detail: "waiting for latest governed decision" },
+      { id: "evolve", title: "Evolve", status: "syncing", detail: "loading classified traces" },
+    ];
+  }
+  const status = state.aris.status || {};
+  const latest = currentArisDecision();
+  const gateState = deriveEvalGateState(status, latest);
+  if (latest?.kind === "runtime_sync") {
+    return [
+      { id: "input", title: "Input", status: state.sessionId ? "session bound" : "scratchpad", detail: status?.runtime_profile || "workspace" },
+      { id: "forge", title: "Forge", status: "syncing", detail: "resolving governed worker truth" },
+      { id: "eval", title: "Eval", status: "syncing", detail: ARIS_TRUTH_SYNC_REASON },
+      { id: "outcome", title: "Outcome", status: "syncing", detail: "waiting for current governed decision" },
+      { id: "evolve", title: "Evolve", status: "syncing", detail: "refreshing classified trace state" },
+    ];
+  }
+  const evolveCount = Number(status?.evolve_engine?.count || 0);
+  const forgeStatus = status?.forge?.connected
+    ? status?.forge?.provider_configured
+      ? "worker ready"
+      : "connected / awaiting provider"
+    : "worker offline";
+  const evalStatus = latest
+    ? latest.requires_forge_eval
+      ? gateState.label
+      : gateState.label === "PASS"
+        ? "observed"
+        : gateState.label
+    : "standby";
+  const outcomeStatus = latest?.hall_name
+    ? latest.hall_name.replaceAll("_", " ")
+    : latest?.disposition || "standby";
+  const evolveStatus = status?.evolve_engine?.active ? `${evolveCount} trace${evolveCount === 1 ? "" : "s"}` : "idle";
+  return [
+    { id: "input", title: "Input", status: state.sessionId ? "session bound" : "scratchpad", detail: status?.runtime_profile || "workspace" },
+    { id: "forge", title: "Forge", status: forgeStatus, detail: status?.forge_eval?.connected ? "eval lane connected" : "eval lane offline" },
+    { id: "eval", title: "Eval", status: evalStatus, detail: gateState.reason },
+    { id: "outcome", title: "Outcome", status: outcomeStatus, detail: latest?.reason || "No governed outcome yet." },
+    { id: "evolve", title: "Evolve", status: evolveStatus, detail: status?.evolve_engine?.active ? "classified traces only" : "experience lane offline" },
+  ];
+}
+
+function renderProcessLoopBar() {
+  if (!elements.processLoopBar) {
+    return;
+  }
+  const steps = processLoopSteps();
+  elements.processLoopBar.innerHTML = "";
+  if (elements.processLoopBadge) {
+    elements.processLoopBadge.textContent = `${steps.length} locked steps`;
+  }
+  if (elements.processLoopHint) {
+    elements.processLoopHint.textContent = "Input → Forge → Eval → Outcome → Evolve";
+  }
+  steps.forEach((step, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `process-loop-step phase-${String(step.status || "idle")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")}${index < steps.length - 1 ? " has-connector" : ""}${
+      uiState.focusedSurface === step.id ? " is-focused" : ""
+    }${
+      step.id === "eval" && deriveEvalGateState(state.aris.status || {}, currentArisDecision()).label === "PASS"
+        ? " is-active"
+        : ""
+    }`;
+    button.title = `${step.title}: ${step.status}${step.detail ? ` — ${step.detail}` : ""}`;
+    button.innerHTML = `
+      <div class="process-loop-kicker">
+        <span>${escapeHtml(step.title)}</span>
+        <span>${escapeHtml(step.id === "input" ? "01" : step.id === "forge" ? "02" : step.id === "eval" ? "03" : step.id === "outcome" ? "04" : "05")}</span>
+      </div>
+      <p class="process-loop-title">${escapeHtml(step.status)}</p>
+      <div class="process-loop-status">${escapeHtml(step.detail || "")}</div>
+    `;
+    button.addEventListener("click", () => focusSurface(step.id));
+    elements.processLoopBar.appendChild(button);
+  });
+}
+
+function classifyPromptIntent(prompt, mode = "chat") {
+  const normalized = String(prompt || "").toLowerCase();
+  if (!normalized) {
+    return mode === "agent" ? "Orchestration" : "Conversation";
+  }
+  if (/(inspect|analy[sz]e|trace|audit|review|search|find|map)/.test(normalized)) {
+    return "Inspection";
+  }
+  if (/(fix|bug|debug|repair|patch|failure|error)/.test(normalized)) {
+    return "Bugfix";
+  }
+  if (/(refactor|rewrite|cleanup|simplif|rename|rebind)/.test(normalized)) {
+    return "Refactor";
+  }
+  if (/(add|create|build|implement|wire|connect|ship)/.test(normalized)) {
+    return mode === "agent" ? "Orchestration" : "Feature Build";
+  }
+  if (/(plan|strategy|roadmap|proposal)/.test(normalized)) {
+    return "Planning";
+  }
+  return mode === "agent" ? "Orchestration" : "Conversation";
+}
+
+function summarizeMemoryEntry(entry) {
+  if (!entry || typeof entry !== "object") {
+    return "";
+  }
+  return [
+    entry.summary,
+    entry.name,
+    entry.title,
+    entry.fact,
+    entry.text,
+    entry.content,
+    entry.preview,
+  ]
+    .map((value) => formatUiTextBlock(value))
+    .find(Boolean) || "";
+}
+
+function buildInlineDecisionSnapshot(prompt, mode = elements.modeSelect?.value || "chat") {
+  const intent = classifyPromptIntent(prompt, mode);
+  const approvals = Array.isArray(state.approvals)
+    ? state.approvals.filter((approval) => approval.kind !== "patch")
+    : [];
+  const pendingPatches = Array.isArray(state.workspace.pendingPatches) ? state.workspace.pendingPatches : [];
+  const changedFiles = Array.isArray(state.workspace.review?.changed_files)
+    ? state.workspace.review.changed_files
+    : [];
+  const shames = Array.isArray(state.aris.shames) ? state.aris.shames : [];
+  const discards = Array.isArray(state.aris.discards) ? state.aris.discards : [];
+  const gateState = deriveEvalGateState(state.aris.status, currentArisDecision());
+  const normalized = String(prompt || "").toLowerCase();
+  let riskScore = 0.18;
+  if (mode === "agent") {
+    riskScore += 0.18;
+  }
+  if (approvals.length) {
+    riskScore += 0.14;
+  }
+  if (pendingPatches.length || changedFiles.length) {
+    riskScore += 0.12;
+  }
+  if (/(runtime|law|kill|lock|integrity|approval|merge|release|deploy|mutation|protected)/.test(normalized)) {
+    riskScore += 0.2;
+  }
+  if (/(repo|workspace|branch|diff|patch|forge|eval)/.test(normalized)) {
+    riskScore += 0.08;
+  }
+  if (discards.length || shames.length) {
+    riskScore += 0.06;
+  }
+  if (gateState.tone === "block") {
+    riskScore += 0.12;
+  } else if (gateState.tone === "review") {
+    riskScore += 0.08;
+  }
+  const clampedRisk = Math.max(0.08, Math.min(0.94, riskScore));
+  const riskLabel = clampedRisk >= 0.67 ? "High" : clampedRisk >= 0.38 ? "Guarded" : "Low";
+  const tone = clampedRisk >= 0.67 ? "block" : clampedRisk >= 0.38 ? "review" : "pass";
+  const predictedFailure = Math.round(clampedRisk * 100);
+  const confidence = Math.round(
+    Math.max(
+      52,
+      Math.min(
+        92,
+        56 +
+          (approvals.length ? 8 : 0) +
+          (changedFiles.length ? 6 : 0) +
+          (mode === "agent" ? 8 : 0) +
+          (state.memory.length ? 4 : 0)
+      )
+    )
+  );
+  const why = [];
+  if (approvals.length) {
+    why.push(`${approvals.length} approval-sensitive path${approvals.length === 1 ? "" : "s"} already pending`);
+  }
+  if (pendingPatches.length || changedFiles.length) {
+    const changeSurfaceCount = Math.max(pendingPatches.length, changedFiles.length);
+    why.push(`${changeSurfaceCount} repo-facing change surface${changeSurfaceCount === 1 ? "" : "s"} active`);
+  }
+  if (/(runtime|law|kill|lock|integrity|mutation|protected)/.test(normalized)) {
+    why.push("Touches protected runtime or governance boundaries");
+  }
+  if (state.aris.status?.kill_switch?.halted) {
+    why.push("Kill switch is active, so new execution stays constrained");
+  }
+  if (!why.length) {
+    why.push("Current request stays inside the normal governed workspace lane");
+  }
+  const memory = [];
+  const recentDiscard = discards[0];
+  const recentShame = shames[0];
+  if (recentDiscard) {
+    memory.push(`Recent discard: ${formatUiTextBlock(recentDiscard.reason || recentDiscard.summary || recentDiscard.kind)}`);
+  }
+  if (recentShame) {
+    memory.push(`Recent shame: ${formatUiTextBlock(recentShame.reason || recentShame.summary || recentShame.kind)}`);
+  }
+  const memoryFact = state.memory.map(summarizeMemoryEntry).find(Boolean);
+  if (memoryFact) {
+    memory.push(`Memory: ${memoryFact}`);
+  }
+  return {
+    intent,
+    riskLabel,
+    predictedFailure,
+    confidence,
+    tone,
+    why: why.slice(0, 3),
+    memory: memory.slice(0, 2),
+    inspectSurface: approvals.length
+      ? "outcome"
+      : changedFiles.length
+        ? "review"
+        : gateState.tone === "block"
+          ? "eval"
+          : "workspace",
+    gateLabel: gateState.label,
+    routeLabel: gateState.routeLabel,
+  };
+}
+
+function renderAssistantIntelligence(row, snapshot) {
+  if (!row || !snapshot) {
+    return;
+  }
+  const block = row.querySelector(".message-intelligence");
+  if (!block) {
+    return;
+  }
+  const whyList = snapshot.why.length
+    ? `<ul>${snapshot.why.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+    : `<div class="muted">No elevated constraints detected.</div>`;
+  const memoryList = snapshot.memory.length
+    ? snapshot.memory
+        .map((item) => `<span class="message-memory-chip">${escapeHtml(item)}</span>`)
+        .join("")
+    : `<span class="message-memory-chip is-muted">No strong memory signal attached.</span>`;
+  block.innerHTML = `
+    <div class="message-intelligence-header">
+      <span class="message-intelligence-title">Decision Intelligence</span>
+      <span class="message-intelligence-tone tone-${snapshot.tone}">${escapeHtml(snapshot.riskLabel)}</span>
+    </div>
+    <div class="message-intelligence-grid">
+      <div class="message-intelligence-stat">
+        <span class="message-intelligence-label">Intent</span>
+        <strong>${escapeHtml(snapshot.intent)}</strong>
+      </div>
+      <div class="message-intelligence-stat">
+        <span class="message-intelligence-label">Predicted Failure</span>
+        <strong>${escapeHtml(String(snapshot.predictedFailure))}%</strong>
+      </div>
+      <div class="message-intelligence-stat">
+        <span class="message-intelligence-label">Confidence</span>
+        <strong>${escapeHtml(String(snapshot.confidence))}%</strong>
+      </div>
+      <div class="message-intelligence-stat">
+        <span class="message-intelligence-label">Governed Route</span>
+        <strong>${escapeHtml(snapshot.routeLabel || snapshot.gateLabel || "Locked")}</strong>
+      </div>
+    </div>
+    <div class="message-intelligence-why">
+      <span class="message-intelligence-label">Why</span>
+      ${whyList}
+    </div>
+    <div class="message-intelligence-memory">
+      <span class="message-intelligence-label">Memory</span>
+      <div class="message-memory-row">${memoryList}</div>
+    </div>
+  `;
+  row.dataset.inspectSurface = snapshot.inspectSurface;
+}
+
+function getInlineApprovalTarget() {
+  const approvals = Array.isArray(state.approvals)
+    ? state.approvals.filter((approval) => approval.kind !== "patch")
+    : [];
+  if (!approvals.length) {
+    return null;
+  }
+  const activeRunApproval = state.activeRunId
+    ? approvals.find((approval) => String(approval.run_id || "") === String(state.activeRunId))
+    : null;
+  return activeRunApproval || approvals[0];
+}
+
+function wireAssistantActions(row) {
+  if (!row) {
+    return;
+  }
+  const approve = row.querySelector('[data-message-action="approve"]');
+  const reject = row.querySelector('[data-message-action="reject"]');
+  const inspect = row.querySelector('[data-message-action="inspect"]');
+  approve?.addEventListener("click", async (event) => {
+    const approval = getInlineApprovalTarget();
+    if (!approval) {
+      focusSurface("outcome");
+      flashElement(elements.evalGate);
+      flashElement(elements.rightRail || elements.evalGate);
+      return;
+    }
+    await handleApprovalDecision(approval, true, event.currentTarget);
+  });
+  reject?.addEventListener("click", async (event) => {
+    const approval = getInlineApprovalTarget();
+    if (!approval) {
+      focusSurface("eval");
+      flashElement(elements.evalGate);
+      return;
+    }
+    await handleApprovalDecision(approval, false, event.currentTarget);
+  });
+  inspect?.addEventListener("click", () => inspectCurrentSurface(row.dataset.inspectSurface || ""));
+}
+
+function syncChatSurfaceMeta() {
+  if (!elements.chatSurfaceMeta) {
+    return;
+  }
+  const approvals = Array.isArray(state.approvals)
+    ? state.approvals.filter((approval) => approval.kind !== "patch").length
+    : 0;
+  const taskCount = Array.isArray(state.workspace.tasks) ? state.workspace.tasks.length : 0;
+  const meta = [
+    `Session ${state.sessionId || "scratchpad"}`,
+    `Mode ${elements.modeSelect?.value || "chat"}`,
+    approvals ? `${approvals} pending approval` : "Approval lane clear",
+    taskCount ? `${taskCount} queued task${taskCount === 1 ? "" : "s"}` : "Queue idle",
+  ];
+  elements.chatSurfaceMeta.innerHTML = meta
+    .map((item) => `<span class="chat-meta-pill">${escapeHtml(item)}</span>`)
+    .join("");
+}
+
+function inspectCurrentSurface(preferredSurface = "") {
+  const fallbackSurface = preferredSurface || uiState.focusedSurface || "outcome";
+  focusSurface(fallbackSurface);
+  elements.rightRail?.scrollIntoView({ block: "start", behavior: "smooth" });
+  flashElement(elements.rightRail || elements.evalGate);
+}
+
+function renderTaskBoardDigest() {
+  if (!elements.taskBoardList || !elements.taskBoardMeta || !elements.taskBoardBadge) {
+    return;
+  }
+  const tasks = Array.isArray(state.workspace.tasks) ? state.workspace.tasks : [];
+  const approvals = Array.isArray(state.approvals) ? state.approvals.filter((approval) => approval.kind !== "patch") : [];
+  const changedFiles = Array.isArray(state.workspace.review?.changed_files) ? state.workspace.review.changed_files : [];
+  const project = state.workspace.projectProfile || null;
+  const cards = [];
+  if (tasks.length) {
+    cards.push({
+      label: "Queue",
+      value: `${tasks.length} active`,
+      detail: tasks.slice(0, 3).map((task) => `${task.title || "Task"} · ${task.status || "unknown"}`).join(" | "),
+      tone: "truth-review",
+    });
+  }
+  if (approvals.length) {
+    cards.push({
+      label: "Approval",
+      value: `${approvals.length} pending`,
+      detail: approvals.slice(0, 2).map((approval) => approval.title || approval.kind || "approval").join(" | "),
+      tone: approvals.length ? "truth-block" : "truth-pass",
+    });
+  }
+  if (changedFiles.length) {
+    cards.push({
+      label: "Review",
+      value: `${changedFiles.length} changed`,
+      detail: state.workspace.review?.summary || "Workspace review is active.",
+      tone: "truth-review",
+    });
+  }
+  if (project) {
+    cards.push({
+      label: "Project",
+      value: `${(project.languages || []).length} languages`,
+      detail: project.signals?.join(" | ") || "Signals detected.",
+      tone: "truth-pass",
+    });
+  }
+
+  const badgeParts = [];
+  if (tasks.length) {
+    badgeParts.push(`${tasks.length} running`);
+  }
+  if (approvals.length) {
+    badgeParts.push(`${approvals.length} review`);
+  }
+  if (changedFiles.length) {
+    badgeParts.push(`${changedFiles.length} changed`);
+  }
+  elements.taskBoardBadge.textContent = badgeParts.join(" • ") || "queue idle";
+  elements.taskBoardList.innerHTML = "";
+  elements.taskBoardMeta.innerHTML = "";
+
+  if (!cards.length) {
+    const item = document.createElement("div");
+    item.className = "context-item muted";
+    item.textContent = "No active queue surfaces yet.";
+    elements.taskBoardList.appendChild(item);
+  } else {
+    for (const card of cards) {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = `context-item context-item-button task-strip-card ${card.tone || ""}`;
+      item.title = card.detail || card.value || card.label;
+      item.innerHTML = `
+        <p class="context-label">${escapeHtml(card.label)}</p>
+        <div class="task-strip-value">${escapeHtml(card.value)}</div>
+        <div class="muted task-strip-detail">${escapeHtml(card.detail || "")}</div>
+      `;
+      item.addEventListener("click", () =>
+        focusSurface(
+          card.label === "Queue"
+            ? "forge"
+            : card.label === "Approval"
+              ? "outcome"
+              : card.label === "Review"
+                ? "review"
+                : "workspace"
+        )
+      );
+      elements.taskBoardList.appendChild(item);
+    }
+  }
+
+  const metaRows = [
+    ["Selected Session", state.sessionId || "scratchpad"],
+    ["Run Lane", state.activeRun?.status || state.runs[0]?.status || "idle"],
+    ["Memory Facts", `${state.memory.length} remembered`],
+    ["Knowledge Docs", `${state.knowledge.length} loaded`],
+  ];
+  for (const [label, value] of metaRows) {
+    const item = document.createElement("div");
+    item.className = "context-item task-summary-card";
+    item.innerHTML = `
+      <p class="context-label">${escapeHtml(label)}</p>
+      <div class="muted">${escapeHtml(String(value || ""))}</div>
+    `;
+    elements.taskBoardMeta.appendChild(item);
+  }
+  renderRecentTaskRail();
+  syncChatSurfaceMeta();
+}
+
+function renderLogsStrip() {
+  if (!elements.logsStripList || !elements.logsStripBadge) {
+    return;
+  }
+  const entries = Array.isArray(state.aris.activity) ? state.aris.activity.slice(0, 5) : [];
+  elements.logsStripBadge.textContent = `${entries.length} live`;
+  elements.logsStripList.innerHTML = "";
+  if (!entries.length) {
+    const item = document.createElement("div");
+    item.className = "context-item muted";
+    item.textContent = "No live activity yet.";
+    elements.logsStripList.appendChild(item);
+    return;
+  }
+  for (const entry of entries) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = `context-item context-item-button ${
+      entry.hall_name === "hall_of_fame"
+        ? "truth-pass"
+        : entry.hall_name === "hall_of_discard" || entry.disposition === "discarded" || entry.disposition === "blocked"
+          ? "truth-block"
+          : "truth-review"
+    }`;
+    item.title = `${entry.kind || entry.action_type || "activity"} · ${entry.reason || entry.goal || entry.disposition || ""}`;
+    item.innerHTML = `
+      <p class="context-label">${escapeHtml(entry.kind || entry.action_type || "activity")}</p>
+      <div class="muted">${escapeHtml(entry.reason || entry.goal || entry.disposition || "")}</div>
+      <div class="muted">${escapeHtml(formatTimestamp(entry.recorded_at || entry.created_at || ""))}</div>
+    `;
+    item.addEventListener("click", () => focusSurface("outcome"));
+    elements.logsStripList.appendChild(item);
+  }
+}
+
+function flashElement(element) {
+  if (!element) {
+    return;
+  }
+  element.classList.remove("focus-flash");
+  void element.offsetWidth;
+  element.classList.add("focus-flash");
+}
+
+function focusSurface(surface) {
+  uiState.focusedSurface = surface;
+  const target =
+    surface === "input"
+      ? elements.messageInput
+      : surface === "forge"
+        ? elements.taskGoalInput || elements.arisGoalInput
+        : surface === "eval"
+          ? elements.evalGate
+          : surface === "outcome"
+            ? elements.arisActivityList
+            : surface === "evolve"
+              ? elements.memoryList
+              : surface === "workspace"
+                ? elements.projectMeta
+                : surface === "review"
+                  ? elements.reviewSummary
+                  : surface === "knowledge"
+                    ? elements.docContentInput
+                    : null;
+  if (target?.scrollIntoView) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  if (target?.focus) {
+    target.focus({ preventScroll: true });
+  }
+  flashElement(target?.closest?.(".panel") || target);
+  renderProcessLoopBar();
+}
+
+function syncOperatorConsoleControls() {
+  if (!elements.operatorConsoleBadge || !elements.operatorConsoleSummary) {
+    return;
+  }
+  uiState.operator.mode = elements.operatorModeSelect?.value || uiState.operator.mode;
+  uiState.operator.scope = elements.operatorScopeSelect?.value || uiState.operator.scope;
+  uiState.operator.target = elements.operatorTargetSelect?.value || uiState.operator.target;
+  uiState.operator.tier = elements.operatorTierSelect?.value || uiState.operator.tier;
+  const targetSurface = surfaceForOperatorTarget();
+  elements.operatorConsoleBadge.textContent = `${uiState.operator.mode} · ${uiState.operator.tier}`;
+  elements.operatorConsoleSummary.innerHTML = `
+    <p class="context-label">Live Operator Frame</p>
+    <div class="muted">
+      Mode ${escapeHtml(uiState.operator.mode)} · Scope ${escapeHtml(uiState.operator.scope)} · Target ${escapeHtml(uiState.operator.target)} · Tier ${escapeHtml(uiState.operator.tier)}
+    </div>
+    <div class="muted">
+      Voice ${uiState.operator.voiceEnabled ? "enabled" : "muted"} · EvalGate remains dominant · Loop order locked to Input → Forge → Eval → Outcome → Evolve
+    </div>
+    <div class="muted">
+      Target focus lane: ${escapeHtml(targetSurface)} · Alt+1..5 moves across the locked process loop.
+    </div>
+  `;
+  if (elements.operatorRunButton) {
+    elements.operatorRunButton.title = `Focus ${targetSurface} lane`;
+  }
+  if (elements.operatorApproveButton) {
+    elements.operatorApproveButton.title = "Focus governed outcome and approval surfaces";
+  }
+  if (elements.operatorShipButton) {
+    elements.operatorShipButton.title = "Focus review and release-facing traces";
+  }
+  if (elements.operatorWorkspaceButton) {
+    elements.operatorWorkspaceButton.title = "Focus workspace and repo surfaces";
+  }
+}
+
+function surfaceForOperatorTarget() {
+  const target = elements.operatorTargetSelect?.value || uiState.operator.target || "Forge";
+  if (target === "Eval") {
+    return "eval";
+  }
+  if (target === "Outcome") {
+    return "outcome";
+  }
+  if (target === "Evolve") {
+    return "evolve";
+  }
+  return "forge";
+}
+
+function previewOperatorTarget() {
+  uiState.operator.target = elements.operatorTargetSelect?.value || uiState.operator.target;
+  uiState.focusedSurface = surfaceForOperatorTarget();
+  syncOperatorConsoleControls();
+  renderProcessLoopBar();
+  flashElement(elements.processLoopBar);
+}
+
+function enableOperatorGroupToggles() {
+  document.querySelectorAll(".operator-group").forEach((group) => {
+    const header = group.querySelector(".operator-group-header");
+    if (!header || header.dataset.bound === "true") {
+      return;
+    }
+    header.dataset.bound = "true";
+    header.tabIndex = 0;
+    header.setAttribute("role", "button");
+    header.setAttribute("aria-expanded", "true");
+    const toggle = () => {
+      const collapsed = group.classList.toggle("is-collapsed");
+      header.setAttribute("aria-expanded", String(!collapsed));
+    };
+    header.addEventListener("click", toggle);
+    header.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggle();
+      }
+    });
+  });
+}
+
+function installKeyboardShortcuts() {
+  window.addEventListener("keydown", (event) => {
+    const target = event.target;
+    if (
+      !event.altKey ||
+      event.defaultPrevented ||
+      (target instanceof HTMLElement &&
+        target.closest("input, textarea, select, [contenteditable='true']"))
+    ) {
+      return;
+    }
+    const surface =
+      event.key === "1"
+        ? "input"
+        : event.key === "2"
+          ? "forge"
+          : event.key === "3"
+            ? "eval"
+            : event.key === "4"
+              ? "outcome"
+              : event.key === "5"
+                ? "evolve"
+                : "";
+    if (!surface) {
+      return;
+    }
+    event.preventDefault();
+    focusSurface(surface);
+  });
+}
+
+function applyApprovalGuardMode() {
+  if (elements.operatorModeSelect) {
+    elements.operatorModeSelect.value = "Guard";
+  }
+  if (elements.operatorTierSelect) {
+    elements.operatorTierSelect.value = "Guard";
+  }
+  syncOperatorConsoleControls();
+  focusSurface("eval");
+}
+
+function toggleOperatorVoice() {
+  uiState.operator.voiceEnabled = !uiState.operator.voiceEnabled;
+  if (elements.operatorVoiceToggleButton) {
+    elements.operatorVoiceToggleButton.textContent = uiState.operator.voiceEnabled ? "Voice On" : "Voice Off";
+  }
+  if (!uiState.operator.voiceEnabled && "speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+  syncOperatorConsoleControls();
+}
+
+function unlinkTaskDraft() {
+  if (elements.taskTitleInput) {
+    elements.taskTitleInput.value = "";
+  }
+  if (elements.taskGoalInput) {
+    elements.taskGoalInput.value = "";
+  }
+  if (elements.taskCwdInput) {
+    elements.taskCwdInput.value = "";
+  }
+  if (elements.taskCommandsInput) {
+    elements.taskCommandsInput.value = "";
+  }
+  focusSurface("forge");
+}
+
+function prefillBugReport() {
+  elements.messageInput.value =
+    "Bug report:\n- Surface:\n- Expected:\n- Actual:\n- Governance state:\n- Repro steps:\n";
+  focusSurface("input");
+}
+
+function prefillFeedbackNote() {
+  elements.docNameInput.value = "operator-feedback.md";
+  elements.docContentInput.value =
+    "# Operator Feedback\n\n## What worked\n- \n\n## What hurt comprehension\n- \n\n## Suggested refinement\n- \n";
+  focusSurface("knowledge");
+}
+
+function prefillFeatureRequest() {
+  elements.taskTitleInput.value = "Feature request";
+  elements.taskGoalInput.value =
+    "Design and stage a governed feature request with visible EvalGate review, operator approval, and trace-safe outcome handling.";
+  focusSurface("forge");
 }
 
 function speakMysticReminder(message, reminderId) {
@@ -817,30 +1968,64 @@ function renderArisRoute(entry) {
     return;
   }
   elements.arisRouteList.innerHTML = "";
-  const stages = Array.isArray(entry?.route)
-    ? entry.route.map((item) => [item.stage, item.status])
-    : entry
+  const status = state.aris.status || {};
+  const gateState = deriveEvalGateState(status, entry || state.aris.latestDecision || null);
+  const isHydrating = entry?.kind === "runtime_hydration";
+  const isTruthSync = entry?.kind === "runtime_sync";
+  const isSyncing = isHydrating || isTruthSync;
+  const steps = entry
     ? [
-        ["Jarvis Blueprint", "observed"],
-        ["Operator", entry.operator_decision || "approved"],
-        ["Forge", entry.kind === "forge_repo_plan" ? (entry.ok ? "completed" : "failed") : "governed"],
-        ["Forge Eval", entry.requires_forge_eval ? (entry.verified ? "verified" : entry.disposition || "review") : "proposal-only"],
-        ["Outcome", entry.disposition || "idle"],
+        [
+          "Input",
+          isSyncing
+            ? isHydrating
+              ? "boot hydration"
+              : "truth sync"
+            : `${state.sessionId ? "session bound" : "scratchpad"} · ${entry.action_type || entry.kind || "observed"}`,
+          "input",
+        ],
+        [
+          "Forge",
+          isSyncing
+            ? "syncing"
+            : entry.kind === "forge_repo_plan"
+              ? entry.ok
+                ? "completed"
+                : "failed"
+              : entry.requires_forge_eval
+                ? "worker governed"
+                : "proposal lane",
+          "forge",
+        ],
+        ["Eval", isSyncing ? "SYNCING" : entry.requires_forge_eval || gateState.label === "BLOCK" ? gateState.label : "review", "eval"],
+        ["Outcome", isSyncing ? "syncing" : entry.hall_name || entry.disposition || "idle", "outcome"],
+        [
+          "Evolve",
+          isSyncing
+            ? "syncing"
+            : status?.evolve_engine?.active
+              ? `${status.evolve_engine.count || 0} classified traces`
+              : "idle",
+          "evolve",
+        ],
       ]
     : [
-        ["Jarvis Blueprint", "standby"],
-        ["Operator", "standby"],
-        ["Forge", "standby"],
-        ["Forge Eval", "standby"],
-        ["Outcome", "standby"],
+        ["Input", "standby", "input"],
+        ["Forge", "standby", "forge"],
+        ["Eval", "standby", "eval"],
+        ["Outcome", "standby", "outcome"],
+        ["Evolve", "standby", "evolve"],
       ];
-  for (const [label, value] of stages) {
-    const item = document.createElement("div");
-    item.className = "context-item";
+  for (const [label, value, surface] of steps) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "context-item context-item-button route-button";
+    item.title = `${label}: ${value}`;
     item.innerHTML = `
       <p class="context-label">${escapeHtml(label)}</p>
       <div class="muted">${escapeHtml(String(value || ""))}</div>
     `;
+    item.addEventListener("click", () => focusSurface(surface));
     elements.arisRouteList.appendChild(item);
   }
 }
@@ -921,13 +2106,211 @@ function renderArisActivity(activity) {
   for (const entry of activity) {
     const item = document.createElement("div");
     item.className = "context-item";
+    const scopeSuffix = entry.historical ? " · historical" : "";
+    const scopeReason = entry.historical
+      ? entry.scope_reason === "outside_current_session"
+        ? "Outside the current session."
+        : "Recorded before the current session."
+      : "Eligible for current-state derivation.";
     item.innerHTML = `
-      <p class="context-label">${escapeHtml(entry.kind || entry.action_type || "activity")}</p>
+      <p class="context-label">${escapeHtml(entry.kind || entry.action_type || "activity")}${escapeHtml(scopeSuffix)}</p>
       <div class="muted">${escapeHtml(entry.reason || entry.goal || entry.disposition || "")}</div>
+      <div class="muted">${escapeHtml(scopeReason)}</div>
       <div class="muted">${escapeHtml(entry.recorded_at || "")}</div>
     `;
     elements.arisActivityList.appendChild(item);
   }
+}
+
+function renderWorkspaceRail() {
+  if (!elements.workspaceRailList || !elements.workspaceRailCount) {
+    return;
+  }
+  const status = state.aris.status || {};
+  const project = state.workspace.projectProfile || null;
+  const items = [];
+  if (status.repo_target) {
+    items.push({
+      label: "Active Repo",
+      value: status.repo_target,
+      detail: `${status.runtime_profile || "full"} runtime · ${status.startup_ready ? "ready" : "blocked"}`,
+      tone: status.startup_ready ? "truth-pass" : "truth-block",
+    });
+  }
+  if (project) {
+    const languages = Array.isArray(project.languages) ? project.languages : [];
+    const frameworks = Array.isArray(project.frameworks) ? project.frameworks : [];
+    items.push({
+      label: "Project Profile",
+      value: languages.length ? languages.join(", ") : "Signals detected",
+      detail: frameworks.length ? `Frameworks: ${frameworks.join(", ")}` : project.signals?.join(" · ") || "Repo signals available",
+      tone: "truth-review",
+    });
+  }
+  const executionDetail = status.shell_execution?.detail || status.execution_backend?.docker_detail || "";
+  if (status.execution_backend || status.shell_execution) {
+    items.push({
+      label: "Runtime Lane",
+      value: status.shell_execution?.enabled ? status.shell_execution?.active_backend || "ready" : "disabled",
+      detail: executionDetail || "Execution lane available.",
+      tone: status.shell_execution?.degraded ? "truth-block" : "truth-pass",
+    });
+  }
+
+  elements.workspaceRailCount.textContent = `${items.length}`;
+  elements.workspaceRailList.innerHTML = "";
+  if (!items.length) {
+    const item = document.createElement("div");
+    item.className = "context-item muted";
+    item.textContent = "No workspace context is active yet.";
+    elements.workspaceRailList.appendChild(item);
+    return;
+  }
+  for (const card of items) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = `context-item context-item-button rail-card ${card.tone || ""}`;
+    item.title = card.detail || card.value || card.label;
+    item.innerHTML = `
+      <p class="context-label">${escapeHtml(card.label)}</p>
+      <div>${escapeHtml(card.value || "")}</div>
+      <div class="muted">${escapeHtml(card.detail || "")}</div>
+    `;
+    item.addEventListener("click", () => focusSurface("workspace"));
+    elements.workspaceRailList.appendChild(item);
+  }
+}
+
+function renderRecentTaskRail() {
+  if (!elements.recentTaskRailList || !elements.recentTaskRailCount) {
+    return;
+  }
+  const tasks = Array.isArray(state.workspace.tasks) ? state.workspace.tasks.slice(0, 4) : [];
+  elements.recentTaskRailCount.textContent = `${tasks.length}`;
+  elements.recentTaskRailList.innerHTML = "";
+  if (!tasks.length) {
+    const item = document.createElement("div");
+    item.className = "context-item muted";
+    item.textContent = "No active workspace tasks yet.";
+    elements.recentTaskRailList.appendChild(item);
+    return;
+  }
+  for (const task of tasks) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "context-item context-item-button rail-card";
+    item.title = task.summary || task.goal || task.title || "task";
+    item.innerHTML = `
+      <div class="rail-card-header">
+        <p class="context-label">${escapeHtml(task.title || "Workspace task")}</p>
+        <span class="badge badge-muted">${escapeHtml(task.status || "task")}</span>
+      </div>
+      <div class="muted">${escapeHtml(task.summary || task.goal || "")}</div>
+      <div class="muted">${escapeHtml(task.phase || "phase unknown")}</div>
+    `;
+    item.addEventListener("click", () => focusSurface(task.status === "ready_for_approval" ? "outcome" : "forge"));
+    elements.recentTaskRailList.appendChild(item);
+  }
+}
+
+function syncWorkspaceHeaderMeta() {
+  if (!elements.workspaceHeaderMeta || !elements.workspaceStateBadgeRow) {
+    return;
+  }
+  const session = state.sessions.find((item) => item.id === state.sessionId);
+  const status = state.aris.status || {};
+  const gateState = deriveEvalGateState(status, currentArisDecision());
+  const metaPills = [
+    { tone: "muted", text: session?.title || session?.name || "Scratchpad session" },
+    { tone: status.startup_ready ? "pass" : "block", text: status.startup_ready ? "Runtime Ready" : "Runtime Blocked" },
+    { tone: gateState.tone, text: `Eval ${gateState.label}` },
+  ];
+  elements.workspaceHeaderMeta.innerHTML = metaPills
+    .map(
+      (pill) =>
+        `<span class="workspace-meta-pill tone-${escapeHtml(pill.tone)}">${escapeHtml(pill.text)}</span>`
+    )
+    .join("");
+
+  const statePills = [
+    { tone: "muted", text: status.runtime_profile || "full profile" },
+    {
+      tone: !status.forge?.connected ? "block" : status.forge?.provider_configured ? "pass" : "review",
+      text: !status.forge?.connected
+        ? "Forge Offline"
+        : status.forge?.provider_configured
+          ? "Forge Available"
+          : "Forge Awaiting Provider",
+    },
+    {
+      tone: status.evolve_engine?.active ? "review" : "muted",
+      text: status.evolve_engine?.active ? `${status.evolve_engine.count || 0} evolve traces` : "Evolve idle",
+    },
+  ];
+  if (status.shell_execution?.degraded) {
+    statePills.splice(1, 0, {
+      tone: "review",
+      text: "Runtime Degraded",
+    });
+  }
+  elements.workspaceStateBadgeRow.innerHTML = statePills
+    .map(
+      (pill) =>
+        `<span class="workspace-state-pill tone-${escapeHtml(pill.tone)}">${escapeHtml(pill.text)}</span>`
+    )
+    .join("");
+}
+
+function renderEvalGateStateStrip(status, latest, gateState) {
+  if (!elements.evalGateStateStrip) {
+    return;
+  }
+  const isHydrating = latest?.kind === "runtime_hydration";
+  const cards = [
+    {
+      label: "Decision",
+      value: gateState.label,
+      detail: gateState.timestamp || "Awaiting governed action",
+      tone: gateState.tone,
+    },
+    {
+      label: "Outcome Hall",
+      value: isHydrating ? "hydrating" : latest?.hall_name ? latest.hall_name.replaceAll("_", " ") : "awaiting hall",
+      detail: isHydrating ? "loading latest governed decision" : latest?.disposition || "no disposition yet",
+      tone: isHydrating ? "review" : latest?.hall_name === "hall_of_fame" ? "pass" : latest?.hall_name ? "block" : "review",
+    },
+    {
+      label: "Eval Path",
+      value: isHydrating ? "Runtime hydration" : latest?.requires_forge_eval ? "Forge Eval required" : "Observation lane",
+      detail: isHydrating ? "loading governed surfaces" : latest?.action_type || "No active action",
+      tone: isHydrating ? "review" : latest?.requires_forge_eval ? "review" : "muted",
+    },
+    {
+      label: "Evolve",
+      value: isHydrating
+        ? "syncing"
+        : status?.evolve_engine?.active
+          ? `${status.evolve_engine.count || 0} classified traces`
+          : "offline",
+      detail: isHydrating
+        ? "loading classified traces"
+        : status?.evolve_engine?.active
+          ? "classified traces only"
+          : "experience lane unavailable",
+      tone: isHydrating ? "review" : status?.evolve_engine?.active ? "pass" : "block",
+    },
+  ];
+  elements.evalGateStateStrip.innerHTML = cards
+    .map(
+      (card) => `
+        <div class="eval-state-card tone-${escapeHtml(card.tone)}">
+          <p class="context-label">${escapeHtml(card.label)}</p>
+          <div>${escapeHtml(card.value)}</div>
+          <div class="muted">${escapeHtml(card.detail)}</div>
+        </div>
+      `
+    )
+    .join("");
 }
 
 function resetSession() {
@@ -977,6 +2360,57 @@ function resetSession() {
   updateSandboxStatus(null);
   renderSessions();
   clearMeta();
+  renderWorkspaceRail();
+  renderRecentTaskRail();
+  syncWorkspaceHeaderMeta();
+  renderProcessLoopBar();
+  renderTaskBoardDigest();
+  syncOperatorConsoleControls();
+}
+
+function formatUiTextBlock(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  if (typeof value === "string") {
+    return value.trim();
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch (_error) {
+    return String(value);
+  }
+}
+
+function buildArisPlanDisplayEntry(payload, goal) {
+  const repoManager = payload?.result?.repo_manager || payload?.repo_manager || {};
+  const reason = [
+    repoManager.repo_summary,
+    repoManager.summary,
+    payload?.reason,
+    payload?.message,
+    payload?.error?.message,
+    payload?.error,
+    payload?.ok ? "Forge repo plan ready for review." : "Forge repo plan failed.",
+  ]
+    .map((value) => formatUiTextBlock(value))
+    .find(Boolean);
+  return {
+    ...payload,
+    kind: payload?.kind || "forge_repo_plan",
+    action_type: payload?.action_type || "forge_repo_plan",
+    goal: payload?.goal || goal,
+    purpose: payload?.purpose || "Generate a governed Forge repo plan without applying changes.",
+    target: payload?.target || "Evolving AI repo",
+    disposition: payload?.disposition || (payload?.ok ? "proposal_ready" : "blocked"),
+    requires_forge_eval: false,
+    verified: false,
+    reason,
+    recorded_at: payload?.recorded_at || new Date().toISOString(),
+  };
 }
 
 function stopRunTail() {
@@ -1622,9 +3056,12 @@ async function startChatRequest({
   elements.sendButton.disabled = true;
   appendMessage("user", prompt);
   elements.messageInput.value = "";
-  const assistantNode = appendMessage("assistant", "");
+  const assistantNode = appendMessage("assistant", "", {
+    intelligence: buildInlineDecisionSnapshot(prompt, mode),
+  });
   const assistantBody = assistantNode.querySelector(".message-body");
   elements.emptyState.style.display = "none";
+  syncChatSurfaceMeta();
 
   const response = await fetch("/api/chat", {
     method: "POST",
@@ -1673,6 +3110,7 @@ async function startChatRequest({
   });
 
   assistantBody.textContent = assistantBody.textContent.trim();
+  renderAssistantIntelligence(assistantNode, buildInlineDecisionSnapshot(prompt, mode));
   elements.sendButton.disabled = false;
   state.attachments = [];
   renderAttachments();
@@ -1683,6 +3121,8 @@ async function startChatRequest({
     await loadRuns({ selectLatest: true });
     await loadRunAudit();
   }
+  renderAssistantIntelligence(assistantNode, buildInlineDecisionSnapshot(prompt, mode));
+  syncChatSurfaceMeta();
 }
 
 async function saveKnowledge() {
@@ -2027,7 +3467,7 @@ async function runCode() {
 
 async function runCommand() {
   const raw = elements.commandInput.value.trim();
-  if (!raw || !state.exec.shellEnabled) {
+  if (!raw || !state.exec.shellEnabled || state.aris.status?.shell_execution?.degraded) {
     return;
   }
   const command = tokenizeCommand(raw);
@@ -2036,71 +3476,107 @@ async function runCommand() {
     return;
   }
   const cwd = elements.commandCwdInput.value.trim();
-  elements.runCommandButton.disabled = true;
+  elements.runCommandButton.dataset.busy = "true";
+  syncExecutionAffordances();
   elements.commandOutput.textContent = "";
 
-  const response = await fetch("/api/exec/stream", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      session_id: state.sessionId,
-      command,
-      cwd: cwd || null,
-      timeout_seconds: state.exec.timeoutSeconds,
-    }),
-  });
+  try {
+    const response = await fetch("/api/exec/stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        session_id: state.sessionId,
+        command,
+        cwd: cwd || null,
+        timeout_seconds: state.exec.timeoutSeconds,
+      }),
+    });
 
-  await consumeEventStream(response, {
-    exec_start(payload) {
-      if (payload.session_id) {
-        state.sessionId = payload.session_id;
-      }
-      const prefix = payload.cwd ? ` (${payload.cwd})` : "";
-      elements.commandOutput.textContent = `$ ${payload.command.join(" ")}${prefix}\n\n`;
-    },
-    exec_chunk(payload) {
-      elements.commandOutput.textContent += payload.content;
-    },
-    async exec_done(payload) {
-      if (!elements.commandOutput.textContent.trim()) {
-        elements.commandOutput.textContent = "No output.\n";
-      }
-      const suffix = payload.timed_out
-        ? `\n[command timed out, exit=${payload.returncode}]`
-        : `\n[command finished, exit=${payload.returncode}]`;
-      elements.commandOutput.textContent += suffix;
-      if (payload.session_id) {
-        state.sessionId = payload.session_id;
-      }
-      renderWorkspaceFiles(payload.files || [], payload.sandbox || null);
-      elements.runCommandButton.disabled = false;
-      await loadSessions();
-      await refreshWorkspace();
-    },
-  });
+    await consumeEventStream(response, {
+      exec_start(payload) {
+        if (payload.session_id) {
+          state.sessionId = payload.session_id;
+        }
+        const prefix = payload.cwd ? ` (${payload.cwd})` : "";
+        elements.commandOutput.textContent = `$ ${payload.command.join(" ")}${prefix}\n\n`;
+      },
+      exec_chunk(payload) {
+        elements.commandOutput.textContent += payload.content;
+      },
+      async exec_done(payload) {
+        if (!elements.commandOutput.textContent.trim()) {
+          elements.commandOutput.textContent = "No output.\n";
+        }
+        const suffix = payload.timed_out
+          ? `\n[command timed out, exit=${payload.returncode}]`
+          : `\n[command finished, exit=${payload.returncode}]`;
+        elements.commandOutput.textContent += suffix;
+        if (payload.session_id) {
+          state.sessionId = payload.session_id;
+        }
+        renderWorkspaceFiles(payload.files || [], payload.sandbox || null);
+        await loadSessions();
+        await refreshWorkspace();
+      },
+    });
+  } finally {
+    delete elements.runCommandButton.dataset.busy;
+    syncExecutionAffordances();
+  }
 }
 
 async function resetSandbox() {
   const sessionId = state.sessionId || "scratchpad";
-  elements.resetSandboxButton.disabled = true;
-  const response = await fetch(`/api/sandbox/${encodeURIComponent(sessionId)}/reset`, {
-    method: "POST",
-  });
-  const payload = await response.json();
-  const detail = payload.detail || (payload.removed ? "Sandbox removed." : "No sandbox to remove.");
-  elements.commandOutput.textContent = detail;
-  await refreshWorkspace();
-  elements.resetSandboxButton.disabled = !state.exec.shellEnabled;
+  elements.resetSandboxButton.dataset.busy = "true";
+  syncExecutionAffordances();
+  try {
+    const response = await fetch(`/api/sandbox/${encodeURIComponent(sessionId)}/reset`, {
+      method: "POST",
+    });
+    const payload = await response.json();
+    const detail = payload.detail || (payload.removed ? "Sandbox removed." : "No sandbox to remove.");
+    elements.commandOutput.textContent = detail;
+    await refreshWorkspace();
+  } finally {
+    delete elements.resetSandboxButton.dataset.busy;
+    syncExecutionAffordances();
+  }
 }
 
-async function refreshWorkspace() {
+function shouldFetchWorkspaceReview(workspacePayload, options = {}) {
+  if (options.explicitReview) {
+    return true;
+  }
+  const payload = workspacePayload && typeof workspacePayload === "object" ? workspacePayload : {};
+  const gitChanged = Array.isArray(payload.git?.changed_files) ? payload.git.changed_files.length : 0;
+  const pendingApprovals = Array.isArray(payload.pending_approvals) ? payload.pending_approvals.length : 0;
+  const pendingPatches = Array.isArray(payload.pending_patches) ? payload.pending_patches.length : 0;
+  const appliedChanges = Array.isArray(payload.applied_changes) ? payload.applied_changes.length : 0;
+  return Boolean(gitChanged || pendingApprovals || pendingPatches || appliedChanges);
+}
+
+function buildDeferredWorkspaceReview(workspacePayload) {
+  return {
+    ok: true,
+    deferred: true,
+    summary: "Inspection is deferred until there is explicit review intent or bounded workspace context.",
+    changed_files: [],
+    changed_entries: [],
+    diff_stat: "",
+    diff: "",
+    git: workspacePayload?.git || {},
+    pending_patches: workspacePayload?.pending_patches || [],
+    files: workspacePayload?.files || [],
+  };
+}
+
+async function refreshWorkspace(options = {}) {
   const sessionId = state.sessionId || "scratchpad";
-  const [workspaceResponse, reviewResponse] = await Promise.all([
-    fetch(`/api/workspace/${encodeURIComponent(sessionId)}`),
-    fetch(`/api/workspace/${encodeURIComponent(sessionId)}/review`),
-  ]);
+  const workspaceResponse = await fetch(`/api/workspace/${encodeURIComponent(sessionId)}`);
   const workspacePayload = await workspaceResponse.json();
-  const reviewPayload = await reviewResponse.json();
+  const reviewPayload = shouldFetchWorkspaceReview(workspacePayload, options)
+    ? await fetch(`/api/workspace/${encodeURIComponent(sessionId)}/review`).then((response) => response.json())
+    : buildDeferredWorkspaceReview(workspacePayload);
   renderWorkspaceFiles(workspacePayload.files || [], workspacePayload.sandbox || null);
   renderProjectProfile(workspacePayload.project || null);
   state.workspace.verificationProfile = workspacePayload.verification || null;
@@ -2113,10 +3589,6 @@ async function refreshWorkspace() {
   syncSelectedChange();
   renderWorkspaceReview(reviewPayload);
   renderRunInspector();
-  if (workspacePayload.aris) {
-    state.aris.status = workspacePayload.aris;
-    renderArisStatus(state.aris.status);
-  }
   await loadArisRuntime();
 }
 
@@ -2138,19 +3610,48 @@ async function runArisPlan() {
   });
   const payload = await response.json();
   state.aris.latestPlan = payload;
+  state.aris.latestDecision = buildArisPlanDisplayEntry(payload, goal);
   const repoManager = payload.result?.repo_manager || payload.repo_manager || {};
-  const summary = repoManager.repo_summary || payload.error || "No Forge plan returned.";
+  const summary = [
+    repoManager.repo_summary,
+    repoManager.summary,
+    payload.reason,
+    payload.error,
+    "No Forge plan returned.",
+  ]
+    .map((value) => formatUiTextBlock(value))
+    .find(Boolean);
   const planSteps = Array.isArray(repoManager.plan)
-    ? repoManager.plan.map((step) => `- ${step.step} (${step.file || "repo"})`).join("\n")
+    ? repoManager.plan
+        .map((step) => {
+          if (typeof step === "string") {
+            return `- ${step}`;
+          }
+          const label = formatUiTextBlock(step?.step || step?.title || step);
+          const scope = step?.file ? ` (${step.file})` : "";
+          return label ? `- ${label}${scope}` : "";
+        })
+        .filter(Boolean)
+        .join("\n")
     : "";
   const risks = Array.isArray(repoManager.risks)
-    ? repoManager.risks.map((risk) => `- ${risk.file}: ${risk.issue}`).join("\n")
+    ? repoManager.risks
+        .map((risk) => {
+          if (typeof risk === "string") {
+            return `- ${risk}`;
+          }
+          const scope = formatUiTextBlock(risk?.file || risk?.target || "repo");
+          const issue = formatUiTextBlock(risk?.issue || risk?.reason || risk);
+          return issue ? `- ${scope}: ${issue}` : "";
+        })
+        .filter(Boolean)
+        .join("\n")
     : "";
   elements.arisPlanOutput.textContent = [summary, risks && `Risks\n${risks}`, planSteps && `Plan\n${planSteps}`]
     .filter(Boolean)
     .join("\n\n");
   elements.arisOutcomeBadge.textContent = payload.ok ? "proposal ready" : "proposal blocked";
-  renderArisRoute(payload);
+  renderArisStatus(state.aris.status);
   await loadArisRuntime();
   elements.arisPlanButton.disabled = false;
 }
@@ -2276,16 +3777,38 @@ async function onSubmit(event) {
   });
 }
 
-function appendMessage(role, content) {
+function appendMessage(role, content, options = {}) {
   elements.emptyState.style.display = "none";
   const row = document.createElement("div");
   row.className = `message-row ${role}`;
-  row.innerHTML = `
-    <article class="message-bubble">
-      <p class="message-role">${role}</p>
-      <p class="message-body"></p>
-    </article>
-  `;
+  if (role === "assistant") {
+    row.innerHTML = `
+      <article class="message-bubble message-bubble-assistant">
+        <div class="message-header">
+          <p class="message-role">${role}</p>
+          <span class="message-shell-pill">inline intelligence</span>
+        </div>
+        <p class="message-body"></p>
+        <section class="message-intelligence"></section>
+        <div class="message-action-row">
+          <button type="button" class="secondary-button" data-message-action="approve">Approve</button>
+          <button type="button" class="secondary-button danger-button" data-message-action="reject">Reject</button>
+          <button type="button" class="secondary-button" data-message-action="inspect">Inspect</button>
+        </div>
+      </article>
+    `;
+    renderAssistantIntelligence(row, options.intelligence || buildInlineDecisionSnapshot(content, elements.modeSelect?.value || "chat"));
+    wireAssistantActions(row);
+  } else {
+    row.innerHTML = `
+      <article class="message-bubble">
+        <div class="message-header">
+          <p class="message-role">${role}</p>
+        </div>
+        <p class="message-body"></p>
+      </article>
+    `;
+  }
   row.querySelector(".message-body").textContent = content;
   elements.messageList.appendChild(row);
   row.scrollIntoView({ block: "end", behavior: "smooth" });
@@ -2397,6 +3920,9 @@ function renderProjectProfile(project) {
   elements.projectLanguageCount.textContent = `${languages.length} languages`;
   if (!project) {
     elements.projectStatus.textContent = "Project detection will appear here.";
+    renderWorkspaceRail();
+    syncWorkspaceHeaderMeta();
+    renderTaskBoardDigest();
     return;
   }
   const frameworks = Array.isArray(project.frameworks) ? project.frameworks : [];
@@ -2456,6 +3982,9 @@ function renderProjectProfile(project) {
     `;
     elements.projectCommands.appendChild(item);
   }
+  renderWorkspaceRail();
+  syncWorkspaceHeaderMeta();
+  renderTaskBoardDigest();
 }
 
 function renderImports(imports) {
@@ -2626,6 +4155,9 @@ function renderTasks(tasks) {
     item.className = "context-item muted";
     item.textContent = "No workspace tasks yet.";
     elements.taskList.appendChild(item);
+    renderRecentTaskRail();
+    syncWorkspaceHeaderMeta();
+    renderTaskBoardDigest();
     return;
   }
   for (const task of tasks) {
@@ -2662,6 +4194,9 @@ function renderTasks(tasks) {
     }
     elements.taskList.appendChild(item);
   }
+  renderRecentTaskRail();
+  syncWorkspaceHeaderMeta();
+  renderTaskBoardDigest();
 }
 
 function renderApprovals(approvals) {
@@ -3536,6 +5071,15 @@ function renderWorkspaceReview(review) {
     elements.reviewSummary.appendChild(item);
     return;
   }
+  if (review.deferred) {
+    state.workspace.selectedChangedFile = null;
+    state.workspace.reviewDiffIndex = {};
+    elements.reviewCount.textContent = "deferred";
+    resetSelectedReviewPane({
+      fileMessage: "Review details will appear when you explicitly inspect or when the workspace has bounded change context.",
+      diffMessage: "Inspection is deferred until review is explicitly requested or the workspace presents bounded review context.",
+    });
+  }
   const changedFiles = review.changed_files || [];
   const changedEntries = review.changed_entries || [];
   const normalizedEntries = changedEntries.length
@@ -3596,6 +5140,64 @@ function updateSandboxStatus(sandbox) {
     detail || fallback
       ? `${detail || "Sandbox ready."}${fallback}`
       : "Shell execution uses the persistent session Docker workspace when available.";
+}
+
+function baseAllowedCommandsHint() {
+  return state.exec.allowedCommands.length
+    ? `Allowed: ${state.exec.allowedCommands.join(", ")}`
+    : "Enter a bounded shell command.";
+}
+
+function syncExecutionAffordances(status = state.aris.status) {
+  const shellExecution = status?.shell_execution || {};
+  const degraded = Boolean(shellExecution.degraded);
+  const detail = String(shellExecution.detail || "").trim();
+  const shellAvailable = state.exec.shellEnabled && !degraded;
+  const commandBusy = elements.runCommandButton?.dataset.busy === "true";
+  const resetBusy = elements.resetSandboxButton?.dataset.busy === "true";
+
+  if (elements.commandInput) {
+    elements.commandInput.disabled = !shellAvailable;
+  }
+  if (elements.commandCwdInput) {
+    elements.commandCwdInput.disabled = !shellAvailable;
+  }
+  if (elements.runCommandButton) {
+    elements.runCommandButton.disabled = commandBusy || !shellAvailable;
+    elements.runCommandButton.title = shellAvailable
+      ? ""
+      : degraded
+        ? "Shell lane is degraded right now."
+        : "Shell execution requires the Docker backend.";
+  }
+  if (elements.resetSandboxButton) {
+    elements.resetSandboxButton.disabled = resetBusy || !shellAvailable;
+    elements.resetSandboxButton.title = shellAvailable
+      ? ""
+      : degraded
+        ? "Shell lane is degraded right now."
+        : "Shell execution requires the Docker backend.";
+  }
+  if (elements.allowedCommandsHint) {
+    if (!state.exec.shellEnabled) {
+      elements.allowedCommandsHint.textContent = "Shell execution requires the Docker backend.";
+    } else if (degraded) {
+      elements.allowedCommandsHint.textContent = `${baseAllowedCommandsHint()} · Shell lane degraded: ${
+        detail || "Docker backend unavailable."
+      }`;
+    } else {
+      elements.allowedCommandsHint.textContent = baseAllowedCommandsHint();
+    }
+  }
+  if (elements.commandOutput && !elements.commandOutput.textContent.trim()) {
+    if (!state.exec.shellEnabled) {
+      elements.commandOutput.textContent = "Shell execution requires the Docker backend.";
+    } else if (degraded) {
+      elements.commandOutput.textContent = detail
+        ? `Shell lane degraded: ${detail}`
+        : "Shell lane is degraded right now.";
+    }
+  }
 }
 
 function appendAgentStep(payload) {
@@ -3860,7 +5462,12 @@ async function handleApprovalDecision(approvalOrId, approved, button) {
     state.activeRunId = approval.run_id;
     await loadActiveRun({ replayStream: true, preserveEvents: false });
   }
-  const assistantNode = appendMessage("assistant", "");
+  const assistantNode = appendMessage("assistant", "", {
+    intelligence: buildInlineDecisionSnapshot(
+      approved ? "Approve current governed change" : "Reject current governed change",
+      elements.modeSelect?.value || "chat"
+    ),
+  });
   const assistantBody = assistantNode.querySelector(".message-body");
   const action = approved ? "approve" : "reject";
   const response = await fetch(

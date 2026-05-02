@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .constants_runtime import ARIS_HANDBOOK_ID, FOUNDATION_STORE_FILENAME, UL_ROOT_LAW_ID
+from .constants_runtime import ARIS_DOC_CHANNEL_ID, ARIS_HANDBOOK_ID, FOUNDATION_STORE_FILENAME, UL_ROOT_LAW_ID
+from .doc_channel import DEFAULT_DOC_CHANNEL_TEXT
 from .law_spine import ROOT_LAW_TEXT
 
 
@@ -22,6 +23,12 @@ DEFAULT_FOUNDATION_ENTRIES = {
             "ARIS foundational handbook: 1001 first, immutable laws first, governance before execution, "
             "verification before success, halls remain separated, and protected identities require legitimacy."
         ),
+        "mutable": False,
+    },
+    ARIS_DOC_CHANNEL_ID: {
+        "id": ARIS_DOC_CHANNEL_ID,
+        "class": "FOUNDATIONAL_MEMORY",
+        "content": DEFAULT_DOC_CHANNEL_TEXT,
         "mutable": False,
     },
 }

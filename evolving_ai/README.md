@@ -4,7 +4,7 @@ This folder contains the main Python package for the nested `code/code`
 project.
 
 It owns the evolutionary framework, the local-first AI app shell, the ARIS law
-and runtime modules, and the ARIS desktop/demo package entrypoints.
+and runtime modules, and the ARIS desktop/runtime package entrypoints.
 
 ## Owns
 
@@ -12,7 +12,7 @@ and runtime modules, and the ARIS desktop/demo package entrypoints.
 - the evolutionary engine and task framework
 - the app/server layer in [`app/`](./app/)
 - the ARIS runtime and law modules in [`aris/`](./aris/)
-- the ARIS demo desktop and shipping lanes in [`aris_demo/`](./aris_demo/)
+- the ARIS desktop runtime and shipping lanes in [`aris_runtime/`](./aris_runtime/)
 
 ## Does Not Own
 
@@ -27,8 +27,9 @@ and runtime modules, and the ARIS desktop/demo package entrypoints.
   - local-first chat/app server, execution backends, review, files, and UI
 - [`aris/`](./aris/)
   - ARIS runtime, law, shield, integrity, memory, and support modules
-- [`aris_demo/`](./aris_demo/)
-  - desktop host, runtime prep, shipping lane, and workspace demo logic
+- [`aris_runtime/`](./aris_runtime/)
+  - desktop host, runtime prep, shipping lane, and workspace studio logic
+  - this is the only supported packaged desktop/runtime lane
 - [`evolvingai/`](./evolvingai/)
   - additional package helpers kept under the same distribution root
 
@@ -50,5 +51,5 @@ and runtime modules, and the ARIS desktop/demo package entrypoints.
 1. [../README.md](../README.md)
 2. [./app/server.py](./app/server.py)
 3. [./aris/launcher.py](./aris/launcher.py)
-4. [./aris_demo/desktop.py](./aris_demo/desktop.py)
+4. [./aris_runtime/desktop.py](./aris_runtime/desktop.py)
 5. [../tests/README.md](../tests/README.md)

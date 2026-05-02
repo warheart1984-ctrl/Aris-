@@ -22,6 +22,7 @@ def _status_lines(status: dict[str, object]) -> list[str]:
     discard = status.get("hall_of_discard", {}) if isinstance(status.get("hall_of_discard"), dict) else {}
     shame = status.get("hall_of_shame", {}) if isinstance(status.get("hall_of_shame"), dict) else {}
     fame = status.get("hall_of_fame", {}) if isinstance(status.get("hall_of_fame"), dict) else {}
+    doc_channel = status.get("doc_channel", {}) if isinstance(status.get("doc_channel"), dict) else {}
     model_router = status.get("model_router", {}) if isinstance(status.get("model_router"), dict) else {}
     execution_backend = (
         status.get("execution_backend", {}) if isinstance(status.get("execution_backend"), dict) else {}
@@ -39,6 +40,11 @@ def _status_lines(status: dict[str, object]) -> list[str]:
         f"ARIS startup target: {status.get('repo_target', Path.cwd())}",
         f"Law mode: {status.get('law_mode', 'unknown')}",
         f"1001 active: {status.get('meta_law_1001_active', False)}",
+        (
+            f"Doc channel: {doc_channel.get('namespace', 'unbound')}"
+            if doc_channel.get("active")
+            else "Doc channel: inactive"
+        ),
         (
             f"Model router: {model_router.get('mode', 'unknown')}"
             + (

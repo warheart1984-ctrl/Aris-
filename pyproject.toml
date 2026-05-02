@@ -32,13 +32,11 @@ classifiers = [
 evolving-ai = "evolving_ai.cli:main"
 forge-chat = "evolving_ai.app.server:main"
 aris = "evolving_ai.aris.launcher:main"
-aris-demo = "evolving_ai.aris_demo.launcher:main"
-aris-demo-desktop = "evolving_ai.aris_demo.desktop:main"
-aris-demo-desktop-v1 = "evolving_ai.aris_demo.desktop_v1:main"
-aris-demo-desktop-v2 = "evolving_ai.aris_demo.desktop_v2:main"
-aris-demo-desktop-build = "evolving_ai.aris_demo.desktop_build:main"
-aris-demo-desktop-runtime = "evolving_ai.aris_demo.desktop_runtime:main"
-aris-demo-ship-release = "evolving_ai.aris_demo.shipping_lane:main"
+aris-runtime = "evolving_ai.aris_runtime.launcher:main"
+aris-runtime-desktop = "evolving_ai.aris_runtime.desktop:main"
+aris-runtime-desktop-build = "evolving_ai.aris_runtime.desktop_build:main"
+aris-runtime-desktop-runtime = "evolving_ai.aris_runtime.desktop_runtime:main"
+aris-runtime-ship-release = "evolving_ai.aris_runtime.shipping_lane:main"
 
 [project.optional-dependencies]
 desktop = [

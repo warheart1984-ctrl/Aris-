@@ -40,10 +40,18 @@ class MemoryStore:
         return self.bank.summary()
 
     def facts(self) -> list[dict[str, str]]:
-        return self.bank.facts_payload()
+        return [
+            item
+            for item in self.bank.facts_payload()
+            if str(item.get("layer", "")).strip().lower() != "foundational"
+        ]
 
     def locked_entries(self) -> list[dict[str, str]]:
         return self.bank.locked_entries()
+
+    @property
+    def foundation_store(self):
+        return self.bank.foundation_store
 
     def status_payload(self) -> dict[str, object]:
         return self.bank.status_payload()

@@ -16,7 +16,7 @@ class MemoryLockTests(unittest.TestCase):
         memory.remember_from_user_text("UL_ROOT_LAW_LOCKED = hacked")
 
         self.assertEqual(memory.facts(), [])
-        self.assertGreaterEqual(len(memory.locked_entries()), 2)
+        self.assertGreaterEqual(len(memory.locked_entries()), 3)
 
     def test_foundational_store_is_immutable(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="memory-foundation-"))
@@ -25,3 +25,5 @@ class MemoryLockTests(unittest.TestCase):
 
         with self.assertRaises(PermissionError):
             memory.foundation_store.overwrite("UL_ROOT_LAW_LOCKED", "rewrite")
+        with self.assertRaises(PermissionError):
+            memory.foundation_store.overwrite("ARIS_DOC_CHANNEL_LOCKED", "rewrite")

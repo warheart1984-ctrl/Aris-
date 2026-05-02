@@ -1,4 +1,4 @@
-# tests
+﻿# tests
 
 This folder contains the automated verification layer for the nested
 `code/code` project.
@@ -25,9 +25,9 @@ host lanes, shipping rules, and supporting package logic.
   - app shell and broader runtime behavior
 - [`test_aris_governance.py`](./test_aris_governance.py)
   - ARIS governance and law behavior
-- [`test_aris_demo_desktop_runtime.py`](./test_aris_demo_desktop_runtime.py)
+- [`test_aris_runtime_desktop_runtime.py`](./test_aris_runtime_desktop_runtime.py)
   - desktop runtime preparation and support
-- [`test_aris_demo_shipping_lane.py`](./test_aris_demo_shipping_lane.py)
+- [`test_aris_runtime_shipping_lane.py`](./test_aris_runtime_shipping_lane.py)
   - packaging/shipping completion checks
 - [`test_law_spine.py`](./test_law_spine.py)
   - law-spine behavior

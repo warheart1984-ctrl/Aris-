@@ -554,6 +554,40 @@ class ArisServiceTests(unittest.TestCase):
         self.assertTrue(status["shield_of_truth"]["active"])
         self.assertTrue("entries" in shame and "entries" in fame)
 
+    def test_api_truth_is_canonical_and_marks_historical_activity(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        service.sessions.get_or_create("alpha", "alpha session")
+        service.sessions.get_or_create("beta", "beta session")
+        service.aris.review_action(
+            {
+                "action_type": "patch_apply",
+                "session_id": "alpha",
+                "purpose": "Apply a risky patch to target.py.",
+                "target": "target.py",
+                "source": "test",
+                "operator_decision": "approved",
+                "patch": _patch_for("other.py"),
+                "authorized": True,
+                "observed": True,
+                "bounded": True,
+            }
+        )
+
+        with _api_client(service) as client:
+            payload = client.get(
+                "/api/aris/truth",
+                params={"session_id": "beta", "activity_limit": 20, "hall_limit": 20},
+            ).json()
+
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["status"]["startup_ready"], service.aris_status_payload()["startup_ready"])
+        self.assertEqual(payload["health"]["ok"], service.aris_health_payload()["ok"])
+        self.assertEqual(payload["session_id"], "beta")
+        self.assertTrue(payload["activity"])
+        self.assertTrue(any(entry.get("historical") for entry in payload["activity"]))
+        self.assertTrue(all("current_scope" in entry for entry in payload["activity"]))
+
     def test_mystic_read_routes_through_aris_runtime(self) -> None:
         service, root = _make_service()
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
@@ -750,13 +784,64 @@ class ArisServiceTests(unittest.TestCase):
         self.assertIn("command_execute", _action_types(spy))
         self.assertIn("aris", result["sandbox"])
         self.assertIn("returncode", result)
+        expected_hall = "hall_of_fame"
+        if result["returncode"] != 0:
+            expected_hall = "hall_of_discard" if result["sandbox"].get("blocked") else "hall_of_shame"
         self.assertEqual(
             result["sandbox"]["aris"]["hall_name"],
-            "hall_of_fame" if result["returncode"] == 0 else "hall_of_shame",
+            expected_hall,
         )
         if result["returncode"] != 0:
             self.assertTrue(result["sandbox"].get("blocked"))
             self.assertTrue(result["sandbox"]["aris"]["reason"])
+
+    def test_workspace_review_fallback_does_not_route_host_git_probe_through_aris(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        with patch.object(service.aris, "review_action", wraps=service.aris.review_action) as spy:
+            review = service.review_workspace(session_id="alpha")
+
+        self.assertTrue(review["ok"])
+        self.assertNotIn("command_execute", _action_types(spy))
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+    def test_repeated_workspace_review_fallback_does_not_trigger_hard_kill(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        for _ in range(3):
+            review = service.review_workspace(session_id="alpha")
+            self.assertTrue(review["ok"])
+
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+    def test_workspace_review_endpoint_never_escalates_observation(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        with _api_client(service) as client:
+            first = client.get("/api/workspace/alpha/review")
+            second = client.get("/api/workspace/alpha/review")
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+    def test_workspace_payload_endpoint_stays_observational(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        with patch.object(service.aris, "review_action", wraps=service.aris.review_action) as spy:
+            with _api_client(service) as client:
+                first = client.get("/api/workspace/alpha")
+                second = client.get("/api/workspace/alpha")
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertNotIn("review", first.json())
+        self.assertNotIn("command_execute", _action_types(spy))
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
 
     def test_soft_kill_blocks_new_task_runs(self) -> None:
         service, root = _make_service()

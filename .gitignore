@@ -3,7 +3,17 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.forge_chat/
+.runtime/
 build/
 dist/
+release/
+.vscode/
+Code/
+*.code-workspace
+*.err.log
+*.out.log
 *.egg-info/
+*.db
+*.log
 results/

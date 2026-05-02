@@ -61,43 +61,45 @@ forge-chat
 
 Then open `http://127.0.0.1:8080`.
 
-Run the stripped ARIS demo copy:
+Run the ARIS V2 runtime service:
 
 ```bash
-aris-demo --reseal-integrity
+aris-runtime --reseal-integrity
 ```
 
-On Windows, `pip install -e .` creates the `aris-demo.exe` shim automatically. A helper script is also included at [run_aris_demo.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/run_aris_demo.ps1).
+On Windows, `pip install -e .` creates the `aris-runtime.exe` shim automatically. A helper script is also included at [run_aris_runtime.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/run_aris_runtime.ps1).
 
-Run the ARIS Demo desktop host:
+Run the ARIS V2 desktop host:
 
 ```bash
 python -m pip install -e .[desktop]
-py -3.12 -m evolving_ai.aris_demo.desktop
+py -3.12 -m evolving_ai.aris_runtime.desktop
 ```
 
-On Windows, helper scripts are included at [run_aris_demo_desktop.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/run_aris_demo_desktop.ps1) and [build_aris_demo_desktop.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/build_aris_demo_desktop.ps1).
+On Windows, helper scripts are included at [run_aris_runtime_desktop.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/run_aris_runtime_desktop.ps1) and [build_aris_runtime_desktop.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/build_aris_runtime_desktop.ps1).
+
+Build and rebuild instructions for the shipped desktop artifact are documented in [BUILD.md](/C:/Users/randj/Desktop/project%20infi/code/code/BUILD.md).
 
 Prepare the UL-bound PySide6 desktop runtime:
 
 ```bash
-python -m evolving_ai.aris_demo.desktop_runtime --prepare --with-build-tools
+python -m evolving_ai.aris_runtime.desktop_runtime --prepare --with-build-tools
 ```
 
-On Windows, a helper script is included at [prepare_aris_demo_desktop_runtime.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/prepare_aris_demo_desktop_runtime.ps1). Once prepared, the desktop run/build helper scripts automatically prefer the UL desktop runtime in `.runtime/ul_desktop_runtime/venv`.
+On Windows, a helper script is included at [prepare_aris_runtime_desktop_runtime.ps1](/C:/Users/randj/Desktop/project%20infi/code/code/prepare_aris_runtime_desktop_runtime.ps1). Once prepared, the desktop run/build helper scripts automatically prefer the UL desktop runtime in `.runtime/ul_desktop_runtime/venv`.
 
 Print the native build targets and packaging command:
 
 ```bash
-py -3.12 -m evolving_ai.aris_demo.desktop --print-build-targets --no-workers
-py -3.12 -m evolving_ai.aris_demo.desktop_build --print-command
+py -3.12 -m evolving_ai.aris_runtime.desktop --print-build-targets --no-workers
+py -3.12 -m evolving_ai.aris_runtime.desktop_build --print-command
 ```
 
 Build the native bundle for the current platform:
 
 ```bash
 python -m pip install -e .[desktop-build]
-py -3.12 -m evolving_ai.aris_demo.desktop_build --build-current
+py -3.12 -m evolving_ai.aris_runtime.desktop_build --build-current
 ```
 
 Point it at your own model endpoint with environment variables:
@@ -155,7 +157,9 @@ python -m evolving_ai --task xor --generations 60 --population 96 --json-out res
 ## Local Entry Docs
 
 - [`evolving_ai/README.md`](./evolving_ai/README.md)
-  - package ownership, app lane, ARIS lane, and demo lane
+  - package ownership, app lane, ARIS lane, and runtime lane
+- [`evolving_ai/aris_runtime/README.md`](./evolving_ai/aris_runtime/README.md)
+  - supported desktop/runtime ship lane
 - [`forge/README.md`](./forge/README.md)
   - Forge runtime/service ownership
 - [`forge_eval/README.md`](./forge_eval/README.md)
@@ -164,8 +168,8 @@ python -m evolving_ai --task xor --generations 60 --population 96 --json-out res
   - packaged artifact lane
 - [`tests/README.md`](./tests/README.md)
   - verification authority
-- [`prototypes/README.md`](./prototypes/README.md)
-  - prototype-only surfaces
+- [`archive/demo/README.md`](./archive/demo/README.md)
+  - quarantined demo evidence and retired prototype surfaces
 - [`Code/README.md`](./Code/README.md)
   - external mirror/import lane
 

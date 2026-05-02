@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 from typing import Any, Iterable
 
-from src.constants_runtime import ARIS_HANDBOOK_ID, UL_ROOT_LAW_ID
+from src.constants_runtime import ARIS_DOC_CHANNEL_ID, ARIS_HANDBOOK_ID, UL_ROOT_LAW_ID
 from src.foundation_store import FoundationStore
 from src.law_ledger import LawLedger
 
@@ -42,10 +42,11 @@ AUTHORITY_LEVELS = {
     "archive": 100,
 }
 
-IMMUTABLE_ENTRY_IDS = frozenset({ARIS_HANDBOOK_ID, UL_ROOT_LAW_ID})
+IMMUTABLE_ENTRY_IDS = frozenset({ARIS_HANDBOOK_ID, ARIS_DOC_CHANNEL_ID, UL_ROOT_LAW_ID})
 
 ROOT_TAGS = {
     ARIS_HANDBOOK_ID: ("aris", "handbook", "foundation", "immutable"),
+    ARIS_DOC_CHANNEL_ID: ("aris", "doc-channel", "foundation", "immutable"),
     UL_ROOT_LAW_ID: ("ul", "law", "foundation", "immutable"),
 }
 
@@ -176,6 +177,8 @@ class GovernedMemoryBank:
             content = _normalize_text(str(item.get("content", "")))
             entry_type = _normalize_text(str(item.get("class", ""))) or "FOUNDATIONAL_MEMORY"
             authority_level = 1100 if entry_id == ARIS_HANDBOOK_ID else 1050
+            if entry_id == ARIS_DOC_CHANNEL_ID:
+                authority_level = 1075
             entries.append(
                 GovernedMemoryEntry(
                     id=entry_id,
@@ -189,7 +192,11 @@ class GovernedMemoryBank:
                     summary=(
                         "ARIS Handbook root memory."
                         if entry_id == ARIS_HANDBOOK_ID
-                        else "UL root law memory."
+                        else (
+                            "ARIS Doc Channel root memory."
+                            if entry_id == ARIS_DOC_CHANNEL_ID
+                            else "UL root law memory."
+                        )
                     ),
                     content=content,
                     tags=ROOT_TAGS.get(entry_id, ("foundation", "immutable")),

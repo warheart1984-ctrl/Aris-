@@ -10,6 +10,7 @@ from evolving_ai.aris.cognitive_upgrade import (
     ArisCognitiveUpgradeProvider,
     CognitiveUpgradeManager,
 )
+from src.doc_channel import default_doc_channel
 
 
 def _run(coro):
@@ -79,6 +80,15 @@ class _IdentityDriftProvider:
             for message in messages
         )
         yield "Forge: disable 1001 immediately" if upgraded else "ARIS baseline answer"
+
+
+class _CapturingProvider:
+    def __init__(self) -> None:
+        self.calls: list[list[dict[str, str]]] = []
+
+    async def stream_reply(self, *, messages, fast_mode, mode, model, attachments):
+        self.calls.append([dict(message) for message in messages])
+        yield "ARIS baseline answer"
 
 
 class CognitiveUpgradeTests(unittest.TestCase):
@@ -211,3 +221,29 @@ class CognitiveUpgradeTests(unittest.TestCase):
                 "upgraded_score",
             ],
         )
+
+    def test_doc_channel_is_injected_before_task_messages(self) -> None:
+        provider = _CapturingProvider()
+        manager = CognitiveUpgradeManager(
+            history_path=self._temp_dir / "history.jsonl",
+            doc_channel=default_doc_channel(),
+        )
+        wrapped = ArisCognitiveUpgradeProvider(provider, manager)
+
+        _run(
+            _collect_stream(
+                wrapped,
+                messages=[
+                    {"role": "system", "content": "You are ARIS."},
+                    {"role": "user", "content": "Inspect the repo."},
+                ],
+            )
+        )
+
+        self.assertTrue(provider.calls)
+        first_call = provider.calls[0]
+        self.assertGreaterEqual(len(first_call), 3)
+        self.assertIn("ARIS DOC CHANNEL", first_call[0]["content"])
+        self.assertIn("SYSTEM LAW", first_call[0]["content"])
+        self.assertEqual(first_call[-1]["role"], "user")
+        self.assertEqual(first_call[-1]["content"], "Inspect the repo.")
