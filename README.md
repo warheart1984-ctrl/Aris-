@@ -1,53 +1,138 @@
-# ARIS — Adaptive Runtime Intelligence System
+# ARIS — Law-Governed Coding Agent
 
-**Demo Version** | Part of [Project Infinity](https://github.com/warheart1984-ctrl/Project-Infinity) / AAIS
-
-ARIS is the **governed desktop cockpit and runtime host** for the Adaptive Autonomous Intelligence System (AAIS).
-
-It is the operator-visible surface where the formal runtime calculus defined in **The Voss Binding (Λ)** is made real: every action flows through a canonical semantic packet, passes the ForgeGate, executes under law, and is fully auditable.
-
-### Core Principles
-
-- **Law-first execution** — All actions are governed by the Voss Binding invariants before they reach any model or interpreter.
-- **Model-agnostic** — The LLM is interchangeable compute. ARIS currently steps up to 12 different models without changing governance.
-- **Operator supremacy** — The human operator holds final authority at all times (corrigibility is structural, not optional).
-- **Lawful completion** — Nothing is considered "done" until it is verified, packaged, and proven to run post-packaging (see `LAWFUL_COMPLETION_OF_A_SYSTEM.md`).
-
-### Key Components
-
-- **`evolving_ai/`** — Core framework for small neural agents trained via evolutionary search (genome, mutation, novelty archive, tournament selection).
-- **`ul_lang.py` + `ul_substrate.py`** — Dual-language foundation:
-  - `ul_lang`: general-purpose governed computation
-  - `ul_substrate`: AST-native governed action substrate with ForgeGate
-- **`forge/` + `forge_eval/`** — Runtime execution and evaluation services
-- **`aris_runtime/`** — Desktop host (PySide6) and sealed runtime
-- **Bridge Intelligence** — Canonical `SemanticEvent` packet layer that unifies UI, runtime, and audit
-
-### Architecture
-Operator (you)
-   ↓
-ARIS Cockpit (Task Stream + Eval Gate + Intelligence Blocks)
-   ↓
-Canonical SemanticEvent Packet
-   ↓
-ForgeGate + Voss Binding Λ (law enforcement)
-   ↓
-UL Substrate + UL Lang runtime
-   ↓
-Interchangeable LLM(s) or evolutionary agents
-
-
-### Documentation
-
-- `LOGBOOK.md` — What changed and why
-- `LAWFUL_COMPLETION_OF_A_SYSTEM.md` — Completion criteria
-- `BUILD.md` — How to build the desktop artifact
-- `Voss Binding (Λ)` — The governing runtime calculus (in Project Infinity)
-
-### Status
-
-This is the **Demo Version** of ARIS.  
-It is actively being wired to the full AAIS governance spine. The goal is a clean, law-first, operator-controlled cockpit that feels like Codex but obeys unbreakable runtime law.
+> ARIS is a coding agent that does not guess intent.  
+> It **derives, verifies, and executes under law**.
 
 ---
 
+## 🚀 Start Here (30 seconds)
+
+1. Download the Windows build (ARIS V2):
+   → [Download ARIS.exe](./release/ARIS_V2.exe) *(update link if needed)*
+
+2. Run the executable
+
+3. Tell ARIS what to do (or drop a file)
+
+4. Watch the system:
+
+   input  
+   → semantic interpretation  
+   → proposed action  
+   → **approval under law**  
+   → execution with visible state  
+
+---
+
+## 🧠 What ARIS Actually Does
+
+ARIS is not a chatbot.
+
+It is a **law-driven execution system** where:
+
+- Input is converted into a **SemanticEvent**
+- Actions are **proposed, not assumed**
+- Execution is **blocked unless approved**
+- Every decision carries **identity, audit, and lineage**
+
+---
+
+## 🔁 Core Flow
+
+
+Input (text / file)
+↓
+Semantic Intake (no guessing)
+↓
+Decision Engine
+↓
+Law Gate (approval required)
+↓
+Execution (observable)
+↓
+Evidence + audit trail
+
+
+---
+
+## ⚙️ Key Properties
+
+- **Canonical Truth**  
+  One semantic object flows through the entire system
+
+- **Observation ≠ Execution**  
+  ARIS can analyze without acting
+
+- **Governance on the Causal Path**  
+  Nothing executes without passing law
+
+- **Fail-Closed Behavior**  
+  If something breaks, execution stops visibly
+
+- **No Demo Shortcuts**  
+  Archived experiments are isolated from runtime
+
+---
+
+## 📄 Example Interaction
+
+You:
+
+Add environment controls to this project
+
+
+ARIS:
+
+Intent: Modify System
+Risk: High
+Actions: analyze → propose → apply → validate
+
+[Approve] [Reject] [Inspect]
+
+
+---
+
+## 📁 Project Structure
+
+
+/aris_runtime/ → core system (semantic + law + execution)
+/release/ → packaged builds
+/LOGBOOK.md → chronological system evolution
+/SCARS.md → why the system stays stable
+
+
+---
+
+## 🧠 Why This Exists
+
+Most AI systems:
+- guess intent  
+- execute immediately  
+- drift over time  
+
+ARIS is built to:
+- **derive intent structurally**
+- **enforce decision boundaries**
+- **remain stable under iteration**
+
+---
+
+## 📘 Documentation
+
+- [Semantic Intake Under Law](./SEMANTIC_INTAKE_UNDER_LAW.md)
+- [Release Notes (V2)](./release/ARIS_V2_SEMANTIC_INTAKE_RELEASE_NOTE.md)
+- [System Logbook](./LOGBOOK.md)
+- [SCARS — Stability Model](./SCARS.md)
+
+---
+
+## 🧪 Development
+
+Run locally:
+
+```bash
+py -3.12 -m evolving_ai.aris_runtime.desktop
+
+Run tests:
+
+pytest -q
