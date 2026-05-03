@@ -1,45 +1,47 @@
-# ARIS — Law-Governed Coding Agent
+# ARIS — Law-Governed Execution System
 
-> ARIS is a coding agent that does not guess intent.  
-> It **derives, verifies, and executes under law**.
+ARIS is not a chatbot.
+
+It is a law-governed execution system that **does not guess intent**.
+It derives, verifies, and executes under constraint.
 
 ---
 
 ## 🚀 Start Here (30 seconds)
 
-1. Download the Windows build (ARIS V2):
-   → [Download ARIS.exe](./release/ARIS_V2.exe) *(update link if needed)*
+ARIS is currently distributed as **source** while runtime builds are being stabilized.
 
-2. Run the executable
+Run locally:
 
-3. Tell ARIS what to do (or drop a file)
+```bash
+py -3.12 -m evolving_ai.aris_runtime.desktop
+```
 
-4. Watch the system:
+Then:
 
-   input  
-   → semantic interpretation  
-   → proposed action  
-   → **approval under law**  
-   → execution with visible state  
+* Provide input (text or file)
+* Observe semantic interpretation
+* Review proposed actions
+* Approve execution under law
+
+> Prebuilt binaries (Windows/macOS/Linux) will be added in a future release.
 
 ---
 
 ## 🧠 What ARIS Actually Does
 
-ARIS is not a chatbot.
+ARIS enforces structure where most systems rely on assumption.
 
-It is a **law-driven execution system** where:
-
-- Input is converted into a **SemanticEvent**
-- Actions are **proposed, not assumed**
-- Execution is **blocked unless approved**
-- Every decision carries **identity, audit, and lineage**
+* Input becomes a **SemanticEvent**
+* Actions are **proposed, not assumed**
+* Execution is **blocked unless approved**
+* Every decision carries **identity, audit, and lineage**
 
 ---
 
 ## 🔁 Core Flow
 
-
+```
 Input (text / file)
 ↓
 Semantic Intake (no guessing)
@@ -51,78 +53,83 @@ Law Gate (approval required)
 Execution (observable)
 ↓
 Evidence + audit trail
-
+```
 
 ---
 
 ## ⚙️ Key Properties
 
-- **Canonical Truth**  
-  One semantic object flows through the entire system
+**Canonical Truth**
+One semantic object flows through the entire system
 
-- **Observation ≠ Execution**  
-  ARIS can analyze without acting
+**Observation ≠ Execution**
+ARIS can analyze without acting
 
-- **Governance on the Causal Path**  
-  Nothing executes without passing law
+**Governance on the Causal Path**
+Nothing executes without passing law
 
-- **Fail-Closed Behavior**  
-  If something breaks, execution stops visibly
+**Fail-Closed Behavior**
+If something breaks, execution stops visibly
 
-- **No Demo Shortcuts**  
-  Archived experiments are isolated from runtime
+**No Demo Shortcuts**
+Archived experiments are isolated from runtime
 
 ---
 
 ## 📄 Example Interaction
 
-You:
+**You:**
 
+```
 Add environment controls to this project
+```
 
+**ARIS:**
 
-ARIS:
-
-Intent: Modify System
-Risk: High
+```
+Intent: Modify
+System Risk: High
 Actions: analyze → propose → apply → validate
 
 [Approve] [Reject] [Inspect]
-
+```
 
 ---
 
 ## 📁 Project Structure
 
-
-/aris_runtime/ → core system (semantic + law + execution)
-/release/ → packaged builds
-/LOGBOOK.md → chronological system evolution
-/SCARS.md → why the system stays stable
-
+```
+/aris_runtime/   → core system (semantic + law + execution)
+/release/        → packaged builds (in progress)
+/docs/           → governance + system documentation
+/LOGBOOK.md      → chronological system evolution
+/SCARS.md        → stability model
+```
 
 ---
 
 ## 🧠 Why This Exists
 
 Most AI systems:
-- guess intent  
-- execute immediately  
-- drift over time  
+
+* guess intent
+* execute immediately
+* drift over time
 
 ARIS is built to:
-- **derive intent structurally**
-- **enforce decision boundaries**
-- **remain stable under iteration**
+
+* derive intent structurally
+* enforce decision boundaries
+* remain stable under iteration
 
 ---
 
 ## 📘 Documentation
 
-- [Semantic Intake Under Law](./SEMANTIC_INTAKE_UNDER_LAW.md)
-- [Release Notes (V2)](./release/ARIS_V2_SEMANTIC_INTAKE_RELEASE_NOTE.md)
-- [System Logbook](./LOGBOOK.md)
-- [SCARS — Stability Model](./SCARS.md)
+* Semantic Intake Under Law
+* System Logbook
+* SCARS — Stability Model
+* Voss Binding (governance framework)
 
 ---
 
@@ -140,22 +147,17 @@ Run tests:
 pytest -q
 ```
 
-## Voss Binding Bundle
+---
 
-The repo now includes a dedicated Voss Binding lane:
+## 🧩 Voss Binding Bundle
 
-- governance docs: [docs/voss_binding/README.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/README.md)
-- Python references: [evolving_ai/voss_binding](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding)
+This repository includes a dedicated governance layer:
 
-This bundle includes:
+* Markdown governance artifacts
+* Machine-readable `governance.json`
+* Python implementations for binding + execution
 
-- `AAIS-VB-Λ-001` as Markdown
-- `AAIS-SP-Δ-001` as Markdown
-- cover and changelog Markdown conversions
-- machine-readable `governance.json`
-- bundled Python implementations for `voss_binding` and `voss_binary`
-
-Use it from Python:
+Example usage:
 
 ```python
 from evolving_ai.voss_binding import load_governance_bundle
@@ -163,3 +165,47 @@ from evolving_ai.voss_binding import load_governance_bundle
 bundle = load_governance_bundle()
 print(bundle["suite"]["name"])
 ```
+
+---
+
+## ⚠️ Current Status
+
+ARIS is in an **active development and stabilization phase**.
+
+* Core system: functional
+* Governance: enforced
+* Runtime builds: in progress
+
+---
+
+## 🧭 Philosophy
+
+> Infi = unbounded evolution within bounded law.
+
+ARIS is designed so that:
+
+* testing produces evidence
+* verification determines truth
+* proof grants admission
+
+The system does not drift.
+It evolves under constraint.
+
+---
+
+## 📌 Notes
+
+* This is a **system-first project**, not a packaged product (yet)
+* No binaries are distributed in this version
+* Focus is on **architecture, law, and execution integrity**
+
+---
+
+## 👤 Author
+
+Jon Halstead
+(@warheart1984-ctrl)
+
+---
+
+
