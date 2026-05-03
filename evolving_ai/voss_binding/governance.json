@@ -1,0 +1,236 @@
+{
+  "suite": {
+    "name": "AAIS Governance Artifacts",
+    "version": "1.1.0",
+    "date": "2026-05-02",
+    "status": "RATIFIED",
+    "classification": "Publication-Ready",
+    "format": "Zendo-Formal Specification",
+    "repository": "Project-Infinity",
+    "path": "docs/governance/",
+    "author": {
+      "name": "Jon Halstead",
+      "role": "Cognitive Systems Designer & Architect"
+    }
+  },
+  "artifacts": [
+    {
+      "document_id": "AAIS-VB-\u039b-001",
+      "title": "The Voss Binding (\u039b) \u2014 Unified Runtime Calculus",
+      "file": "AAIS-VB-Lambda-001_Voss-Binding.md",
+      "version": "1.1.0",
+      "status": "RATIFIED",
+      "type": "governance-law",
+      "description": "Defines the seven invariant laws, operational contracts, and implementation architecture (GRE, enforcement patterns, Contract Registry, module lifecycle) governing all AAIS subsystems.",
+      "sections": [
+        "\u00a70 Preamble",
+        "\u00a71 Definitions",
+        "\u00a72 The Seven Invariant Laws",
+        "\u00a73 Operational Contracts",
+        "\u00a74 Implementation Architecture",
+        "\u00a75 Drift Detection and Correction Protocol",
+        "\u00a76 Operator Authority and Governance Surface",
+        "\u00a77 Agent Governance",
+        "\u00a78 Amendment Protocol",
+        "\u00a79 Deployment and Integration Requirements",
+        "\u00a710 Ratification"
+      ],
+      "laws": [
+        { "id": "\u039b.1", "name": "Determinism" },
+        { "id": "\u039b.2", "name": "Auditability" },
+        { "id": "\u039b.3", "name": "Fail-Closed Default" },
+        { "id": "\u039b.4", "name": "Identity Separation" },
+        { "id": "\u039b.5", "name": "Drift Detection" },
+        { "id": "\u039b.6", "name": "Corrigibility" },
+        { "id": "\u039b.7", "name": "Governance Supremacy" }
+      ],
+      "implementation_components": [
+        {
+          "name": "Governance Runtime Engine (GRE)",
+          "section": "\u00a74.1",
+          "type": "enforcement-middleware",
+          "pipeline_stages": ["INPUT_GATE", "GOVERNANCE_CHECK", "EXECUTION_SANDBOX", "OUTPUT_GATE", "DRIFT_MEASUREMENT", "AUDIT_EMISSION"]
+        },
+        {
+          "name": "Law Enforcement Patterns",
+          "section": "\u00a74.2",
+          "type": "enforcement-patterns",
+          "patterns": [
+            { "law": "\u039b.1", "enforcer": "Determinism Enforcer", "mechanism": "Input fingerprinting + output hash comparison" },
+            { "law": "\u039b.2", "enforcer": "Audit Trail Writer", "mechanism": "Append-only tamper-evident hash chain" },
+            { "law": "\u039b.3", "enforcer": "Circuit Breaker", "mechanism": "CLOSED/OPEN/HALF-OPEN states with Operator-gated reset" },
+            { "law": "\u039b.4", "enforcer": "Identity Boundary Enforcer", "mechanism": "Isolated execution contexts + Message Bus + Identity Leak Detector" },
+            { "law": "\u039b.5", "enforcer": "Drift Monitor", "mechanism": "4-dimension continuous drift scoring (0.0-1.0) with 5-tier escalation" },
+            { "law": "\u039b.6", "enforcer": "Interrupt Handler", "mechanism": "Non-negotiable interrupt endpoint (500ms timeout) + Correction Interface + Kill Switch" },
+            { "law": "\u039b.7", "enforcer": "Priority Enforcer", "mechanism": "Strict priority hierarchy + Supremacy Validator + Override Lockout" }
+          ]
+        },
+        {
+          "name": "Contract Registry",
+          "section": "\u00a74.3",
+          "type": "registry",
+          "validates": ["Input Contract", "Output Contract", "Governance Contract", "Failure Contract"]
+        },
+        {
+          "name": "Module Lifecycle Engine",
+          "section": "\u00a74.4",
+          "type": "lifecycle-manager",
+          "phases": ["REGISTRATION", "INITIALIZATION", "ACTIVATION", "OPERATION", "SUSPENSION", "TERMINATION"]
+        }
+      ],
+      "interfaces": [
+        { "name": "GovernanceAware", "methods": ["getContract()", "validateInput()", "validateOutput()", "reportDrift()", "acceptInterrupt()"] },
+        { "name": "AuditEmitter", "methods": ["emitRecord()", "queryByModule()", "queryByTimeRange()", "verifyChainIntegrity()"] },
+        { "name": "HealthReporter", "methods": ["reportHealth()", "getDriftScores()", "getCircuitBreakerState()"] }
+      ],
+      "deployment_checklist_items": 10,
+      "companion": "AAIS-SP-\u0394-001"
+    },
+    {
+      "document_id": "AAIS-SP-\u0394-001",
+      "title": "The Stabilization Protocol (\u0394) \u2014 Governed Convergence Framework",
+      "file": "AAIS-SP-Delta-001_Stabilization-Protocol.md",
+      "version": "1.1.0",
+      "status": "RATIFIED",
+      "type": "governance-operations",
+      "description": "Defines convergence protocols, system states, recovery patterns, and implementation architecture (SME, Convergence Engine, HVE, Recovery Executor) for maintaining \u039b compliance.",
+      "sections": [
+        "\u00a70 Preamble",
+        "\u00a71 Definitions",
+        "\u00a72 The Five Stabilization Axioms",
+        "\u00a73 System States and Transitions",
+        "\u00a74 State Machine Implementation",
+        "\u00a75 Convergence Procedures",
+        "\u00a76 Convergence Engine Implementation",
+        "\u00a77 Health Vector Specification",
+        "\u00a78 Health Vector Engine Implementation",
+        "\u00a79 Recovery Patterns",
+        "\u00a710 Recovery Pattern Implementation",
+        "\u00a711 Stabilization Logging and Audit",
+        "\u00a712 Integration with The Voss Binding (\u039b)",
+        "\u00a713 Deployment and Integration Requirements",
+        "\u00a714 Amendment Protocol",
+        "\u00a715 Ratification"
+      ],
+      "axioms": [
+        { "id": "\u0394.1", "name": "Bounded Convergence", "supporting_laws": ["\u039b.3", "\u039b.7"] },
+        { "id": "\u0394.2", "name": "Monotonic Progress", "supporting_laws": ["\u039b.2", "\u039b.5"] },
+        { "id": "\u0394.3", "name": "Cascade Isolation", "supporting_laws": ["\u039b.4", "\u039b.3"] },
+        { "id": "\u0394.4", "name": "Operator-Gated Transitions", "supporting_laws": ["\u039b.6", "\u039b.7"] },
+        { "id": "\u0394.5", "name": "Reversibility", "supporting_laws": ["\u039b.6", "\u039b.2"] }
+      ],
+      "states": [
+        { "name": "NOMINAL", "indicator": "Green" },
+        { "name": "PERTURBED", "indicator": "Amber" },
+        { "name": "CONVERGING", "indicator": "Blue" },
+        { "name": "DEGRADED", "indicator": "Orange" },
+        { "name": "HALTED", "indicator": "Red" },
+        { "name": "QUIESCENT", "indicator": "White" }
+      ],
+      "implementation_components": [
+        {
+          "name": "State Machine Engine (SME)",
+          "section": "\u00a74",
+          "type": "state-management",
+          "pipeline_stages": ["TRANSITION_REQUEST", "VALIDATION", "AUTHORIZATION_CHECK", "PRE_TRANSITION_SNAPSHOT", "STATE_WRITE", "POST_TRANSITION_VERIFICATION", "EVENT_EMISSION", "NOTIFICATION"],
+          "scope_hierarchy": ["Module", "Lane", "Agent", "System"],
+          "transition_guards": ["Authorization", "Health Vector", "Cascade", "Epoch", "Reversal"]
+        },
+        {
+          "name": "Convergence Orchestrator",
+          "section": "\u00a76.1",
+          "type": "orchestration",
+          "enforces": ["\u0394.1 Bounded Convergence", "\u0394.2 Monotonic Progress"]
+        },
+        {
+          "name": "Convergence Action Queue",
+          "section": "\u00a76.2",
+          "type": "queue",
+          "execution_model": "Sequential within scope, governed FIFO"
+        },
+        {
+          "name": "Rollback Manager",
+          "section": "\u00a76.3",
+          "type": "rollback",
+          "enforces": ["\u0394.5 Reversibility"],
+          "default_stack_depth_limit": 20
+        },
+        {
+          "name": "Operator Checkpoint Manager",
+          "section": "\u00a76.4",
+          "type": "checkpoint",
+          "enforces": ["\u0394.4 Operator-Gated Transitions"],
+          "responses": ["APPROVE", "MODIFY", "REJECT", "ESCALATE"],
+          "default_timeout_minutes": 30
+        },
+        {
+          "name": "Health Vector Engine (HVE)",
+          "section": "\u00a78",
+          "type": "health-monitoring",
+          "computation_formula": "System_Health = min(w_m * Module_Health_avg, w_l * Lane_Health_min, w_a * Agent_Health_min)",
+          "default_cycle_seconds": { "critical": 1, "standard": 5 },
+          "hysteresis_default_cycles": 3,
+          "history_window_hours": 24,
+          "trend_patterns": ["Gradual Degradation", "Oscillation", "Sudden Drop", "Recovery Plateau"]
+        },
+        {
+          "name": "Recovery Pattern Executor",
+          "section": "\u00a710.1",
+          "type": "recovery",
+          "components": ["Precondition Checks", "Execution Logic", "Post-condition Verification", "Rollback Procedure"]
+        },
+        {
+          "name": "Pattern Selection Engine",
+          "section": "\u00a710.2",
+          "type": "selection",
+          "selection_priority": ["Hot Restart", "Warm Rollback", "Cold Isolation", "Surgical Correction", "Full Reconvergence"],
+          "factors": ["perturbation_type", "scope_size", "drift_magnitude", "time_constraints", "reversibility_requirements"]
+        }
+      ],
+      "interfaces": [
+        { "name": "StateAware", "methods": ["getCurrentState()", "requestTransition()", "getTransitionHistory()"] },
+        { "name": "Convergeable", "methods": ["prepareForConvergence()", "executeRecoveryAction()", "verifyPostRecovery()", "rollback()"] },
+        { "name": "HealthContributor", "methods": ["getDimensionalHealth()", "getDriftScores()", "getContractCompliancePercentage()"] },
+        { "name": "OperatorGated", "methods": ["generateCheckpointReport()", "awaitOperatorDecision()", "applyOperatorModification()"] }
+      ],
+      "gre_integration_points": [
+        { "delta_component": "SME", "lambda_component": "GRE Circuit Breaker", "integration": "Breaker state changes trigger SME transition requests" },
+        { "delta_component": "HVE", "lambda_component": "GRE Drift Monitor", "integration": "Drift scores feed directly into Health Vector computation" },
+        { "delta_component": "Convergence Orchestrator", "lambda_component": "GRE Pipeline", "integration": "Orchestrator can pause, resume, or reconfigure module execution" },
+        { "delta_component": "Recovery Executor", "lambda_component": "Contract Registry", "integration": "Executor validates recovery actions against registered contracts" },
+        { "delta_component": "Audit Trail", "lambda_component": "GRE Audit Emission", "integration": "Stabilization logs extend GRE tamper-evident audit chain" },
+        { "delta_component": "Kill Switch", "lambda_component": "GRE Circuit Breakers", "integration": "Kill Switch simultaneously trips all circuit breakers to OPEN" }
+      ],
+      "deployment_checklist_items": 12,
+      "companion": "AAIS-VB-\u039b-001"
+    }
+  ],
+  "relationships": {
+    "lambda_governs_delta": true,
+    "conflict_resolution": "Lambda prevails per \u039b.7 (Governance Supremacy)",
+    "description": "\u039b declares and enforces what must be true; \u0394 converges and recovers when truth is perturbed.",
+    "implementation_integration": "All \u0394 implementation components run under GRE governance. \u0394 self-governance is enforced by \u039b."
+  },
+  "interfaces_total": 7,
+  "interface_registry": [
+    { "name": "GovernanceAware", "source": "\u039b \u00a79.2", "required_by": "All governed modules" },
+    { "name": "AuditEmitter", "source": "\u039b \u00a79.2", "required_by": "Audit trail integration" },
+    { "name": "HealthReporter", "source": "\u039b \u00a79.2", "required_by": "Health Vector contribution" },
+    { "name": "StateAware", "source": "\u0394 \u00a713.2", "required_by": "All state-managed components" },
+    { "name": "Convergeable", "source": "\u0394 \u00a713.2", "required_by": "All recoverable components" },
+    { "name": "HealthContributor", "source": "\u0394 \u00a713.2", "required_by": "Health Vector sources" },
+    { "name": "OperatorGated", "source": "\u0394 \u00a713.2", "required_by": "Checkpoint-gated components" }
+  ],
+  "amendment_policy": {
+    "runtime_modification": false,
+    "covers_implementation": true,
+    "requires": [
+      "Written proposal with rationale",
+      "Impact analysis across modules, lanes, agents, and implementation components",
+      "Implementation verification \u2014 confirm amendment can be enforced by GRE",
+      "Operator review and explicit approval",
+      "Version increment",
+      "Full audit trail"
+    ]
+  }
+}

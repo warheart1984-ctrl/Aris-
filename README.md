@@ -132,7 +132,34 @@ Run locally:
 
 ```bash
 py -3.12 -m evolving_ai.aris_runtime.desktop
+```
 
 Run tests:
 
+```bash
 pytest -q
+```
+
+## Voss Binding Bundle
+
+The repo now includes a dedicated Voss Binding lane:
+
+- governance docs: [docs/voss_binding/README.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/README.md)
+- Python references: [evolving_ai/voss_binding](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding)
+
+This bundle includes:
+
+- `AAIS-VB-Λ-001` as Markdown
+- `AAIS-SP-Δ-001` as Markdown
+- cover and changelog Markdown conversions
+- machine-readable `governance.json`
+- bundled Python implementations for `voss_binding` and `voss_binary`
+
+Use it from Python:
+
+```python
+from evolving_ai.voss_binding import load_governance_bundle
+
+bundle = load_governance_bundle()
+print(bundle["suite"]["name"])
+```

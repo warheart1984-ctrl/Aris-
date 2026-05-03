@@ -2026,3 +2026,48 @@ Verification:
 
 Remaining risks:
 - `SCARS.md` is explanatory and release-facing; if future runtime changes reopen any of the listed seam classes, the file must be updated or it stops being truthful.
+
+## 2026-05-03 - Voss Binding Bundle Added To ARIS Repo
+What changed:
+- Added a dedicated Voss Binding lane under `docs/voss_binding/` with Markdown conversions of the text artifacts, machine-readable governance metadata, and PDF reference artifacts.
+- Added a real Python package under `evolving_ai/voss_binding/` bundling `voss_binding.py`, `voss_binary.py`, and a governance metadata loader.
+
+Why it changed:
+- The repo needed the Voss Binding bundle added as first-class project material instead of a loose download set.
+- Converting the text files into Markdown and wiring the Python references into a package makes the bundle publishable, referenceable, and importable from ARIS runtime code.
+
+How it changed:
+- Converted:
+  - `README.txt` -> `docs/voss_binding/README.md`
+  - `COVER.txt` -> `docs/voss_binding/COVER.md`
+  - `CHANGELOG.txt` -> `docs/voss_binding/CHANGELOG.md`
+  - `AAIS-VB-Lambda-001_Voss-Binding.txt` -> `docs/voss_binding/AAIS-VB-Lambda-001_Voss-Binding.md`
+  - `AAIS-SP-Delta-001_Stabilization-Protocol.txt` -> `docs/voss_binding/AAIS-SP-Delta-001_Stabilization-Protocol.md`
+- Added `governance.json` to both docs and package surfaces.
+- Added `evolving_ai.voss_binding.load_governance_bundle()` and package data wiring in `pyproject.toml`.
+- Added a focused import/metadata test.
+
+Files changed:
+- [README.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/README.md)
+- [pyproject.toml](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/pyproject.toml)
+- [docs/voss_binding/README.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/README.md)
+- [docs/voss_binding/COVER.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/COVER.md)
+- [docs/voss_binding/CHANGELOG.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/CHANGELOG.md)
+- [docs/voss_binding/AAIS-VB-Lambda-001_Voss-Binding.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/AAIS-VB-Lambda-001_Voss-Binding.md)
+- [docs/voss_binding/AAIS-SP-Delta-001_Stabilization-Protocol.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/AAIS-SP-Delta-001_Stabilization-Protocol.md)
+- [docs/voss_binding/governance.json](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/docs/voss_binding/governance.json)
+- [evolving_ai/voss_binding/__init__.py](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding/__init__.py)
+- [evolving_ai/voss_binding/governance.py](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding/governance.py)
+- [evolving_ai/voss_binding/governance.json](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding/governance.json)
+- [evolving_ai/voss_binding/voss_binding.py](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding/voss_binding.py)
+- [evolving_ai/voss_binding/voss_binary.py](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/evolving_ai/voss_binding/voss_binary.py)
+- [tests/test_voss_binding_bundle.py](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/tests/test_voss_binding_bundle.py)
+- [LOGBOOK.md](/C:/Users/randj/Desktop/project%20infi/code/_aris_voss_publish/LOGBOOK.md)
+
+Verification:
+- Python import and governance metadata checks added in `tests/test_voss_binding_bundle.py`.
+- The package data path is explicitly declared in `pyproject.toml`.
+
+Remaining risks:
+- The PDF artifacts are preserved as reference documents, but I did not attempt OCR or semantic reconciliation between the PDFs and the text exports in this pass.
+- The repo contains both `voss_binding.py` and `voss_binary.py` as supplied reference implementations; no behavioral merge between them was attempted here.

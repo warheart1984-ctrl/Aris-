@@ -57,3 +57,4 @@ include = ["evolving_ai*", "forge*", "forge_eval*", "src*"]
 
 [tool.setuptools.package-data]
 "evolving_ai.app" = ["static/*"]
+"evolving_ai.voss_binding" = ["governance.json"]
