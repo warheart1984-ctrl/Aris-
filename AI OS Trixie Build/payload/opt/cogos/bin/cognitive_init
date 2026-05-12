@@ -1,0 +1,45 @@
+#!/bin/sh
+set -eu
+
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/cogos/bin
+export COGOS_ROOT=/opt/cogos
+export COGOS_LOG=/var/log/cogos-boot.log
+
+mkdir -p /proc /sys /dev /run /tmp /var/log /opt/cogos/memory/logs
+mountpoint -q /proc || mount -t proc proc /proc || true
+mountpoint -q /sys || mount -t sysfs sysfs /sys || true
+mountpoint -q /dev || mount -t devtmpfs devtmpfs /dev || mount -t tmpfs dev /dev || true
+mountpoint -q /run || mount -t tmpfs tmpfs /run || true
+
+log() {
+  printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo boot)" "$*" | tee -a "$COGOS_LOG" >/dev/null
+}
+
+log "Project Infi cognitive_init starting as PID $$"
+log "Stage: mount runtime surfaces"
+log "Stage: load root law"
+
+if [ -f /opt/cogos/law/root_law.json ]; then
+  log "root_law present"
+else
+  log "root_law missing; entering maintenance shell"
+  exec /bin/sh
+fi
+
+log "Stage: run governed boot"
+if command -v python3 >/dev/null 2>&1; then
+  python3 /opt/cogos/bin/cogos_boot.py --boot || {
+    log "governed boot failed; entering maintenance shell"
+    exec /bin/sh
+  }
+else
+  log "python3 missing; entering maintenance shell"
+  exec /bin/sh
+fi
+
+log "Stage: governed ready"
+if command -v getty >/dev/null 2>&1; then
+  exec getty -n -l /opt/cogos/bin/cogos_shell tty1
+fi
+
+exec /opt/cogos/bin/cogos_shell

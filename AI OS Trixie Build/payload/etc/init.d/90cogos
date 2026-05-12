@@ -1,0 +1,113 @@
+#!/bin/sh
+### Project Infi / ARIS CoGOS service
+
+COGOS_ROOT=/opt/cogos
+COGOS_LOG=/var/log/cogos-service.log
+BOOT_REPORT=/opt/cogos/memory/logs/boot_report.json
+BOOT_PROFILE=/opt/cogos/config/boot_profile.json
+PID_FILE=/run/cogos-boot.pid
+DAEMON_PID_FILE=/run/cogos-daemon.pid
+DASHBOARD_PID_FILE=/run/cogos-dashboard.pid
+
+log() {
+  mkdir -p /var/log /opt/cogos/memory/logs /run 2>/dev/null || true
+  printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo boot)" "$*" >> "$COGOS_LOG" 2>/dev/null || true
+}
+
+profile_value() {
+  python3 - "$BOOT_PROFILE" "$1" "$2" <<'PY'
+import json
+import sys
+
+path, key, default = sys.argv[1], sys.argv[2], sys.argv[3]
+try:
+    with open(path, "r", encoding="utf-8") as handle:
+        data = json.load(handle)
+except Exception:
+    data = {}
+value = data.get(key, default)
+if isinstance(value, bool):
+    print("true" if value else "false")
+else:
+    print(value)
+PY
+}
+
+case "${1:-start}" in
+  start)
+    log "starting Project Infi / ARIS governed runtime layer"
+    if [ ! -d "$COGOS_ROOT" ]; then
+      log "missing $COGOS_ROOT; governed runtime layer deferred"
+      exit 0
+    fi
+    if command -v python3 >/dev/null 2>&1; then
+      PROFILE="$(profile_value profile operator_shell)"
+      BOOT_VERIFY_AUTOSTART="$(profile_value boot_verify_autostart true)"
+      DAEMON_AUTOSTART="$(profile_value daemon_autostart true)"
+      DASHBOARD_AUTOSTART="$(profile_value dashboard_autostart false)"
+      log "boot profile: $PROFILE; dashboard_autostart=$DASHBOARD_AUTOSTART"
+
+      if [ "$BOOT_VERIFY_AUTOSTART" = "true" ]; then
+        (
+          sleep 2
+          python3 "$COGOS_ROOT/bin/cogos_boot.py" --boot
+          rc=$?
+          log "boot verifier exited with code $rc"
+          exit $rc
+        ) >> "$COGOS_LOG" 2>&1 &
+        echo $! > "$PID_FILE" 2>/dev/null || true
+        log "boot verifier launched; report target: $BOOT_REPORT"
+      else
+        log "boot verifier deferred by boot profile"
+      fi
+
+      if [ "$DAEMON_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_daemon.py" ]; then
+        python3 "$COGOS_ROOT/bin/cogos_daemon.py" --daemon >> "$COGOS_LOG" 2>&1 &
+        echo $! > "$DAEMON_PID_FILE" 2>/dev/null || true
+        log "daemon launched; task inbox: /opt/cogos/tasks/inbox"
+      else
+        log "daemon deferred by boot profile"
+      fi
+      if [ "$DASHBOARD_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_dashboard.py" ]; then
+        python3 "$COGOS_ROOT/bin/cogos_daemon.py" --verify-laws >> "$COGOS_LOG" 2>&1 || true
+        python3 "$COGOS_ROOT/bin/cogos_dashboard.py" >> "$COGOS_LOG" 2>&1 &
+        echo $! > "$DASHBOARD_PID_FILE" 2>/dev/null || true
+        log "dashboard launched: http://localhost:8080"
+      else
+        log "dashboard deferred; run cogos-dashboard-start when needed"
+      fi
+    else
+      log "python3 missing; governed runtime layer not started"
+      exit 0
+    fi
+    ;;
+  status)
+    if [ -s "$BOOT_REPORT" ]; then
+      cat "$BOOT_REPORT"
+    else
+      echo "No CoGOS boot report yet. Check $COGOS_LOG"
+      exit 1
+    fi
+    ;;
+  stop)
+    if [ -s "$DAEMON_PID_FILE" ]; then
+      kill "$(cat "$DAEMON_PID_FILE")" 2>/dev/null || true
+      rm -f "$DAEMON_PID_FILE"
+      log "daemon stop requested"
+    else
+      log "stop requested; no daemon pid file"
+    fi
+    if [ -s "$DASHBOARD_PID_FILE" ]; then
+      kill "$(cat "$DASHBOARD_PID_FILE")" 2>/dev/null || true
+      rm -f "$DASHBOARD_PID_FILE"
+      log "dashboard stop requested"
+    fi
+    ;;
+  restart)
+    "$0" start
+    ;;
+  *)
+    echo "Usage: $0 {start|status|stop|restart}"
+    exit 2
+    ;;
+esac

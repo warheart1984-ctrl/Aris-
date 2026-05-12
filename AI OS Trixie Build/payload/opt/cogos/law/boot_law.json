@@ -1,0 +1,15 @@
+{
+  "name": "Project Infi Boot Law",
+  "version": "0.1",
+  "sequence": [
+    "mount_proc_sys_dev_run",
+    "load_root_law",
+    "verify_payload_files",
+    "load_governance_rules",
+    "load_module_manifest",
+    "write_boot_report",
+    "enter_governed_ready_shell"
+  ],
+  "failure_policy": "maintenance_shell",
+  "state_cycle": "0001 -> 1000 -> 1001(L1) -> 1010 -> 1111 -> 1001(L2) -> Gamma -> Tau -> admit|wait -> 0001-prime -> Delta -> Lambda -> next 1000"
+}

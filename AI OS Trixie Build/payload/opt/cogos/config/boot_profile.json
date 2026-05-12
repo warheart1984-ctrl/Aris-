@@ -1,0 +1,7 @@
+{
+  "profile": "operator_shell",
+  "dashboard_autostart": false,
+  "daemon_autostart": true,
+  "boot_verify_autostart": true,
+  "operator_message": "Fast operator boot active. Use cogos-operator for status, cogos-dashboard-start for the dashboard, and cogos-proof for full verification."
+}

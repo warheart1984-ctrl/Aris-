@@ -1,0 +1,27 @@
+{
+  "id": "slow_module",
+  "name": "Slow Timeout Module",
+  "version": "0.1",
+  "entrypoint": "slow_module.py",
+  "identity": "slow_module",
+  "traits": [
+    "readonly",
+    "non_mutating",
+    "operator_tool"
+  ],
+  "capabilities": [
+    "memory.read"
+  ],
+  "forbidden": [
+    "network.write",
+    "self.modify",
+    "memory.write"
+  ],
+  "sha256": "4bf7828904d463c75fadb9905901fa1e545fc1a0e04d7db7b2c345eb7ae462ef",
+  "runtime": {
+    "type": "python3",
+    "timeout_seconds": 1,
+    "input_contract": "JSON object on stdin",
+    "output_contract": "JSON object on stdout"
+  }
+}

@@ -1,0 +1,17 @@
+#!/bin/sh
+case "${1:-}" in
+  --replay)
+    shift
+    exec python3 /opt/cogos/bin/cogos_daemon.py --replay "${1:-latest}"
+    ;;
+  --explain)
+    shift
+    exec python3 /opt/cogos/bin/cogos_daemon.py --explain "${1:-latest}"
+    ;;
+  "" )
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trace
+    ;;
+  * )
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trace --count "$1"
+    ;;
+esac

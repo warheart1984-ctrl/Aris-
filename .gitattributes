@@ -1,0 +1,8 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# CoGOS payload scripts must remain Unix-readable inside the ISO.
+*.sh text eol=lf
+"AI OS Trixie Build/payload/etc/init.d/*" text eol=lf
+"AI OS Trixie Build/payload/opt/cogos/bin/*" text eol=lf
+"AI OS Trixie Build/payload/usr/local/bin/*" text eol=lf

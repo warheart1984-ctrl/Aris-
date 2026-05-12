@@ -1,0 +1,144 @@
+{
+  "name": "Project Infi / ARIS Cognitive OS Runtime",
+  "version": "0.1",
+  "root": "/opt/cogos",
+  "paths": {
+    "runtime": "/opt/cogos/runtime",
+    "law": "/opt/cogos/law",
+    "modules": "/opt/cogos/modules",
+    "memory": "/opt/cogos/memory",
+    "logs": "/opt/cogos/memory/logs",
+    "tasks": "/opt/cogos/tasks",
+    "traces": "/opt/cogos/memory/traces",
+    "events": "/opt/cogos/memory/events"
+  },
+  "boot": {
+    "entrypoint": "/opt/cogos/bin/cognitive_init",
+    "shell": "/opt/cogos/bin/cogos_shell",
+    "report": "/opt/cogos/memory/logs/boot_report.json",
+    "profile": "/opt/cogos/config/boot_profile.json"
+  },
+  "daemon": {
+    "entrypoint": "/opt/cogos/bin/cogos_daemon.py",
+    "pid": "/run/cogos-daemon.pid",
+    "state": "/run/cogos-daemon.json",
+    "task_inbox": "/opt/cogos/tasks/inbox",
+    "trace": "/opt/cogos/memory/traces/aris_cycles.jsonl"
+  },
+  "law_engine": {
+    "rules": "/opt/cogos/law/governance_rules.json",
+    "decisions": "/opt/cogos/memory/traces/law_decisions.jsonl",
+    "authority_modes": [
+      "operator",
+      "developer",
+      "verifier",
+      "restricted-runtime"
+    ]
+  },
+  "snapshot": {
+    "path": "/opt/cogos/memory/snapshots"
+  },
+  "reflection": {
+    "queue": "/opt/cogos/memory/reflection/queue.jsonl"
+  },
+  "dashboard": {
+    "bind": "127.0.0.1",
+    "port": 8080,
+    "url": "http://localhost:8080",
+    "autostart": false
+  },
+  "verification": {
+    "trace_verifications": "/opt/cogos/memory/traces/verifications.jsonl",
+    "law_integrity": "/opt/cogos/memory/traces/law_integrity.jsonl"
+  },
+  "modules": {
+    "local": "/opt/cogos/modules/local",
+    "registry": "/opt/cogos/modules/registry.json",
+    "trait_ledger": "/opt/cogos/memory/modules/trait_ledger.jsonl"
+  },
+  "sandbox": {
+    "timeout_seconds": 5,
+    "max_stdout_bytes": 65536,
+    "max_stderr_bytes": 65536,
+    "network": "denied",
+    "write_paths": [],
+    "capability_paths": {
+      "trace.read": [
+        "/opt/cogos/memory/traces"
+      ],
+      "memory.read": [
+        "/opt/cogos/memory"
+      ],
+      "memory.append": [
+        "/opt/cogos/memory/modules/executions.jsonl"
+      ]
+    }
+  },
+  "trait_runtime": {
+    "mode": "observe_then_enforce",
+    "drift_quarantine_threshold": 3,
+    "high_severity_quarantine": true,
+    "rules": {
+      "readonly": {
+        "forbids": [
+          "memory.write",
+          "network.write",
+          "self.modify",
+          "module.admit"
+        ]
+      },
+      "non_mutating": {
+        "forbids": [
+          "memory.write",
+          "network.write",
+          "self.modify",
+          "module.admit"
+        ],
+        "mutation_output_markers": [
+          "mutate",
+          "write",
+          "delete",
+          "self_modify"
+        ]
+      },
+      "analytical": {
+        "expects_structured_output": true
+      },
+      "verifier": {
+        "expects_any_output_fields": [
+          "proof",
+          "checks",
+          "verified",
+          "trace_count"
+        ]
+      },
+      "operator_tool": {
+        "allowed_authority_modes": [
+          "operator",
+          "developer"
+        ]
+      }
+    }
+  },
+  "pattern_ledger": {
+    "path": "/opt/cogos/memory/patterns",
+    "recurrence_threshold": 3,
+    "auto_quarantine_severities": [
+      "S4",
+      "S5"
+    ],
+    "unknown_source_classification": "pending_review",
+    "approved_sources": [
+      "module_execution",
+      "sandbox_denial",
+      "law_denial",
+      "trait_drift",
+      "proof",
+      "trace_verification",
+      "operator_note"
+    ]
+  },
+  "operator_handbook": {
+    "path": "/opt/cogos/docs/OPERATOR_HANDBOOK.md"
+  }
+}

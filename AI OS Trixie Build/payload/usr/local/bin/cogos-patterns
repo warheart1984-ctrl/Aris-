@@ -1,0 +1,33 @@
+#!/bin/sh
+cmd="${1:-}"
+case "$cmd" in
+  ingest)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-ingest
+    ;;
+  list)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-list
+    ;;
+  fame)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-fame
+    ;;
+  shame)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-shame
+    ;;
+  immune)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-immune
+    ;;
+  guidance)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-guidance
+    ;;
+  inspect)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-patterns inspect <pattern_id>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-inspect "$2"
+    ;;
+  prove)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --pattern-prove
+    ;;
+  *)
+    echo "Usage: cogos-patterns {ingest|list|fame|shame|immune|guidance|inspect <pattern_id>|prove}"
+    exit 2
+    ;;
+esac

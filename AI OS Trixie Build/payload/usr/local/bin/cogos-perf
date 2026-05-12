@@ -1,0 +1,28 @@
+#!/bin/sh
+echo "== CoGOS v10 performance =="
+echo
+echo "== Boot profile =="
+cat /opt/cogos/config/boot_profile.json 2>/dev/null || echo "missing boot profile"
+echo
+echo "== Daemon =="
+cogos-daemon --status 2>&1 || true
+echo
+echo "== Dashboard =="
+if [ -s /run/cogos-dashboard.pid ] && kill -0 "$(cat /run/cogos-dashboard.pid)" 2>/dev/null; then
+  echo "running: http://localhost:8080"
+else
+  echo "deferred/stopped"
+fi
+echo
+echo "== Uptime/load =="
+uptime 2>/dev/null || cat /proc/loadavg 2>/dev/null || true
+echo
+echo "== CPU =="
+printf "processors: "
+grep -c '^processor' /proc/cpuinfo 2>/dev/null || echo "unknown"
+echo
+echo "== Memory =="
+free -h 2>/dev/null || awk '/MemTotal|MemFree|MemAvailable/ {print}' /proc/meminfo 2>/dev/null || true
+echo
+echo "== Process summary =="
+ps -eo pid,comm,%cpu,%mem --sort=-%cpu 2>/dev/null | head -n 12 || ps w 2>/dev/null | head -n 20 || true

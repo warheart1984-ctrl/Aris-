@@ -1,0 +1,43 @@
+#!/bin/sh
+cmd="${1:-}"
+case "$cmd" in
+  list)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-list
+    ;;
+  inspect)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-module inspect <id>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-inspect "$2"
+    ;;
+  admit)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-module admit <module-folder-or-module.json>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --authority developer --admit "$2"
+    ;;
+  deny)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-module deny <id>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-deny "$2"
+    ;;
+  verify)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-module verify <id>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-verify "$2"
+    ;;
+  run)
+    [ "$#" -ge 2 ] || { echo "Usage: cogos-module run <id> [input-json]"; exit 2; }
+    if [ "$#" -ge 3 ]; then
+      exec python3 /opt/cogos/bin/cogos_daemon.py --module-run "$2" --module-input "$3"
+    fi
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-run "$2"
+    ;;
+  quarantine)
+    [ "$#" -ge 3 ] || { echo "Usage: cogos-module quarantine <id> <reason>"; exit 2; }
+    id="$2"
+    shift 2
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-quarantine "$id" --module-quarantine-reason "$*"
+    ;;
+  registry)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --module-registry
+    ;;
+  *)
+    echo "Usage: cogos-module {list|inspect <id>|admit <path>|deny <id>|verify <id>|run <id> [input-json]|quarantine <id> <reason>|registry}"
+    exit 2
+    ;;
+esac

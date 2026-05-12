@@ -1,0 +1,14 @@
+#!/bin/sh
+echo "CoGOS v10 prefers the fast operator shell first."
+echo
+echo "Use these when you need the heavier surfaces:"
+echo "  cogos-dashboard-start   start http://localhost:8080"
+echo "  cogos-dashboard-stop    stop the dashboard if the VM lags"
+echo "  cogos-perf              inspect load, memory, and processes"
+echo
+echo "Puppy desktop remains available. From a text prompt, try:"
+echo "  xwin"
+echo "  startx"
+echo
+echo "For Hyper-V lag, tune the VM to 4 CPUs and fixed 6GB RAM from Windows:"
+echo "  powershell -ExecutionPolicy Bypass -File scripts/tune_hyperv_vm.ps1"

@@ -1,0 +1,18 @@
+﻿{
+    "forbidden":  [
+                      "self.modify"
+                  ],
+    "id":  "bad_mutator",
+    "capabilities":  [
+                         "memory.write"
+                     ],
+    "version":  "0.1",
+    "name":  "Bad Mutator",
+    "identity":  "bad_mutator",
+    "traits":  [
+                   "readonly",
+                   "operator_tool"
+               ],
+    "sha256":  "ba074af554911b637244f91eaecc1d9086e0c16156dcae03c498991645700820",
+    "entrypoint":  "bad_mutator.py"
+}

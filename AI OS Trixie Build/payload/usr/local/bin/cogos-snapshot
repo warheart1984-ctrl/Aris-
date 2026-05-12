@@ -1,0 +1,11 @@
+#!/bin/sh
+case "${1:-}" in
+  create)
+    shift
+    exec python3 /opt/cogos/bin/cogos_daemon.py --snapshot "${*:-manual}"
+    ;;
+  *)
+    echo "Usage: cogos-snapshot create [label]"
+    exit 2
+    ;;
+esac

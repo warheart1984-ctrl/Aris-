@@ -1,0 +1,29 @@
+﻿{
+    "forbidden":  [
+                      "network.write",
+                      "self.modify",
+                      "memory.write"
+                  ],
+    "id":  "trace_analyzer",
+    "capabilities":  [
+                         "trace.read",
+                         "memory.read"
+                     ],
+    "version":  "0.1",
+    "name":  "Trace Analyzer",
+    "identity":  "trace_analyzer",
+    "traits":  [
+                   "readonly",
+                   "analytical",
+                   "non_mutating",
+                   "verifier"
+               ],
+    "sha256":  "c29e4dc4d9f1638d9780ae083718d02a9262cb7655ddeb84930d51fe69ceb0d8",
+    "entrypoint":  "trace_analyzer.py",
+    "runtime":  {
+                    "type":  "python3",
+                    "timeout_seconds":  5,
+                    "input_contract":  "JSON object on stdin",
+                    "output_contract":  "JSON object on stdout"
+                }
+}

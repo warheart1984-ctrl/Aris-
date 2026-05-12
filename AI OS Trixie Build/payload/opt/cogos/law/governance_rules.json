@@ -1,0 +1,221 @@
+{
+  "name": "AAIS Module Governance Rules",
+  "version": "0.1",
+  "mode": "fail_closed",
+  "cisiv": [
+    "Concept",
+    "Identity",
+    "Structure",
+    "Implementation",
+    "Verification"
+  ],
+  "module_requirements": [
+    "bounded_purpose",
+    "explicit_input_contract",
+    "deterministic_result_contract",
+    "boundary_guard",
+    "semantic_guard",
+    "safe_logging",
+    "verification_evidence"
+  ],
+  "forbidden": [
+    "persistent_user_metadata_without_explicit_scope",
+    "user_profiling",
+    "raw_provider_exception_crossing_boundary",
+    "runtime_mutation_during_delta",
+    "presentation_layer_tool_authority"
+  ],
+  "authority_modes": {
+    "operator": {
+      "capabilities": [
+        "law.read",
+        "memory.read",
+        "memory.append",
+        "task.execute",
+        "trace.read",
+        "snapshot.create",
+        "reflection.submit",
+        "module.execute"
+      ]
+    },
+    "developer": {
+      "inherits": "operator",
+      "capabilities": [
+        "module.admit",
+        "module.inspect",
+        "module.verify",
+        "module.quarantine",
+        "snapshot.restore"
+      ]
+    },
+    "verifier": {
+      "capabilities": [
+        "law.read",
+        "memory.read",
+        "trace.read",
+        "module.inspect",
+        "module.verify",
+        "trait.audit",
+        "pattern.ingest",
+        "pattern.classify",
+        "immune.recommend",
+        "guidance.promote",
+        "reflection.review"
+      ]
+    },
+    "restricted-runtime": {
+      "capabilities": [
+        "memory.append",
+        "trace.read"
+      ]
+    }
+  },
+  "law_rules": [
+    {
+      "rule": "task.execute",
+      "requires_capabilities": [
+        "task.execute",
+        "memory.append"
+      ],
+      "denies": [
+        "self_modify"
+      ]
+    },
+    {
+      "rule": "memory.append",
+      "requires_capabilities": [
+        "memory.append"
+      ],
+      "denies": [
+        "persistent_user_metadata_without_explicit_scope"
+      ]
+    },
+    {
+      "rule": "network.fetch",
+      "requires_capabilities": [
+        "network.fetch"
+      ],
+      "requires": [
+        "operator_approval"
+      ],
+      "denies": [
+        "self_modify"
+      ]
+    },
+    {
+      "rule": "module.admit",
+      "requires_capabilities": [
+        "module.admit",
+        "module.verify"
+      ],
+      "requires": [
+        "manifest",
+        "sha256"
+      ],
+      "denies": [
+        "unsigned_runtime_mutation",
+        "trait_conflict"
+      ]
+    },
+    {
+      "rule": "module.execute",
+      "requires_capabilities": [
+        "module.execute"
+      ],
+      "requires": [
+        "manifest",
+        "sha256",
+        "registry"
+      ],
+      "denies": [
+        "trait_conflict",
+        "hash_mismatch",
+        "quarantined",
+        "undeclared_capability",
+        "network_write",
+        "memory_write",
+        "self_modify"
+      ]
+    },
+    {
+      "rule": "module.quarantine",
+      "requires_capabilities": [
+        "module.quarantine",
+        "module.verify"
+      ],
+      "requires": [
+        "manifest"
+      ]
+    },
+    {
+      "rule": "trait.audit",
+      "requires_capabilities": [
+        "trait.audit",
+        "module.inspect",
+        "module.verify"
+      ],
+      "requires": [
+        "manifest",
+        "registry"
+      ]
+    },
+    {
+      "rule": "pattern.ingest",
+      "requires_capabilities": [
+        "pattern.ingest",
+        "pattern.classify"
+      ],
+      "requires": [
+        "evidence"
+      ]
+    },
+    {
+      "rule": "pattern.classify",
+      "requires_capabilities": [
+        "pattern.classify"
+      ],
+      "requires": [
+        "evidence"
+      ]
+    },
+    {
+      "rule": "immune.recommend",
+      "requires_capabilities": [
+        "immune.recommend"
+      ],
+      "requires": [
+        "evidence"
+      ]
+    },
+    {
+      "rule": "guidance.promote",
+      "requires_capabilities": [
+        "guidance.promote"
+      ],
+      "requires": [
+        "evidence"
+      ]
+    },
+    {
+      "rule": "snapshot.create",
+      "requires_capabilities": [
+        "snapshot.create",
+        "memory.read"
+      ]
+    },
+    {
+      "rule": "reflection.submit",
+      "requires_capabilities": [
+        "reflection.submit",
+        "memory.append"
+      ],
+      "denies": [
+        "direct_self_modification"
+      ]
+    }
+  ],
+  "cognitive_load": {
+    "max_active_cycles": 6,
+    "overflow_strategy": "queue"
+  }
+}

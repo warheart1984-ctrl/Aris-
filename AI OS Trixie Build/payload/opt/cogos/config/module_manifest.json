@@ -1,0 +1,34 @@
+{
+  "modules": [
+    {
+      "id": "aais_unified",
+      "path": "/opt/cogos/runtime/aais_unified.py",
+      "role": "authority_governance_swarm_runtime",
+      "cisiv": "Verification"
+    },
+    {
+      "id": "aris_runtime",
+      "path": "/opt/cogos/runtime/aris_runtime.py",
+      "role": "governed_runtime_orchestrator",
+      "cisiv": "Implementation"
+    },
+    {
+      "id": "ul_core",
+      "path": "/opt/cogos/runtime/ul_core.py",
+      "role": "ul_language_substrate",
+      "cisiv": "Implementation"
+    },
+    {
+      "id": "forge_eval",
+      "path": "/opt/cogos/runtime/forge_eval.py",
+      "role": "admission_gate",
+      "cisiv": "Implementation"
+    },
+    {
+      "id": "cogos_daemon",
+      "path": "/opt/cogos/bin/cogos_daemon.py",
+      "role": "persistent_aris_cycle_engine",
+      "cisiv": "Implementation"
+    }
+  ]
+}

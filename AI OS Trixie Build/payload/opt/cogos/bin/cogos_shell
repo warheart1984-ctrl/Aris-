@@ -1,0 +1,128 @@
+#!/bin/sh
+set -eu
+
+clear 2>/dev/null || true
+echo "Project Infi / ARIS Cognitive OS"
+echo "Governed runtime shell"
+echo
+echo "Available commands:"
+echo "  boot-report  - show the last governed boot report"
+echo "  smoke        - run the current AAIS/ARIS payload smoke check"
+echo "  daemon       - show daemon status"
+echo "  run TEXT     - run one ARIS cycle now"
+echo "  task TEXT    - queue a task for the daemon"
+echo "  trace        - show recent ARIS cycle trace"
+echo "  explain      - explain latest trace"
+echo "  replay       - replay latest trace decision"
+echo "  verify       - verify latest trace determinism"
+echo "  law ACTION   - evaluate an action against law"
+echo "  snapshot     - create runtime snapshot"
+echo "  reflect TEXT - queue bounded reflection proposal"
+echo "  modules      - list governed modules"
+echo "  module-run ID - run admitted module through sandbox"
+echo "  traits      - list trait identity state"
+echo "  patterns    - list Pattern Ledger entries"
+echo "  proof        - run known-good proof summary"
+echo "  operator     - show fast v10 operator surface"
+echo "  perf         - show VM/runtime performance"
+echo "  dashboard    - print dashboard URL"
+echo "  dash-start   - start dashboard on demand"
+echo "  dash-stop    - stop dashboard"
+echo "  desktop      - show desktop hints"
+echo "  law          - print root law"
+echo "  shell        - open /bin/sh"
+echo "  reboot       - reboot"
+echo
+
+while true; do
+  printf 'cogos> '
+  read -r cmd || exit 0
+  case "$cmd" in
+    boot-report)
+      cat /opt/cogos/memory/logs/boot_report.json 2>/dev/null || echo "No boot report yet."
+      ;;
+    smoke)
+      python3 /opt/cogos/bin/cogos_boot.py --smoke
+      ;;
+    daemon)
+      python3 /opt/cogos/bin/cogos_daemon.py --status
+      ;;
+    run\ *)
+      python3 /opt/cogos/bin/cogos_daemon.py --run "${cmd#run }"
+      ;;
+    task\ *)
+      cogos-task "${cmd#task }"
+      ;;
+    trace)
+      cogos-trace 20
+      ;;
+    explain)
+      cogos-trace --explain latest
+      ;;
+    replay)
+      cogos-trace --replay latest
+      ;;
+    verify)
+      cogos-verify-trace latest
+      ;;
+    law\ *)
+      cogos-law "${cmd#law }"
+      ;;
+    snapshot)
+      cogos-snapshot create shell
+      ;;
+    reflect\ *)
+      cogos-reflect "${cmd#reflect }"
+      ;;
+    modules)
+      cogos-module list
+      ;;
+    module-run\ *)
+      cogos-module run "${cmd#module-run }"
+      ;;
+    traits)
+      cogos-traits list
+      ;;
+    patterns)
+      cogos-patterns list
+      ;;
+    proof)
+      cogos-proof
+      ;;
+    operator)
+      cogos-operator
+      ;;
+    perf)
+      cogos-perf
+      ;;
+    dashboard)
+      echo "http://localhost:8080"
+      ;;
+    dash-start)
+      cogos-dashboard-start
+      ;;
+    dash-stop)
+      cogos-dashboard-stop
+      ;;
+    desktop)
+      cogos-desktop-hint
+      ;;
+    law)
+      cat /opt/cogos/law/root_law.json
+      ;;
+    shell)
+      /bin/sh
+      ;;
+    reboot)
+      reboot -f
+      ;;
+    exit|quit)
+      exit 0
+      ;;
+    "")
+      ;;
+    *)
+      echo "Unknown command: $cmd"
+      ;;
+  esac
+done

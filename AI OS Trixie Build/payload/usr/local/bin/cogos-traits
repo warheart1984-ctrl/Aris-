@@ -1,0 +1,28 @@
+#!/bin/sh
+cmd="${1:-}"
+case "$cmd" in
+  list)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trait-list
+    ;;
+  inspect)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-traits inspect <module_id>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trait-inspect "$2"
+    ;;
+  events)
+    if [ "$#" -eq 2 ]; then
+      exec python3 /opt/cogos/bin/cogos_daemon.py --trait-events "$2"
+    fi
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trait-events
+    ;;
+  audit)
+    [ "$#" -eq 2 ] || { echo "Usage: cogos-traits audit <module_id>"; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trait-audit "$2"
+    ;;
+  prove)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --trait-prove
+    ;;
+  *)
+    echo "Usage: cogos-traits {list|inspect <module_id>|events [module_id]|audit <module_id>|prove}"
+    exit 2
+    ;;
+esac

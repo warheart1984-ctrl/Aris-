@@ -1,0 +1,20 @@
+{
+  "name": "Project Infi Root Law",
+  "version": "0.1",
+  "principle": "No action becomes state unless it is verified, judged, debt-reckoned, truthfully admitted, stabilized, and bound.",
+  "authority": {
+    "runtime_authority": "Jarvis",
+    "presentation_authority": "Nova",
+    "state_authority": "Project Infi governed cycle",
+    "module_authority": "AAIS Module Governance"
+  },
+  "invariants": [
+    "fail_closed_on_missing_law",
+    "no_false_admission",
+    "no_skipped_gates",
+    "delta_freezes_mutation",
+    "lambda_binding_runs_every_cycle",
+    "modules_require_cisiv_verification",
+    "capability_modules_return_deterministic_results"
+  ]
+}

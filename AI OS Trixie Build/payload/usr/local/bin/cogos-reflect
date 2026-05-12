@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$#" -eq 0 ]; then
+  echo "Usage: cogos-reflect <proposal text>"
+  exit 2
+fi
+exec python3 /opt/cogos/bin/cogos_daemon.py --reflect "$*"

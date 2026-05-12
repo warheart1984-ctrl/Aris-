@@ -1,0 +1,35 @@
+#!/bin/sh
+authority=operator
+capabilities="task.execute memory.append"
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --authority)
+      authority="$2"
+      shift 2
+      ;;
+    --capability)
+      capabilities="$capabilities $2"
+      shift 2
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+if [ "$#" -eq 0 ]; then
+  echo "Usage: cogos-task [--authority MODE] [--capability CAP] <task text>"
+  exit 2
+fi
+mkdir -p /opt/cogos/tasks/inbox
+name="$(date -u +%Y%m%dT%H%M%SZ)-task.json"
+json_caps="$(printf '%s\n' $capabilities | awk 'NF { printf "%s\"%s\"", sep, $0; sep=", " }')"
+escaped_body="$(printf '%s' "$*" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+cat > "/opt/cogos/tasks/inbox/$name" <<EOF
+{
+  "body": "$escaped_body",
+  "authority_mode": "$authority",
+  "capabilities": [$json_caps],
+  "action": "task.execute"
+}
+EOF
+echo "Queued /opt/cogos/tasks/inbox/$name"

@@ -17,3 +17,9 @@ Code/
 *.db
 *.log
 results/
+
+# CoGOS release artifacts
+AI OS Trixie Build/output/*.iso
+AI OS Trixie Build/output/*.img
+AI OS Trixie Build/work/
+AI OS Trixie Build/**/__pycache__/

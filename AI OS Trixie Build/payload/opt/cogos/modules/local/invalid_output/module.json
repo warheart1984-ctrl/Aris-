@@ -1,0 +1,27 @@
+{
+  "id": "invalid_output",
+  "name": "Invalid Output Contract",
+  "version": "0.1",
+  "entrypoint": "invalid_output.py",
+  "identity": "invalid_output",
+  "traits": [
+    "readonly",
+    "non_mutating",
+    "operator_tool"
+  ],
+  "capabilities": [
+    "memory.read"
+  ],
+  "forbidden": [
+    "network.write",
+    "self.modify",
+    "memory.write"
+  ],
+  "sha256": "f553377755016cc1569dc7a17e108255e79b8ec8b21d92555b50e631cc202fa8",
+  "runtime": {
+    "type": "python3",
+    "timeout_seconds": 5,
+    "input_contract": "JSON object on stdin",
+    "output_contract": "JSON object on stdout"
+  }
+}

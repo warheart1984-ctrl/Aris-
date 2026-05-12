@@ -1,0 +1,82 @@
+#!/bin/sh
+echo "== CoGOS files =="
+ls -la /opt/cogos 2>&1
+echo
+echo "== CoGOS status =="
+cogos-status 2>&1
+echo
+echo "== CoGOS service log =="
+cat /var/log/cogos-service.log 2>&1
+echo
+echo "== CoGOS daemon =="
+cogos-daemon --status 2>&1
+echo
+echo "== CoGOS operator boot =="
+cogos-operator 2>&1
+echo
+echo "== CoGOS performance =="
+cogos-perf 2>&1
+echo
+echo "== ARIS trace =="
+cogos-trace 10 2>&1
+echo
+echo "== Latest trace explanation =="
+cogos-trace --explain latest 2>&1
+echo
+echo "== Law check =="
+cogos-law task.execute task.execute memory.append 2>&1
+echo
+echo "== Law integrity =="
+cogos-daemon --verify-laws 2>&1
+echo
+echo "== Trace verification =="
+cogos-verify-trace latest 2>&1
+echo
+echo "== Governance adversarial tests =="
+cogos-governance-test 2>&1
+echo
+echo "== Module registry =="
+cogos-module registry 2>&1
+echo
+echo "== Module executions =="
+tail -n 10 /opt/cogos/memory/modules/executions.jsonl 2>&1
+echo
+echo "== Sandbox denials =="
+tail -n 10 /opt/cogos/memory/modules/sandbox_denials.jsonl 2>&1
+echo
+echo "== Trait identity =="
+cogos-traits list 2>&1
+echo
+echo "== Trait proof =="
+cogos-traits prove 2>&1
+echo
+echo "== Pattern Ledger =="
+cogos-patterns list 2>&1
+echo
+echo "== Pattern proof =="
+cogos-patterns prove 2>&1
+echo
+echo "== Proof summary =="
+cogos-proof 2>&1
+echo
+echo "== Dashboard =="
+echo "http://localhost:8080"
+echo
+echo "== Task inbox =="
+ls -la /opt/cogos/tasks /opt/cogos/tasks/inbox /opt/cogos/tasks/done /opt/cogos/tasks/failed 2>&1
+echo
+echo "== Snapshot list =="
+ls -la /opt/cogos/memory/snapshots 2>&1
+echo
+echo "== Reflection queue =="
+tail -n 10 /opt/cogos/memory/reflection/queue.jsonl 2>&1
+echo
+echo "== Boot report path =="
+ls -la /opt/cogos/memory/logs /opt/cogos/memory/logs/boot_report.json 2>&1
+echo
+echo "== Service script =="
+ls -la /etc/init.d/90cogos 2>&1
+echo
+echo "== Python =="
+command -v python3 2>&1
+python3 --version 2>&1

@@ -1,0 +1,14 @@
+#!/bin/sh
+PID_FILE=/run/cogos-dashboard.pid
+LOG=/var/log/cogos-service.log
+
+mkdir -p /run /var/log 2>/dev/null || true
+
+if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+  echo "CoGOS dashboard already running: http://localhost:8080"
+  exit 0
+fi
+
+python3 /opt/cogos/bin/cogos_dashboard.py >> "$LOG" 2>&1 &
+echo $! > "$PID_FILE"
+echo "CoGOS dashboard started: http://localhost:8080"

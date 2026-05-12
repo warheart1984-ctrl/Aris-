@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ -s /opt/cogos/memory/logs/boot_report.json ]; then
+  cat /opt/cogos/memory/logs/boot_report.json
+else
+  echo "No CoGOS boot report yet."
+  echo "Service log:"
+  cat /var/log/cogos-service.log 2>/dev/null || true
+  exit 1
+fi

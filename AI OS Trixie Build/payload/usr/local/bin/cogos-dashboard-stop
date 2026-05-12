@@ -1,0 +1,11 @@
+#!/bin/sh
+PID_FILE=/run/cogos-dashboard.pid
+
+if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+  kill "$(cat "$PID_FILE")" 2>/dev/null || true
+  rm -f "$PID_FILE"
+  echo "CoGOS dashboard stopped."
+else
+  rm -f "$PID_FILE"
+  echo "CoGOS dashboard is not running."
+fi
