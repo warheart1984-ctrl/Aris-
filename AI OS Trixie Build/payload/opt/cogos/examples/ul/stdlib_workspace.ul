@@ -1,0 +1,3 @@
+set workspace to ul_workspace("Dragon Game Workspace")
+print ul_slug("Dragon Game Workspace")
+print ul_summary("Create a workspace, remember its purpose, and keep the next action obvious for a normal user.")

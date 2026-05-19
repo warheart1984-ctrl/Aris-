@@ -1,0 +1,10 @@
+set x to 5
+set y to 3
+
+function add a b
+    return a + b
+end
+
+set z to add(x, y)
+print z
+print "hello from CoGOS UL"

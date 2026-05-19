@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "active_profile": "operator",
+  "profiles": {
+    "operator": {
+      "display_name": "Operator",
+      "tier": "operator",
+      "mode_default": "manual",
+      "home_hint": "/home/operator",
+      "wards_extra": []
+    },
+    "kid": {
+      "display_name": "Kid",
+      "tier": "restricted-runtime",
+      "mode_default": "automatic",
+      "home_hint": "/home/kid",
+      "wards_extra": [
+        "\\bpassword\\b",
+        "\\bcredit\\s*card\\b",
+        "\\bdelete\\s+all\\b"
+      ]
+    }
+  }
+}

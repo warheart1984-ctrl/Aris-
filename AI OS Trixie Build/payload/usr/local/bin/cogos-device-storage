@@ -1,0 +1,2 @@
+#!/bin/sh
+exec python3 /opt/cogos/bin/cogos_device_storage.py "$@"

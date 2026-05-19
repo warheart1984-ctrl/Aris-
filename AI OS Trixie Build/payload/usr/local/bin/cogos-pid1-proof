@@ -1,0 +1,13 @@
+#!/bin/sh
+PROOF=/opt/cogos/memory/logs/pid1_proof.json
+
+if [ ! -s "$PROOF" ]; then
+  echo "No CoGOS PID 1 proof found yet: $PROOF"
+  exit 1
+fi
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 -m json.tool "$PROOF"
+fi
+
+cat "$PROOF"

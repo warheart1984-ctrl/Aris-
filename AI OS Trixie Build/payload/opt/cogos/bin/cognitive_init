@@ -3,43 +3,197 @@ set -eu
 
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/cogos/bin
 export COGOS_ROOT=/opt/cogos
-export COGOS_LOG=/var/log/cogos-boot.log
+export COGOS_LOG=/var/log/cogos-pid1.log
+
+PROOF=/opt/cogos/memory/logs/pid1_proof.json
+BOOT_REPORT=/opt/cogos/memory/logs/boot_report.json
+DAEMON_PID=/run/cogos-daemon.pid
+NATIVE_INIT=/usr/sbin/init.original
+CMDLINE=""
+PID1_TIMEOUT="${COGOS_PID1_TIMEOUT:-20}"
 
 mkdir -p /proc /sys /dev /run /tmp /var/log /opt/cogos/memory/logs
+rm -f "$PROOF"
 mountpoint -q /proc || mount -t proc proc /proc || true
 mountpoint -q /sys || mount -t sysfs sysfs /sys || true
 mountpoint -q /dev || mount -t devtmpfs devtmpfs /dev || mount -t tmpfs dev /dev || true
 mountpoint -q /run || mount -t tmpfs tmpfs /run || true
+mountpoint -q /tmp || mount -t tmpfs tmpfs /tmp || true
+CMDLINE="$(cat /proc/cmdline 2>/dev/null || true)"
 
 log() {
   printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo boot)" "$*" | tee -a "$COGOS_LOG" >/dev/null
+  printf 'CoGOS PID1: %s\n' "$*" >/dev/console 2>/dev/null || true
+}
+
+cmdline_has() {
+  case " $CMDLINE " in
+    *" $1 "*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+handoff_native() {
+  reason="${1:-handoff}"
+  shift || true
+  log "Stage: $reason; handoff to $NATIVE_INIT"
+  exec "$NATIVE_INIT" "$@"
+}
+
+run_timed() {
+  label="$1"
+  shift
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$PID1_TIMEOUT" "$@"
+  else
+    "$@"
+  fi
+  rc=$?
+  if [ "$rc" -eq 124 ]; then
+    log "$label timed out after ${PID1_TIMEOUT}s"
+  fi
+  return "$rc"
+}
+
+write_proof() {
+  status="$1"
+  reason="${2:-}"
+  daemon_status="${3:-not_started}"
+  python3 - "$PROOF" "$status" "$reason" "$daemon_status" "$NATIVE_INIT" "$$" <<'PY' 2>/dev/null || true
+import hashlib
+import json
+import pathlib
+import sys
+import time
+
+proof_path = pathlib.Path(sys.argv[1])
+status, reason, daemon_status, handoff_target, pid = sys.argv[2:7]
+root = pathlib.Path("/opt/cogos")
+manifest_path = root / "law" / "law_manifest.json"
+
+def sha256_file(path: pathlib.Path):
+    try:
+        h = hashlib.sha256()
+        with path.open("rb") as fh:
+            for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except Exception:
+        return None
+
+law_files = []
+law_integrity = False
+try:
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+    for item in manifest.get("files", []):
+        path = pathlib.Path(item["path"])
+        actual = sha256_file(path)
+        law_files.append({
+            "path": str(path),
+            "expected": item.get("sha256"),
+            "actual": actual,
+            "ok": actual == item.get("sha256"),
+        })
+    law_integrity = bool(law_files) and all(item["ok"] for item in law_files)
+except Exception as exc:
+    law_files.append({"error": str(exc), "path": str(manifest_path), "ok": False})
+
+proof = {
+    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    "pid": int(pid),
+    "pid1_gate_ok": status == "ok",
+    "status": status,
+    "reason": reason,
+    "law_integrity": law_integrity,
+    "law_files": law_files,
+    "boot_report": "/opt/cogos/memory/logs/boot_report.json",
+    "daemon_status": daemon_status,
+    "daemon_pid_file": "/run/cogos-daemon.pid",
+    "handoff_target": handoff_target,
+    "handoff_mode": "exec_native_init_original",
+}
+proof_path.parent.mkdir(parents=True, exist_ok=True)
+proof_path.write_text(json.dumps(proof, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+PY
+}
+
+write_basic_proof() {
+  status="$1"
+  reason="$2"
+  cat > "$PROOF" <<EOF
+{
+  "boot_report": "$BOOT_REPORT",
+  "daemon_status": "not_started",
+  "handoff_mode": "fail_closed_maintenance_shell",
+  "handoff_target": "$NATIVE_INIT",
+  "law_integrity": false,
+  "pid": $$,
+  "pid1_gate_ok": false,
+  "reason": "$reason",
+  "status": "$status"
+}
+EOF
+}
+
+fail_closed() {
+  reason="$1"
+  log "FAIL CLOSED: $reason"
+  if command -v python3 >/dev/null 2>&1; then
+    write_proof "failed" "$reason" "not_started"
+  else
+    write_basic_proof "failed" "$reason"
+  fi
+  exec /bin/sh </dev/console >/dev/console 2>&1
 }
 
 log "Project Infi cognitive_init starting as PID $$"
+[ "$$" = "1" ] || log "warning: cognitive_init expected PID 1 but is PID $$"
+
+if cmdline_has "cogos.off=1" || cmdline_has "cogos.safe=1" || cmdline_has "governance=off"; then
+  write_basic_proof "bypassed" "kernel bypass flag requested"
+  handoff_native "CoGOS bypass requested" "$@"
+fi
+
 log "Stage: mount runtime surfaces"
 log "Stage: load root law"
+[ -f /opt/cogos/law/root_law.json ] || fail_closed "root_law missing"
+[ -x "$NATIVE_INIT" ] || fail_closed "native init handoff target missing: $NATIVE_INIT"
+command -v python3 >/dev/null 2>&1 || {
+  write_basic_proof "deferred" "python3 missing; native boot continues"
+  handoff_native "python3 unavailable" "$@"
+}
 
-if [ -f /opt/cogos/law/root_law.json ]; then
-  log "root_law present"
+if grep -Eq '(^| )cogos[._-]recovery=1( |$)' /proc/cmdline 2>/dev/null || [ -f /opt/cogos/memory/operator/RECOVERY_MODE ]; then
+  log "Stage: CoGOS recovery mode requested"
+  run_timed "recovery boot proof" python3 /opt/cogos/bin/cogos_recovery.py boot >> "$COGOS_LOG" 2>&1 || fail_closed "recovery boot proof failed"
+  write_proof "ok" "recovery_mode" "not_started"
+  if [ -x /usr/local/bin/cogos-guest-proof ]; then
+    /usr/local/bin/cogos-guest-proof >> "$COGOS_LOG" 2>&1 || log "guest proof export skipped"
+  fi
+  log "Recovery mode active. Starting maintenance shell."
+  exec /bin/sh </dev/console >/dev/console 2>&1
+fi
+
+log "Stage: fast governed boot proof"
+if run_timed "governed boot proof" python3 /opt/cogos/bin/cogos_boot.py --boot >> "$COGOS_LOG" 2>&1; then
+  write_proof "ok" "" "deferred_to_init"
 else
-  log "root_law missing; entering maintenance shell"
-  exec /bin/sh
+  if cmdline_has "cogos.pid1.strict=1"; then
+    fail_closed "governed boot verification failed"
+  fi
+  log "governed boot proof deferred; native boot continues"
+  write_proof "deferred" "governed boot proof deferred" "deferred_to_init"
 fi
 
-log "Stage: run governed boot"
-if command -v python3 >/dev/null 2>&1; then
-  python3 /opt/cogos/bin/cogos_boot.py --boot || {
-    log "governed boot failed; entering maintenance shell"
-    exec /bin/sh
-  }
-else
-  log "python3 missing; entering maintenance shell"
-  exec /bin/sh
+[ -s "$PROOF" ] || fail_closed "PID 1 proof was not written"
+if [ -x /usr/local/bin/cogos-guest-proof ]; then
+  log "Stage: export guest proof if QEMU shared proofs mount is present"
+  /usr/local/bin/cogos-guest-proof >> "$COGOS_LOG" 2>&1 || log "guest proof export skipped"
+fi
+if cmdline_has "cogos.pid1.full=1"; then
+  log "Stage: full PID1 mode requested"
+  run_timed "HAL observation" python3 /opt/cogos/bin/cogos_hal.py --once >> "$COGOS_LOG" 2>&1 || fail_closed "HAL observation failed"
+  run_timed "determinism corridor" python3 /opt/cogos/runtime/determinism_corridor.py --verify-boot >> "$COGOS_LOG" 2>&1 || fail_closed "determinism corridor failed"
 fi
 
-log "Stage: governed ready"
-if command -v getty >/dev/null 2>&1; then
-  exec getty -n -l /opt/cogos/bin/cogos_shell tty1
-fi
-
-exec /opt/cogos/bin/cogos_shell
+handoff_native "PID 1 gate complete" "$@"

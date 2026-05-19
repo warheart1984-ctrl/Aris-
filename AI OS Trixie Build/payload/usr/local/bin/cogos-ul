@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  cogos-ul run <file.ul>
+  cogos-ul trace <file.ul>
+  cogos-ul substrate <file.ulsub>
+USAGE
+}
+
+cmd="${1:-}"
+case "$cmd" in
+  run)
+    [ "${2:-}" ] || { usage; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --ul-run "$2"
+    ;;
+  trace)
+    [ "${2:-}" ] || { usage; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --ul-trace "$2"
+    ;;
+  substrate)
+    [ "${2:-}" ] || { usage; exit 2; }
+    exec python3 /opt/cogos/bin/cogos_daemon.py --ul-substrate "$2"
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac

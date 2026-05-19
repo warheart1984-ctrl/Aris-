@@ -19,6 +19,8 @@ EVENTS = MEMORY / "events"
 SNAPSHOTS = MEMORY / "snapshots"
 REFLECTION = MEMORY / "reflection"
 MODULES = MEMORY / "modules"
+UL_MEMORY = MEMORY / "ul"
+VOSS_MEMORY = MEMORY / "voss"
 TASKS = ROOT / "tasks"
 REGISTRY = ROOT / "modules" / "registry.json"
 RUNTIME_CONFIG = ROOT / "config" / "runtime.json"
@@ -86,6 +88,12 @@ def dashboard_data():
     immune = read_jsonl(PATTERNS / "immune.jsonl", 30)
     guidance = read_jsonl(PATTERNS / "guidance.jsonl", 30)
     pattern_proof = read_jsonl(PATTERNS / "proof.jsonl", 5)
+    ul_runs = read_jsonl(UL_MEMORY / "runs.jsonl", 20)
+    ul_substrate = read_jsonl(UL_MEMORY / "substrate_audit.jsonl", 20)
+    voss_traces = read_jsonl(VOSS_MEMORY / "rep_traces.jsonl", 20)
+    voss_verifications = read_jsonl(VOSS_MEMORY / "verifications.jsonl", 20)
+    voss_bindings = read_jsonl(VOSS_MEMORY / "bindings.jsonl", 20)
+    voss_proof = read_jsonl(VOSS_MEMORY / "proof.jsonl", 5)
     proof = read_jsonl(TRACES / "proof.jsonl", 5)
     quarantined = {
         mid: rec for mid, rec in registry.get("modules", {}).items()
@@ -133,15 +141,25 @@ def dashboard_data():
         "immune": immune,
         "guidance": guidance,
         "pattern_proof": pattern_proof[-1] if pattern_proof else {},
+        "ul_runtime": read_json(RUNTIME_CONFIG, {}).get("ul_runtime", {}),
+        "ul_runs": ul_runs,
+        "ul_substrate_audit": ul_substrate,
+        "ul_substrate_denials": [row for row in ul_substrate if not row.get("ok")],
+        "voss_runtime": read_json(RUNTIME_CONFIG, {}).get("voss_runtime", {}),
+        "voss_rep_trace_count": len(voss_traces),
+        "voss_verifications": voss_verifications,
+        "voss_bindings": voss_bindings,
+        "voss_proof": voss_proof[-1] if voss_proof else {},
         "severity_counts": {sev: len([row for row in shame if row.get("severity") == sev]) for sev in ["S1", "S2", "S3", "S4", "S5"]},
         "quarantined_modules": quarantined,
-        "v9_proof": proof[-1] if proof else {},
+        "proof_state": proof[-1] if proof else {},
         "latest_denials": denials[-10:],
         "verifications": read_jsonl(TRACES / "verifications.jsonl", 20),
         "law_integrity": read_jsonl(TRACES / "law_integrity.jsonl", 5),
         "recovery_hints": [
             "Run cogos-doctor for a full local diagnosis.",
-            "Run cogos-operator for the fast v10 operator surface.",
+            "Run cogos-operator for the fast v12 operator surface.",
+            "Run cogos-pid1-proof to inspect the PID 1 gate record.",
             "Run cogos-perf to inspect VM pressure and dashboard state.",
             "Run cogos-dashboard-start only when you need the web UI.",
             "Run cogos-dashboard-stop if Puppy becomes laggy.",
@@ -154,6 +172,9 @@ def dashboard_data():
             "Run cogos-traits prove for trait identity proof.",
             "Run cogos-patterns ingest after module runs or denials.",
             "Run cogos-patterns prove for Pattern Ledger proof.",
+            "Run cogos-ul trace /opt/cogos/examples/ul/hello.ul for UL trace proof.",
+            "Run cogos-ul substrate /opt/cogos/examples/ul/safe_substrate.ulsub for substrate gate proof.",
+            "Run cogos-voss proof for VOSS runtime proof.",
         ],
     }
 
@@ -204,11 +225,20 @@ def render() -> bytes:
         card("Severity Counts", pre(data["severity_counts"])),
         card("Guidance Candidates", pre(data["guidance"][-10:])),
         card("Pattern Proof", pre(data["pattern_proof"])),
+        card("UL Runtime", pre(data["ul_runtime"])),
+        card("Latest UL Runs", pre(data["ul_runs"][-10:])),
+        card("UL Substrate Audit", pre(data["ul_substrate_audit"][-10:])),
+        card("UL Substrate Denials", pre(data["ul_substrate_denials"][-10:])),
+        card("VOSS Runtime", pre(data["voss_runtime"])),
+        card("VOSS REP Trace Count", pre({"rep_trace_records": data["voss_rep_trace_count"]})),
+        card("VOSS Verifications", pre(data["voss_verifications"][-10:])),
+        card("VOSS Bindings", pre(data["voss_bindings"][-10:])),
+        card("VOSS Proof", pre(data["voss_proof"])),
         card("Recent Module Runs", pre(data["module_executions"])),
         card("Latest Module Output", pre(data["latest_module_output"])),
         card("Sandbox Denials", pre(data["sandbox_denials"])),
         card("Quarantined Modules", pre(data["quarantined_modules"])),
-        card("V9 Proof State", pre(data["v9_proof"])),
+        card("Proof State", pre(data["proof_state"])),
         card("Latest Denials", pre(data["latest_denials"])),
         card("Reflections", pre(data["reflections"])),
         card("Snapshots", pre(data["snapshots"])),

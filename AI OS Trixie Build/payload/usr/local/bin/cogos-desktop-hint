@@ -1,5 +1,5 @@
 #!/bin/sh
-echo "CoGOS v10 prefers the fast operator shell first."
+echo "CoGOS v12 uses the v11 PID 1 gate, then prefers the fast operator shell first."
 echo
 echo "Use these when you need the heavier surfaces:"
 echo "  cogos-dashboard-start   start http://localhost:8080"

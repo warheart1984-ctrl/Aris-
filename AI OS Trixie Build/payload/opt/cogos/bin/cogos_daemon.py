@@ -9,7 +9,10 @@ records ARIS cycles as JSONL traces, and processes simple task files from
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
+import importlib.util
+import io
 import json
 import os
 import pathlib
@@ -34,6 +37,8 @@ TRACES = MEMORY / "traces"
 LOGS = MEMORY / "logs"
 MODULE_MEMORY = MEMORY / "modules"
 PATTERNS = MEMORY / "patterns"
+UL_MEMORY = MEMORY / "ul"
+VOSS_MEMORY = MEMORY / "voss"
 SNAPSHOTS = MEMORY / "snapshots"
 REFLECTION = MEMORY / "reflection"
 ADMISSION = ROOT / "modules" / "admission"
@@ -44,8 +49,11 @@ IDENTITY_STATE = MODULE_MEMORY / "identity_state.json"
 GOVERNANCE = ROOT / "law" / "governance_rules.json"
 MANIFEST = ROOT / "config" / "module_manifest.json"
 RUNTIME_CONFIG = ROOT / "config" / "runtime.json"
+UL_RUNTIME = ROOT / "runtime" / "ul"
+VOSS_RUNTIME = ROOT / "runtime" / "voss"
 STATE_PATH = RUN / "cogos-daemon.json"
 PID_PATH = RUN / "cogos-daemon.pid"
+PID1_PROOF = LOGS / "pid1_proof.json"
 STOP = False
 
 
@@ -64,6 +72,8 @@ def ensure_dirs() -> None:
         MEMORY / "operator",
         MODULE_MEMORY,
         PATTERNS,
+        UL_MEMORY,
+        VOSS_MEMORY,
         SNAPSHOTS,
         REFLECTION,
         ADMISSION,
@@ -1332,6 +1342,284 @@ def pattern_prove() -> int:
     return 0 if report["pattern_ledger_ok"] else 1
 
 
+def import_from_path(name: str, path: pathlib.Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load runtime module: {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [json_safe(v) for v in value]
+    if hasattr(value, "value"):
+        return json_safe(value.value)
+    if hasattr(value, "to_dict"):
+        return json_safe(value.to_dict())
+    if hasattr(value, "__dataclass_fields__"):
+        return {k: json_safe(getattr(value, k)) for k in value.__dataclass_fields__ if not k.startswith("_")}
+    return value
+
+
+def ul_runtime_paths() -> dict[str, pathlib.Path]:
+    return {
+        "ul_lang": UL_RUNTIME / "ul_lang.py",
+        "ul_substrate": UL_RUNTIME / "ul_substrate.py",
+    }
+
+
+def voss_runtime_paths() -> dict[str, pathlib.Path]:
+    return {
+        "voss_binary": VOSS_RUNTIME / "voss_binary.py",
+        "voss_binding": VOSS_RUNTIME / "voss_binding.py",
+    }
+
+
+def ul_run(path_text: str, traced: bool, authority_mode: str) -> int:
+    ensure_dirs()
+    source_path = pathlib.Path(path_text)
+    law = evaluate_law("ul.trace" if traced else "ul.run", authority_mode, ["ul.trace" if traced else "ul.run", "memory.append"], {"source": source_path.exists()})
+    if not law["ok"]:
+        report = {"timestamp": now(), "ok": False, "law": law, "source": str(source_path)}
+        print(json.dumps(report, indent=2, sort_keys=True))
+        append_jsonl(UL_MEMORY / "runs.jsonl", report)
+        return 1
+    try:
+        source = source_path.read_text(encoding="utf-8")
+        ul_lang = import_from_path("cogos_ul_lang", ul_runtime_paths()["ul_lang"])
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            if traced:
+                result, tracer = ul_lang.run_traced(source)
+            else:
+                result = ul_lang.run(source)
+                tracer = None
+        report = {
+            "timestamp": now(),
+            "ok": True,
+            "mode": "trace" if traced else "run",
+            "source": str(source_path),
+            "source_hash": sha256_text(source),
+            "result": json_safe(result),
+            "stdout": stdout.getvalue().splitlines(),
+            "trace_entries": len(tracer.trace_log) if tracer else 0,
+            "output_lines": tracer.output_lines if tracer else [],
+            "trace": tracer.trace_log if tracer else [],
+            "law": law,
+        }
+    except Exception as exc:
+        report = {"timestamp": now(), "ok": False, "mode": "trace" if traced else "run", "source": str(source_path), "error": str(exc), "law": law}
+    append_jsonl(UL_MEMORY / "runs.jsonl", report)
+    append_jsonl(EVENTS / "events.jsonl", {"timestamp": now(), "event": "ul.trace" if traced else "ul.run", "ok": report["ok"], "source": str(source_path)})
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
+def ul_substrate(path_text: str, authority_mode: str) -> int:
+    ensure_dirs()
+    source_path = pathlib.Path(path_text)
+    law = evaluate_law("ul.substrate.execute", authority_mode, ["ul.substrate.execute", "memory.append"], {"source": source_path.exists()})
+    if not law["ok"]:
+        report = {"timestamp": now(), "ok": False, "law": law, "source": str(source_path)}
+        print(json.dumps(report, indent=2, sort_keys=True))
+        append_jsonl(UL_MEMORY / "substrate_audit.jsonl", report)
+        return 1
+    try:
+        source = source_path.read_text(encoding="utf-8")
+        substrate = import_from_path("cogos_ul_substrate", ul_runtime_paths()["ul_substrate"])
+        runtime = substrate.SubstrateRuntime()
+        runtime.dispatcher.set_default(lambda actor, verb, times, context: {"actor": actor, "verb": verb, "times": times})
+        result = runtime.execute(source, context={"source": str(source_path)}, operator_present=authority_mode in ["operator", "developer"])
+        report = {
+            "timestamp": now(),
+            "ok": bool(result.allowed and not result.error),
+            "source": str(source_path),
+            "source_hash": sha256_text(source),
+            "result": result.to_dict(),
+            "law": law,
+        }
+    except Exception as exc:
+        report = {"timestamp": now(), "ok": False, "source": str(source_path), "error": str(exc), "law": law}
+    append_jsonl(UL_MEMORY / "substrate_audit.jsonl", report)
+    append_jsonl(EVENTS / "events.jsonl", {"timestamp": now(), "event": "ul.substrate.executed", "ok": report["ok"], "source": str(source_path)})
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
+def voss_golden(verify: bool, authority_mode: str) -> int:
+    ensure_dirs()
+    law = evaluate_law("voss.verify" if verify else "voss.run", authority_mode, ["voss.verify" if verify else "voss.run", "memory.append"], {"runtime": True})
+    if not law["ok"]:
+        report = {"timestamp": now(), "ok": False, "law": law}
+        print(json.dumps(report, indent=2, sort_keys=True))
+        append_jsonl(VOSS_MEMORY / "verifications.jsonl", report)
+        return 1
+    try:
+        voss = import_from_path("cogos_voss_binary", voss_runtime_paths()["voss_binary"])
+        final_state, trace = voss.voss_run(voss.GOLDEN_PATH, verbose=False)
+        verdict = voss.voss_verify(trace)
+        trace_rows = [json.loads(row.to_json()) for row in trace]
+        report = {
+            "timestamp": now(),
+            "ok": final_state.status.value in ["HALT", "WAIT"] and verdict.conformant,
+            "mode": "verify-golden" if verify else "run-golden",
+            "final_state": {
+                "status": final_state.status.value,
+                "cycle": final_state.cycle,
+                "pc": final_state.pc,
+                "delta": dict(final_state.delta),
+                "fate": {str(k): hex(v) for k, v in final_state.fate.items()},
+                "locked": {str(k): hex(v) for k, v in final_state.locked.items()},
+                "coupling_debt": final_state.coupling_debt,
+                "fault_reason": final_state.fault_reason,
+            },
+            "trace_count": len(trace_rows),
+            "trace_hash": sha256_text(json.dumps(trace_rows, sort_keys=True)),
+            "verification": json_safe(verdict),
+            "law": law,
+        }
+        append_jsonl(VOSS_MEMORY / "rep_traces.jsonl", {"timestamp": now(), "kind": report["mode"], "trace": trace_rows, "trace_hash": report["trace_hash"]})
+    except Exception as exc:
+        report = {"timestamp": now(), "ok": False, "mode": "verify-golden" if verify else "run-golden", "error": str(exc), "law": law}
+    append_jsonl(VOSS_MEMORY / "verifications.jsonl", report)
+    append_jsonl(EVENTS / "events.jsonl", {"timestamp": now(), "event": "voss.verify" if verify else "voss.run", "ok": report["ok"]})
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
+def voss_validate(authority_mode: str) -> int:
+    ensure_dirs()
+    law = evaluate_law("voss.verify", authority_mode, ["voss.verify", "memory.append"], {"runtime": True})
+    if not law["ok"]:
+        print(json.dumps({"timestamp": now(), "ok": False, "law": law}, indent=2, sort_keys=True))
+        return 1
+    try:
+        voss = import_from_path("cogos_voss_binary", voss_runtime_paths()["voss_binary"])
+        results = voss.run_validation_suite(verbose=False)
+        report = {"timestamp": now(), "ok": all(results.values()), "validation": results, "law": law}
+    except Exception as exc:
+        report = {"timestamp": now(), "ok": False, "error": str(exc), "law": law}
+    append_jsonl(VOSS_MEMORY / "verifications.jsonl", report)
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
+def voss_binding_demo(authority_mode: str) -> int:
+    ensure_dirs()
+    law = evaluate_law("voss.bind", authority_mode, ["voss.bind", "memory.append"], {"runtime": True})
+    if not law["ok"]:
+        print(json.dumps({"timestamp": now(), "ok": False, "law": law}, indent=2, sort_keys=True))
+        return 1
+    try:
+        binding = import_from_path("cogos_voss_binding", voss_runtime_paths()["voss_binding"])
+        ctx = binding.CycleContext()
+        protagonist = binding.FateLine(state="0001_prime", context={"source": "operator"})
+        influence = binding.FateLine(state="external", context={"signal": "v12_binding_demo"})
+        result = binding.voss_binding(ctx, protagonist, influence)
+        binding.assert_system_guarantees(result, ctx)
+        next_ctx = binding.compute_next_1000_context(ctx)
+        report = {
+            "timestamp": now(),
+            "ok": result.disposition.value in ["BOUND", "PARTIAL"],
+            "result": json_safe(result),
+            "cycle_context": json_safe(ctx),
+            "next_1000": next_ctx,
+            "law": law,
+        }
+    except Exception as exc:
+        report = {"timestamp": now(), "ok": False, "error": str(exc), "law": law}
+    append_jsonl(VOSS_MEMORY / "bindings.jsonl", report)
+    append_jsonl(EVENTS / "events.jsonl", {"timestamp": now(), "event": "voss.bind", "ok": report["ok"]})
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
+def voss_proof(authority_mode: str) -> int:
+    ensure_dirs()
+    before = len(read_jsonl(VOSS_MEMORY / "verifications.jsonl"))
+    nested_output = io.StringIO()
+    with contextlib.redirect_stdout(nested_output):
+        golden_rc = voss_golden(True, authority_mode)
+        validate_rc = voss_validate(authority_mode)
+        binding_rc = voss_binding_demo(authority_mode)
+    rows = read_jsonl(VOSS_MEMORY / "verifications.jsonl")
+    latest_rows = rows[before:]
+    latest_binding = read_jsonl(VOSS_MEMORY / "bindings.jsonl")[-1:] or []
+    report = {
+        "timestamp": now(),
+        "voss_runtime_ok": all(path.exists() for path in voss_runtime_paths().values()),
+        "voss_golden_path_ok": golden_rc == 0,
+        "voss_verifier_ok": validate_rc == 0,
+        "voss_binding_ok": binding_rc == 0,
+        "nested_outputs": len([line for line in nested_output.getvalue().splitlines() if line.strip()]),
+        "verification_hash": sha256_text(json.dumps(latest_rows + latest_binding, sort_keys=True)),
+    }
+    report["ok"] = all([report["voss_runtime_ok"], report["voss_golden_path_ok"], report["voss_verifier_ok"], report["voss_binding_ok"]])
+    append_jsonl(VOSS_MEMORY / "proof.jsonl", report)
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
+def _load_runtime_module(module_name: str, relative_path: str) -> Any | None:
+    path = ROOT / "runtime" / relative_path
+    if not path.exists():
+        return None
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _linux_host_observation() -> tuple[dict[str, Any], dict[str, Any]]:
+    adapter = _load_runtime_module(
+        "cogos_linux_cinnamon_adapter",
+        "host_adapters/linux_cinnamon_adapter.py",
+    )
+    if adapter is None:
+        return {}, {}
+    try:
+        meta = adapter.host_meta_for_canonical(
+            governor_version=str(json.loads(RUNTIME_CONFIG.read_text()).get("version", "0.12"))
+            if RUNTIME_CONFIG.exists()
+            else "0.12"
+        )
+        return meta, adapter.observe_state_registers()
+    except Exception:
+        return {}, {}
+
+
+def ul_voss_proof_state() -> dict[str, Any]:
+    ul_paths = ul_runtime_paths()
+    voss_paths = voss_runtime_paths()
+    ul_runs = read_jsonl(UL_MEMORY / "runs.jsonl")
+    substrate = read_jsonl(UL_MEMORY / "substrate_audit.jsonl")
+    voss_proofs = read_jsonl(VOSS_MEMORY / "proof.jsonl")
+    voss_verifications = read_jsonl(VOSS_MEMORY / "verifications.jsonl")
+    bindings = read_jsonl(VOSS_MEMORY / "bindings.jsonl")
+    latest_voss_proof = voss_proofs[-1] if voss_proofs else {}
+    substrate_gate_ok = bool(substrate) and all("timestamp" in row for row in substrate)
+    return {
+        "ul_runtime_ok": all(path.exists() for path in ul_paths.values()),
+        "ul_substrate_gate_ok": substrate_gate_ok,
+        "ul_latest_run_ok": (not ul_runs) or bool(ul_runs[-1].get("ok")),
+        "voss_runtime_ok": all(path.exists() for path in voss_paths.values()),
+        "voss_golden_path_ok": bool(latest_voss_proof.get("voss_golden_path_ok")),
+        "voss_verifier_ok": bool(latest_voss_proof.get("voss_verifier_ok")) or any(row.get("ok") for row in voss_verifications),
+        "voss_binding_ok": bool(latest_voss_proof.get("voss_binding_ok")) or any(row.get("ok") for row in bindings),
+        "ul_run_count": len(ul_runs),
+        "ul_substrate_audit_count": len(substrate),
+        "voss_verification_count": len(voss_verifications),
+        "voss_binding_count": len(bindings),
+    }
+
+
 def proof_report() -> int:
     law_ok = False
     trace_ok = False
@@ -1374,9 +1662,20 @@ def proof_report() -> int:
     shame_ids = {row.get("pattern_id") for row in shame}
     law_11_ok = all(row.get("pattern_id") in shame_ids for row in verified_failures)
     pattern_ledger_ok = law_11_ok
+    pid1_proof = {}
+    pid1_gate_ok = False
+    try:
+        pid1_proof = load_json(PID1_PROOF)
+        pid1_gate_ok = bool(pid1_proof.get("pid1_gate_ok")) and pid1_proof.get("pid") == 1
+    except Exception:
+        pid1_proof = {"missing": str(PID1_PROOF)}
+        pid1_gate_ok = False
+    ul_voss = ul_voss_proof_state()
     report = {
         "timestamp": now(),
         "law_integrity": law_ok,
+        "pid1_gate_ok": pid1_gate_ok,
+        "pid1_proof": pid1_proof,
         "registry_integrity": registry_ok,
         "latest_trace_hash": trace_ok,
         "latest_module_execution_deterministic": module_execution_ok,
@@ -1390,14 +1689,39 @@ def proof_report() -> int:
         "shame_count": len(shame),
         "immune_recommendations": len(immune),
         "law_11_ok": law_11_ok,
+        "ul_runtime_ok": ul_voss["ul_runtime_ok"],
+        "ul_substrate_gate_ok": ul_voss["ul_substrate_gate_ok"],
+        "ul_latest_run_ok": ul_voss["ul_latest_run_ok"],
+        "voss_runtime_ok": ul_voss["voss_runtime_ok"],
+        "voss_golden_path_ok": ul_voss["voss_golden_path_ok"],
+        "voss_verifier_ok": ul_voss["voss_verifier_ok"],
+        "voss_binding_ok": ul_voss["voss_binding_ok"],
+        "ul_voss": ul_voss,
         "guidance_candidates": len([row for row in guidance if row.get("maturity") == "guidance_eligible"]),
         "quarantined_module_count": len(quarantined),
         "quarantined_modules": sorted(quarantined),
         "module_count": len(registry.get("modules", {})),
         "active_modules": sorted([mid for mid, rec in registry.get("modules", {}).items() if rec.get("status") == "active"]),
         "heartbeat": heartbeat(),
-        "ok": law_ok and registry_ok and (trace_ok or not cycles) and module_execution_ok and trait_identity_ok and pattern_ledger_ok,
+        "ok": law_ok and pid1_gate_ok and registry_ok and (trace_ok or not cycles) and module_execution_ok and trait_identity_ok and pattern_ledger_ok and ul_voss["ul_runtime_ok"] and ul_voss["ul_substrate_gate_ok"] and ul_voss["voss_runtime_ok"] and ul_voss["voss_golden_path_ok"] and ul_voss["voss_verifier_ok"] and ul_voss["voss_binding_ok"],
     }
+    canonical_mod = _load_runtime_module("cogos_canonical_state_packet", "canonical_state_packet.py")
+    if canonical_mod is not None:
+        host_meta, host_registers = _linux_host_observation()
+        trace_id = ""
+        if cycles:
+            trace_id = str(cycles[-1].get("task_hash") or cycles[-1].get("id") or "")
+        canonical = canonical_mod.build_from_cogos_report(
+            report,
+            host_meta=host_meta or None,
+            state_registers=host_registers or None,
+            cycle=len(cycles),
+            runtime_law="1001",
+        )
+        if trace_id:
+            canonical["trace_id"] = trace_id
+        report["canonical_packet"] = canonical
+        report["views"] = canonical.get("views")
     print(json.dumps(report, indent=2, sort_keys=True))
     append_jsonl(TRACES / "proof.jsonl", report)
     return 0 if report["ok"] else 1
@@ -1511,6 +1835,14 @@ def main() -> int:
     parser.add_argument("--pattern-guidance", action="store_true")
     parser.add_argument("--pattern-inspect", metavar="ID")
     parser.add_argument("--pattern-prove", action="store_true")
+    parser.add_argument("--ul-run", metavar="FILE")
+    parser.add_argument("--ul-trace", metavar="FILE")
+    parser.add_argument("--ul-substrate", metavar="FILE")
+    parser.add_argument("--voss-golden", action="store_true")
+    parser.add_argument("--voss-verify-golden", action="store_true")
+    parser.add_argument("--voss-validate", action="store_true")
+    parser.add_argument("--voss-binding-demo", action="store_true")
+    parser.add_argument("--voss-proof", action="store_true")
     parser.add_argument("--proof", action="store_true")
     parser.add_argument("--snapshot", metavar="LABEL")
     parser.add_argument("--reflect", metavar="TEXT")
@@ -1578,6 +1910,22 @@ def main() -> int:
         return pattern_inspect(args.pattern_inspect)
     if args.pattern_prove:
         return pattern_prove()
+    if args.ul_run:
+        return ul_run(args.ul_run, False, args.authority)
+    if args.ul_trace:
+        return ul_run(args.ul_trace, True, args.authority)
+    if args.ul_substrate:
+        return ul_substrate(args.ul_substrate, args.authority)
+    if args.voss_golden:
+        return voss_golden(False, args.authority)
+    if args.voss_verify_golden:
+        return voss_golden(True, args.authority)
+    if args.voss_validate:
+        return voss_validate(args.authority)
+    if args.voss_binding_demo:
+        return voss_binding_demo(args.authority)
+    if args.voss_proof:
+        return voss_proof(args.authority)
     if args.proof:
         return proof_report()
     if args.snapshot:

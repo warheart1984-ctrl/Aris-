@@ -22,13 +22,32 @@ echo "  modules      - list governed modules"
 echo "  module-run ID - run admitted module through sandbox"
 echo "  traits      - list trait identity state"
 echo "  patterns    - list Pattern Ledger entries"
+echo "  ul          - run UL hello trace"
+echo "  substrate   - run safe UL substrate"
+echo "  voss        - run VOSS proof"
 echo "  proof        - run known-good proof summary"
-echo "  operator     - show fast v10 operator surface"
+echo "  operator     - show fast v12 operator surface"
+echo "  pid1-proof   - show PID 1 gate proof"
 echo "  perf         - show VM/runtime performance"
 echo "  dashboard    - print dashboard URL"
 echo "  dash-start   - start dashboard on demand"
 echo "  dash-stop    - stop dashboard"
-echo "  desktop      - show desktop hints"
+echo "  desktop      - start Phase 1 desktop shell (3 panels)"
+echo "  desktop-url  - print desktop URL"
+echo "  hal          - HAL snapshot once"
+echo "  hal-start    - start HAL daemon"
+echo "  profile      - list user profiles"
+echo "  profile ID   - switch profile (operator|kid)"
+echo "  update       - governed update commands"
+echo "  nova         - Nova REPL (Phase 0 runtime)"
+echo "  creative     - creative lane CLI help"
+echo "  mesh         - mesh / reasoning exchange help"
+echo "  cockpit      - full Phase 0-3 operator cockpit"
+echo "  pkg          - governed package manager"
+echo "  backup       - backup export/import"
+echo "  eval         - run ship-readiness eval suite"
+echo "  auto         - Automatic mode status"
+echo "  auto CMD     - workspace/organize/remember/suggest"
 echo "  law          - print root law"
 echo "  shell        - open /bin/sh"
 echo "  reboot       - reboot"
@@ -86,11 +105,23 @@ while true; do
     patterns)
       cogos-patterns list
       ;;
+    ul)
+      cogos-ul trace /opt/cogos/examples/ul/hello.ul
+      ;;
+    substrate)
+      cogos-ul substrate /opt/cogos/examples/ul/safe_substrate.ulsub
+      ;;
+    voss)
+      cogos-voss proof
+      ;;
     proof)
       cogos-proof
       ;;
     operator)
       cogos-operator
+      ;;
+    pid1-proof)
+      cogos-pid1-proof
       ;;
     perf)
       cogos-perf
@@ -105,7 +136,73 @@ while true; do
       cogos-dashboard-stop
       ;;
     desktop)
-      cogos-desktop-hint
+      cogos-desktop-start
+      ;;
+    desktop-url)
+      echo "http://localhost:8081/desktop"
+      ;;
+    hal)
+      python3 /opt/cogos/bin/cogos_hal.py --once --json
+      ;;
+    hal-start)
+      cogos-hal-start
+      ;;
+    profile)
+      python3 - <<'PY'
+import json, sys
+sys.path.insert(0, "/opt/cogos/runtime")
+from user_profiles import UserProfileManager
+print(json.dumps(UserProfileManager().list_profiles(), indent=2))
+PY
+      ;;
+    profile\ *)
+      python3 - <<PY
+import sys
+sys.path.insert(0, "/opt/cogos/runtime")
+from cogos_runtime import CognitiveRuntime
+rt = CognitiveRuntime()
+rt.boot()
+rt.switch_profile("${cmd#profile }")
+PY
+      ;;
+    update)
+      echo "Usage: update list | update snapshot | update manifest"
+      ;;
+    update\ *)
+      case "${cmd#update }" in
+        list) python3 /opt/cogos/bin/cogos_update.py list ;;
+        snapshot) python3 /opt/cogos/bin/cogos_update.py snapshot ;;
+        manifest) python3 /opt/cogos/bin/cogos_update.py manifest ;;
+        *) echo "Unknown update subcommand" ;;
+      esac
+      ;;
+    nova)
+      python3 /opt/cogos/bin/cogos_nova_repl.py
+      ;;
+    creative)
+      echo "Usage: python3 /opt/cogos/bin/cogos_creative.py story_forge drafts --prompt 'dragon game'"
+      echo "       cogos-ul substrate /opt/cogos/examples/ul/creative_story.ulsub"
+      ;;
+    mesh)
+      echo "Usage: python3 /opt/cogos/bin/cogos_mesh.py identity|status|propose|trust"
+      ;;
+    cockpit)
+      python3 /opt/cogos/bin/cogos_cockpit.py
+      ;;
+    pkg)
+      python3 /opt/cogos/bin/cogos_pkg.py list
+      ;;
+    backup)
+      python3 /opt/cogos/bin/cogos_backup.py list
+      ;;
+    eval)
+      python3 /opt/cogos/bin/cogos_eval.py run
+      ;;
+    auto)
+      python3 /opt/cogos/bin/cogos_auto.py status
+      ;;
+    auto\ *)
+      python3 /opt/cogos/bin/cogos_auto.py ${cmd#auto }
       ;;
     law)
       cat /opt/cogos/law/root_law.json

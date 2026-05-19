@@ -1,0 +1,36 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  cogos-voss run-golden
+  cogos-voss verify-golden
+  cogos-voss validate
+  cogos-voss binding-demo
+  cogos-voss proof
+USAGE
+}
+
+cmd="${1:-}"
+case "$cmd" in
+  run-golden)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --voss-golden
+    ;;
+  verify-golden)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --voss-verify-golden
+    ;;
+  validate)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --voss-validate
+    ;;
+  binding-demo)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --voss-binding-demo
+    ;;
+  proof)
+    exec python3 /opt/cogos/bin/cogos_daemon.py --voss-proof
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac

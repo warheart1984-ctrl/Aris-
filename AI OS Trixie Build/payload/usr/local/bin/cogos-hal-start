@@ -1,0 +1,14 @@
+#!/bin/sh
+PID_FILE=/run/cogos-hal.pid
+LOG=/var/log/cogos-service.log
+
+mkdir -p /run /var/log 2>/dev/null || true
+
+if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+  echo "CoGOS HAL daemon already running"
+  exit 0
+fi
+
+python3 /opt/cogos/bin/cogos_hal.py --daemon >> "$LOG" 2>&1 &
+echo $! > "$PID_FILE"
+echo "CoGOS HAL daemon started"

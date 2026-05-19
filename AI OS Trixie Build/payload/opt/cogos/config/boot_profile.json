@@ -1,7 +1,11 @@
 {
   "profile": "operator_shell",
+  "shell_mode": "desktop",
   "dashboard_autostart": false,
+  "desktop_autostart": false,
   "daemon_autostart": true,
+  "hal_autostart": true,
+  "persistence_autostart": true,
   "boot_verify_autostart": true,
-  "operator_message": "Fast operator boot active. Use cogos-operator for status, cogos-dashboard-start for the dashboard, and cogos-proof for full verification."
+  "operator_message": "Phases 0-3 complete. Persistence is enabled when a COGOSDATA volume exists. Use cogos-install plan, cogos-persist status, cogos-cockpit, cogos-eval run, and cogos-backup export before changes."
 }

@@ -1,0 +1,197 @@
+#!/bin/sh
+set -eu
+
+LABEL="${COGOS_PERSIST_LABEL:-COGOSDATA}"
+MOUNTPOINT="${COGOS_PERSIST_MOUNT:-/var/lib/cogos}"
+ROOT="${COGOS_ROOT:-/opt/cogos}"
+STATE_FILE="$MOUNTPOINT/persistence/state.json"
+
+log() {
+  printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo now)" "$*"
+}
+
+need_root() {
+  if [ "$(id -u)" != "0" ]; then
+    echo "cogos-persist requires root for mount/init operations." >&2
+    exit 1
+  fi
+}
+
+find_device() {
+  if command -v blkid >/dev/null 2>&1; then
+    blkid -L "$LABEL" 2>/dev/null && return 0
+  fi
+  if [ -e "/dev/disk/by-label/$LABEL" ]; then
+    readlink -f "/dev/disk/by-label/$LABEL"
+    return 0
+  fi
+  return 1
+}
+
+copy_seed() {
+  src="$1"
+  dst="$2"
+  if [ ! -e "$src" ]; then
+    return 0
+  fi
+  mkdir -p "$(dirname "$dst")"
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a "$src/" "$dst/"
+  else
+    mkdir -p "$dst"
+    cp -a "$src/." "$dst/"
+  fi
+}
+
+seed_store() {
+  mkdir -p "$MOUNTPOINT/config" "$MOUNTPOINT/memory" "$MOUNTPOINT/modules" "$MOUNTPOINT/persistence"
+  if [ ! -f "$MOUNTPOINT/persistence/seeded" ]; then
+    log "seeding persistent CoGOS state from $ROOT"
+    copy_seed "$ROOT/config" "$MOUNTPOINT/config"
+    copy_seed "$ROOT/memory" "$MOUNTPOINT/memory"
+    if [ -d "$ROOT/modules/local" ]; then
+      copy_seed "$ROOT/modules/local" "$MOUNTPOINT/modules/local"
+    else
+      mkdir -p "$MOUNTPOINT/modules/local"
+    fi
+    date -u +%Y-%m-%dT%H:%M:%SZ > "$MOUNTPOINT/persistence/seeded"
+  fi
+  cat > "$STATE_FILE" <<EOF
+{
+  "label": "$LABEL",
+  "mountpoint": "$MOUNTPOINT",
+  "root": "$ROOT",
+  "status": "mounted",
+  "seeded": "$(cat "$MOUNTPOINT/persistence/seeded" 2>/dev/null || true)"
+}
+EOF
+}
+
+bind_one() {
+  src="$1"
+  dst="$2"
+  mkdir -p "$src" "$dst"
+  if mountpoint -q "$dst"; then
+    return 0
+  fi
+  mount --bind "$src" "$dst"
+}
+
+bind_runtime_dirs() {
+  bind_one "$MOUNTPOINT/config" "$ROOT/config"
+  bind_one "$MOUNTPOINT/memory" "$ROOT/memory"
+  mkdir -p "$ROOT/modules/local"
+  bind_one "$MOUNTPOINT/modules/local" "$ROOT/modules/local"
+}
+
+mount_store() {
+  need_root
+  mkdir -p "$MOUNTPOINT"
+  if ! mountpoint -q "$MOUNTPOINT"; then
+    dev="$(find_device || true)"
+    if [ -z "${dev:-}" ]; then
+      log "no persistent volume labeled $LABEL found; live volatile mode continues"
+      return 0
+    fi
+    log "mounting persistent CoGOS volume $dev at $MOUNTPOINT"
+    mount "$dev" "$MOUNTPOINT"
+  fi
+  seed_store
+  bind_runtime_dirs
+  log "CoGOS persistence active at $MOUNTPOINT"
+}
+
+status_json() {
+  dev="$(find_device || true)"
+  mounted=false
+  bound_config=false
+  bound_memory=false
+  mountpoint -q "$MOUNTPOINT" && mounted=true
+  mountpoint -q "$ROOT/config" && bound_config=true
+  mountpoint -q "$ROOT/memory" && bound_memory=true
+  cat <<EOF
+{
+  "label": "$LABEL",
+  "device": "${dev:-}",
+  "mountpoint": "$MOUNTPOINT",
+  "mounted": $mounted,
+  "config_bound": $bound_config,
+  "memory_bound": $bound_memory,
+  "state_file": "$STATE_FILE"
+}
+EOF
+}
+
+init_device() {
+  need_root
+  dev="${1:-}"
+  if [ -z "$dev" ] || [ ! -b "$dev" ]; then
+    echo "Usage: cogos-persist init-device /dev/sdXN [LABEL]" >&2
+    exit 2
+  fi
+  label="${2:-$LABEL}"
+  if ! command -v mkfs.ext4 >/dev/null 2>&1; then
+    echo "mkfs.ext4 is required." >&2
+    exit 2
+  fi
+  echo "This will format $dev as ext4 label $label."
+  echo "Re-run with COGOS_CONFIRM_FORMAT=YES to proceed." >&2
+  if [ "${COGOS_CONFIRM_FORMAT:-}" != "YES" ]; then
+    exit 4
+  fi
+  mkfs.ext4 -F -L "$label" "$dev"
+  log "formatted $dev as $label"
+}
+
+init_file() {
+  need_root
+  path="${1:-}"
+  size_mb="${2:-4096}"
+  if [ -z "$path" ]; then
+    echo "Usage: cogos-persist init-file /path/cogos-data.img [size_mb]" >&2
+    exit 2
+  fi
+  if [ -e "$path" ]; then
+    echo "Refusing to overwrite existing file: $path" >&2
+    exit 4
+  fi
+  dd if=/dev/zero of="$path" bs=1M count="$size_mb"
+  mkfs.ext4 -F -L "$LABEL" "$path"
+  log "created persistent image $path (${size_mb} MiB) with label $LABEL"
+}
+
+case "${1:-status}" in
+  mount|start)
+    mount_store
+    ;;
+  bind)
+    need_root
+    seed_store
+    bind_runtime_dirs
+    ;;
+  status)
+    status_json
+    ;;
+  init-device)
+    shift
+    init_device "$@"
+    ;;
+  init-file)
+    shift
+    init_file "$@"
+    ;;
+  *)
+    cat <<'USAGE'
+Usage:
+  cogos-persist status
+  cogos-persist mount
+  cogos-persist init-device /dev/sdXN [LABEL]
+  cogos-persist init-file /path/cogos-data.img [size_mb]
+
+By default CoGOS looks for an ext4 volume labeled COGOSDATA, mounts it at
+/var/lib/cogos, then bind-mounts persistent config, memory, and local modules
+over /opt/cogos.
+USAGE
+    exit 2
+    ;;
+esac

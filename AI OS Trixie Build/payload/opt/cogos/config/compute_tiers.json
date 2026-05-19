@@ -1,0 +1,98 @@
+{
+  "version": "1.0",
+  "default_tier": "standard",
+  "profile_tier_map": {
+    "operator": "elevated",
+    "kid": "base"
+  },
+  "tiers": {
+    "base": {
+      "label": "Base (free)",
+      "capabilities": [
+        "nova.chat",
+        "automatic.status",
+        "automatic.workspace",
+        "automatic.remember",
+        "automatic.suggest",
+        "automatic.organize_plan",
+        "ul.harmless",
+        "ul.query",
+        "creative.story_draft",
+        "mesh.receive",
+        "proof.read"
+      ],
+      "denies": [
+        "ul.dangerous",
+        "ul.privileged",
+        "creative.render",
+        "pkg.install",
+        "mesh.trust"
+      ]
+    },
+    "standard": {
+      "label": "Standard",
+      "capabilities": [
+        "nova.chat",
+        "automatic.status",
+        "automatic.workspace",
+        "automatic.remember",
+        "automatic.suggest",
+        "automatic.organize_plan",
+        "automatic.organize_apply",
+        "ul.harmless",
+        "ul.query",
+        "ul.mutate",
+        "creative.story_draft",
+        "creative.beatbox_score",
+        "creative.world_build",
+        "mesh.propose",
+        "mesh.receive",
+        "proof.read",
+        "backup.export"
+      ],
+      "denies": [
+        "ul.dangerous",
+        "ul.privileged",
+        "creative.render",
+        "pkg.install"
+      ]
+    },
+    "elevated": {
+      "label": "Elevated (operator)",
+      "capabilities": [
+        "nova.chat",
+        "automatic.status",
+        "automatic.workspace",
+        "automatic.remember",
+        "automatic.suggest",
+        "automatic.organize_plan",
+        "automatic.organize_apply",
+        "ul.harmless",
+        "ul.query",
+        "ul.mutate",
+        "ul.dangerous",
+        "creative.story_draft",
+        "creative.beatbox_score",
+        "creative.world_build",
+        "creative.render",
+        "mesh.propose",
+        "mesh.receive",
+        "mesh.trust",
+        "pkg.install",
+        "pkg.remove",
+        "backup.export",
+        "backup.import",
+        "update.apply",
+        "update.rollback"
+      ],
+      "denies": [
+        "ul.privileged"
+      ]
+    },
+    "developer": {
+      "label": "Developer",
+      "capabilities": ["*"],
+      "denies": []
+    }
+  }
+}

@@ -1,0 +1,374 @@
+#!/bin/sh
+set -eu
+
+TARGET=""
+YES="false"
+CONFIRM_ERASE=""
+HOSTNAME="cogos"
+USERNAME="operator"
+PASSWORD_HASH=""
+DATA_SIZE="16GiB"
+ROOT_MNT="/mnt/cogos-target"
+JSON="false"
+DRY_RUN="false"
+ALLOW_REMOVABLE="false"
+INSTALL_LOG="/opt/cogos/memory/logs/install.log"
+INSTALL_PROOF="/opt/cogos/memory/logs/install_proof.json"
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  cogos-install plan --target /dev/sdX [--json] [--data-size 16GiB]
+  cogos-install validate --target /dev/sdX [--json]
+  cogos-install apply --target /dev/sdX --yes --confirm-erase sdX [options]
+  cogos-install install --target /dev/sdX --yes --confirm-erase sdX [options]
+  cogos-install proof
+
+Options:
+  --hostname NAME            installed hostname, default cogos
+  --user NAME                operator account, default operator
+  --password-hash HASH       optional crypt(3) password hash for the user
+  --data-size SIZE           persistent data partition size, default 16GiB
+  --dry-run                  print the install steps without changing disk
+  --allow-removable          allow installing to removable media
+  --json                     emit JSON for plan/validate/proof
+
+The apply/install path is destructive. It refuses to run unless all are true:
+  1. running as root
+  2. target is a whole block disk
+  3. --yes is present
+  4. --confirm-erase matches the target basename
+USAGE
+}
+
+die() {
+  echo "cogos-install: $*" >&2
+  exit 1
+}
+
+log() {
+  mkdir -p "$(dirname "$INSTALL_LOG")"
+  printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$INSTALL_LOG" >&2
+}
+
+json_escape() {
+  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
+}
+
+need_root() {
+  [ "$(id -u)" = "0" ] || die "must run as root"
+}
+
+parse_args() {
+  ACTION="${1:-}"
+  [ -n "$ACTION" ] || { usage; exit 2; }
+  shift || true
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --target) TARGET="${2:-}"; shift 2 ;;
+      --yes) YES="true"; shift ;;
+      --confirm-erase) CONFIRM_ERASE="${2:-}"; shift 2 ;;
+      --hostname) HOSTNAME="${2:-}"; shift 2 ;;
+      --user) USERNAME="${2:-}"; shift 2 ;;
+      --password-hash) PASSWORD_HASH="${2:-}"; shift 2 ;;
+      --data-size) DATA_SIZE="${2:-}"; shift 2 ;;
+      --dry-run) DRY_RUN="true"; shift ;;
+      --allow-removable) ALLOW_REMOVABLE="true"; shift ;;
+      --json) JSON="true"; shift ;;
+      -h|--help) usage; exit 0 ;;
+      *) die "unknown argument: $1" ;;
+    esac
+  done
+}
+
+part_name() {
+  disk="$1"
+  num="$2"
+  case "$disk" in
+    *nvme*|*mmcblk*) printf '%sp%s' "$disk" "$num" ;;
+    *) printf '%s%s' "$disk" "$num" ;;
+  esac
+}
+
+target_base() {
+  basename "$TARGET"
+}
+
+target_sys_path() {
+  printf '/sys/block/%s' "$(target_base)"
+}
+
+target_size_bytes() {
+  block="$(target_sys_path)"
+  if [ -r "$block/size" ]; then
+    sectors="$(cat "$block/size")"
+    printf '%s\n' $((sectors * 512))
+  else
+    blockdev --getsize64 "$TARGET" 2>/dev/null || printf '0\n'
+  fi
+}
+
+is_whole_disk() {
+  [ -b "$TARGET" ] || return 1
+  [ -d "$(target_sys_path)" ] || return 1
+  return 0
+}
+
+is_removable() {
+  block="$(target_sys_path)"
+  [ -r "$block/removable" ] && [ "$(cat "$block/removable")" = "1" ]
+}
+
+current_root_source() {
+  findmnt -n -o SOURCE / 2>/dev/null || printf ''
+}
+
+validate_target() {
+  [ -n "$TARGET" ] || die "--target /dev/sdX is required"
+  is_whole_disk || die "target is not a whole block disk: $TARGET"
+  size="$(target_size_bytes)"
+  [ "$size" -gt 34359738368 ] || die "target must be larger than 32 GiB"
+  if is_removable && [ "$ALLOW_REMOVABLE" != "true" ]; then
+    die "target appears removable; pass --allow-removable if intentional"
+  fi
+  root_src="$(current_root_source)"
+  case "$root_src" in
+    "$TARGET"|"$TARGET"[0-9]*|"$TARGET"p[0-9]*) die "refusing to install onto the currently booted root disk: $TARGET" ;;
+  esac
+}
+
+emit_plan_json() {
+  size="$(target_size_bytes 2>/dev/null || printf 0)"
+  efi="$(part_name "$TARGET" 1)"
+  root="$(part_name "$TARGET" 2)"
+  data="$(part_name "$TARGET" 3)"
+  cat <<EOF
+{
+  "ok": true,
+  "target": "$(json_escape "$TARGET")",
+  "target_size_bytes": $size,
+  "hostname": "$(json_escape "$HOSTNAME")",
+  "user": "$(json_escape "$USERNAME")",
+  "data_size": "$(json_escape "$DATA_SIZE")",
+  "destructive": true,
+  "partitions": [
+    {"path": "$(json_escape "$efi")", "role": "efi", "size": "512MiB", "filesystem": "vfat", "label": "COGOSEFI"},
+    {"path": "$(json_escape "$root")", "role": "root", "size": "remaining-minus-data", "filesystem": "ext4", "label": "COGOSROOT"},
+    {"path": "$(json_escape "$data")", "role": "data", "size": "$(json_escape "$DATA_SIZE")", "filesystem": "ext4", "label": "COGOSDATA"}
+  ],
+  "apply_command": "cogos-install apply --target $(json_escape "$TARGET") --yes --confirm-erase $(json_escape "$(target_base)")"
+}
+EOF
+}
+
+print_plan() {
+  [ -n "$TARGET" ] || die "--target /dev/sdX is required"
+  if [ "$JSON" = "true" ]; then
+    emit_plan_json
+    return
+  fi
+  cat <<EOF
+CoGOS install plan
+Target disk: $TARGET
+Hostname:    $HOSTNAME
+User:        $USERNAME
+Data size:   $DATA_SIZE
+
+Partitions:
+  $(part_name "$TARGET" 1)  EFI   512 MiB        FAT32 label COGOSEFI
+  $(part_name "$TARGET" 2)  root  rest-data      ext4  label COGOSROOT
+  $(part_name "$TARGET" 3)  data  $DATA_SIZE     ext4  label COGOSDATA
+
+Destructive apply command:
+  cogos-install apply --target $TARGET --yes --confirm-erase $(target_base)
+EOF
+}
+
+validate_action() {
+  validate_target
+  if [ "$JSON" = "true" ]; then
+    emit_plan_json
+  else
+    print_plan
+    echo
+    echo "Validation: PASS"
+  fi
+}
+
+need_tools() {
+  for tool in parted partprobe mkfs.ext4 rsync mount findmnt blkid chroot; do
+    command -v "$tool" >/dev/null 2>&1 || die "missing required tool: $tool"
+  done
+  if ! command -v mkfs.vfat >/dev/null 2>&1 && ! command -v mkfs.fat >/dev/null 2>&1; then
+    die "missing required tool: mkfs.vfat or mkfs.fat"
+  fi
+}
+
+run_step() {
+  log "+ $*"
+  if [ "$DRY_RUN" = "true" ]; then
+    return 0
+  fi
+  "$@"
+}
+
+write_proof() {
+  status="$1"
+  root_part="${2:-}"
+  data_part="${3:-}"
+  efi_part="${4:-}"
+  mkdir -p "$(dirname "$INSTALL_PROOF")"
+  cat > "$INSTALL_PROOF" <<EOF
+{
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "status": "$(json_escape "$status")",
+  "target": "$(json_escape "$TARGET")",
+  "hostname": "$(json_escape "$HOSTNAME")",
+  "user": "$(json_escape "$USERNAME")",
+  "data_size": "$(json_escape "$DATA_SIZE")",
+  "dry_run": $DRY_RUN,
+  "partitions": {
+    "efi": "$(json_escape "$efi_part")",
+    "root": "$(json_escape "$root_part")",
+    "data": "$(json_escape "$data_part")"
+  },
+  "log": "$(json_escape "$INSTALL_LOG")"
+}
+EOF
+}
+
+cleanup_mounts() {
+  if mountpoint -q "$ROOT_MNT/run" 2>/dev/null; then umount "$ROOT_MNT/run" || true; fi
+  if mountpoint -q "$ROOT_MNT/sys" 2>/dev/null; then umount "$ROOT_MNT/sys" || true; fi
+  if mountpoint -q "$ROOT_MNT/proc" 2>/dev/null; then umount "$ROOT_MNT/proc" || true; fi
+  if mountpoint -q "$ROOT_MNT/dev" 2>/dev/null; then umount "$ROOT_MNT/dev" || true; fi
+  if mountpoint -q "$ROOT_MNT/var/lib/cogos" 2>/dev/null; then umount "$ROOT_MNT/var/lib/cogos" || true; fi
+  if mountpoint -q "$ROOT_MNT/boot/efi" 2>/dev/null; then umount "$ROOT_MNT/boot/efi" || true; fi
+  if mountpoint -q "$ROOT_MNT" 2>/dev/null; then umount "$ROOT_MNT" || true; fi
+}
+
+install_bootloader() {
+  if [ "$DRY_RUN" = "true" ]; then
+    log "+ chroot $ROOT_MNT grub-install/update-grub"
+    return 0
+  fi
+  if [ -d /sys/firmware/efi ]; then
+    chroot "$ROOT_MNT" grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=CoGOS --recheck
+  else
+    chroot "$ROOT_MNT" grub-install "$TARGET" --recheck
+  fi
+  chroot "$ROOT_MNT" update-grub
+}
+
+create_user() {
+  [ -n "$USERNAME" ] || return 0
+  if [ "$DRY_RUN" = "true" ]; then
+    log "+ chroot $ROOT_MNT useradd/configure $USERNAME"
+    return 0
+  fi
+  chroot "$ROOT_MNT" sh -c "id '$USERNAME' >/dev/null 2>&1 || useradd -m -s /bin/bash -G sudo '$USERNAME'"
+  if [ -n "$PASSWORD_HASH" ]; then
+    chroot "$ROOT_MNT" usermod -p "$PASSWORD_HASH" "$USERNAME"
+  fi
+}
+
+apply_install() {
+  need_root
+  need_tools
+  validate_target
+  [ "$YES" = "true" ] || die "apply requires --yes"
+  [ "$CONFIRM_ERASE" = "$(target_base)" ] || die "--confirm-erase must equal $(target_base)"
+
+  EFI="$(part_name "$TARGET" 1)"
+  ROOT_PART="$(part_name "$TARGET" 2)"
+  DATA_PART="$(part_name "$TARGET" 3)"
+  trap cleanup_mounts EXIT INT TERM
+
+  print_plan
+  log "ERASING $TARGET and installing CoGOS"
+  run_step sh -c "umount ${TARGET}* >/dev/null 2>&1 || true"
+  run_step parted -s "$TARGET" mklabel gpt
+  run_step parted -s "$TARGET" mkpart ESP fat32 1MiB 513MiB
+  run_step parted -s "$TARGET" set 1 esp on
+  run_step parted -s "$TARGET" mkpart COGOS_ROOT ext4 513MiB "-$DATA_SIZE"
+  run_step parted -s "$TARGET" mkpart COGOSDATA ext4 "-$DATA_SIZE" 100%
+  run_step partprobe "$TARGET"
+  [ "$DRY_RUN" = "true" ] || sleep 2
+
+  if command -v mkfs.vfat >/dev/null 2>&1; then
+    run_step mkfs.vfat -F32 -n COGOSEFI "$EFI"
+  else
+    run_step mkfs.fat -F32 -n COGOSEFI "$EFI"
+  fi
+  run_step mkfs.ext4 -F -L COGOSROOT "$ROOT_PART"
+  run_step mkfs.ext4 -F -L COGOSDATA "$DATA_PART"
+
+  run_step mkdir -p "$ROOT_MNT"
+  run_step mount "$ROOT_PART" "$ROOT_MNT"
+  run_step mkdir -p "$ROOT_MNT/boot/efi" "$ROOT_MNT/var/lib/cogos"
+  run_step mount "$EFI" "$ROOT_MNT/boot/efi"
+  run_step mount "$DATA_PART" "$ROOT_MNT/var/lib/cogos"
+
+  run_step rsync -aHAX --numeric-ids \
+    --exclude=/proc/* --exclude=/sys/* --exclude=/dev/* --exclude=/run/* \
+    --exclude=/tmp/* --exclude=/mnt/* --exclude=/media/* --exclude=/live/* \
+    / "$ROOT_MNT/"
+
+  run_step mkdir -p "$ROOT_MNT/proc" "$ROOT_MNT/sys" "$ROOT_MNT/dev" "$ROOT_MNT/run" "$ROOT_MNT/tmp"
+  if [ "$DRY_RUN" != "true" ]; then
+    echo "$HOSTNAME" > "$ROOT_MNT/etc/hostname"
+    ROOT_UUID="$(blkid -s UUID -o value "$ROOT_PART")"
+    EFI_UUID="$(blkid -s UUID -o value "$EFI")"
+    DATA_UUID="$(blkid -s UUID -o value "$DATA_PART")"
+    cat > "$ROOT_MNT/etc/fstab" <<EOF
+UUID=$ROOT_UUID / ext4 defaults,noatime 0 1
+UUID=$EFI_UUID /boot/efi vfat umask=0077 0 1
+UUID=$DATA_UUID /var/lib/cogos ext4 defaults,noatime 0 2
+EOF
+  else
+    log "+ write hostname/fstab"
+  fi
+
+  run_step mount --bind /dev "$ROOT_MNT/dev"
+  run_step mount --bind /proc "$ROOT_MNT/proc"
+  run_step mount --bind /sys "$ROOT_MNT/sys"
+  run_step mount --bind /run "$ROOT_MNT/run"
+  create_user
+  install_bootloader
+  if [ "$DRY_RUN" != "true" ]; then
+    chroot "$ROOT_MNT" /usr/local/bin/cogos-persist bind || true
+  else
+    log "+ chroot $ROOT_MNT /usr/local/bin/cogos-persist bind"
+  fi
+
+  sync
+  write_proof "installed" "$ROOT_PART" "$DATA_PART" "$EFI"
+  cleanup_mounts
+  trap - EXIT INT TERM
+  echo "CoGOS installed on $TARGET. Reboot and select CoGOS from firmware boot."
+}
+
+proof_action() {
+  if [ "$JSON" = "true" ]; then
+    if [ -f "$INSTALL_PROOF" ]; then
+      cat "$INSTALL_PROOF"
+    else
+      printf '{"ok":false,"reason":"missing install proof","path":"%s"}\n' "$(json_escape "$INSTALL_PROOF")"
+    fi
+    return
+  fi
+  if [ -f "$INSTALL_PROOF" ]; then
+    cat "$INSTALL_PROOF"
+  else
+    echo "No install proof found at $INSTALL_PROOF"
+  fi
+}
+
+parse_args "$@"
+case "$ACTION" in
+  plan) print_plan ;;
+  validate) validate_action ;;
+  apply|install) apply_install ;;
+  proof) proof_action ;;
+  *) usage; exit 2 ;;
+esac

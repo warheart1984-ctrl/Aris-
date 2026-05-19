@@ -1,0 +1,44 @@
+{
+  "product": "Project Infi / ARIS CoGOS",
+  "edition": "Debian Governance Edition",
+  "version": "12.10.1-hardware-boot",
+  "build_date": "2026-05-19",
+  "phases_complete": ["0", "1", "2", "3"],
+  "components": {
+    "cognitive_runtime": "phase0",
+    "desktop_shell": "phase1",
+    "creative_mesh": "phase2",
+    "tiers_packages_backup": "phase3",
+    "install_persistence": "guarded-full-disk-installer",
+    "automatic_mode": "workspaces_files_memory_workflows",
+    "control_center": "operator_ui",
+    "ul_stdlib": "0.1.0",
+    "device_storage_manager": "safe_mount_unmount",
+    "first_run_wizard": "operator_profile_workspace_setup",
+    "signed_manifests": "release_package_update_hmac",
+    "recovery_mode": "boot_verify_rollback_restore",
+    "hardware_boot": "fast_pid1_handoff_with_kernel_bypass"
+  },
+  "iso_hint": "Rebuild via AI OS Debian Build/scripts/build_debian_cogos.sh",
+  "verification": [
+    "cogos_boot.py --boot",
+    "cogos_eval.py run",
+    "cogos-pid1-proof",
+    "cogos-persist status",
+    "cogos-install plan --target /dev/sdX",
+    "cogos-install validate --target /dev/sdX",
+    "cogos-install apply --target /dev/sdX --yes --confirm-erase sdX"
+    ,"cogos-auto status",
+    "cogos-ul-stdlib manifest",
+    "cogos-device-storage status",
+    "cogos-device-storage mount /dev/sdXN --mountpoint /mnt/cogos-usb --yes --confirm-mount sdXN",
+    "cogos-first-run status",
+    "cogos-manifest verify-core",
+    "cogos-pkg verify",
+    "cogos_update.py verify",
+    "cogos-recovery verify",
+    "cogos-recovery boot",
+    "boot with cogos.safe=1 for native Debian bypass",
+    "boot with cogos.pid1.strict=1 for fail-closed proof mode"
+  ]
+}

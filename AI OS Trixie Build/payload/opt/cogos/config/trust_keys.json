@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "active_key": "cogos-local-root-2026",
+  "keys": [
+    {
+      "id": "cogos-local-root-2026",
+      "algorithm": "HMAC-SHA256",
+      "scope": ["release", "package", "update"],
+      "enabled": true,
+      "secret": "cogos-local-root-2026-development-signing-key-change-before-public-release"
+    }
+  ]
+}

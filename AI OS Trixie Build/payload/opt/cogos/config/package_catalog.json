@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "channel": "cogos-curated",
+  "packages": [
+    {
+      "id": "trace_analyzer",
+      "name": "Trace Analyzer",
+      "version": "1.0.0",
+      "module_path": "/opt/cogos/modules/local/trace_analyzer",
+      "required_tier": "standard",
+      "capabilities": ["trace.read", "module.execute"],
+      "description": "Governed trace inspection tool"
+    },
+    {
+      "id": "hello_ul",
+      "name": "UL Hello Example",
+      "version": "1.0.0",
+      "artifact": "/opt/cogos/examples/ul/hello.ul",
+      "required_tier": "base",
+      "capabilities": ["ul.trace"],
+      "description": "Reference UL trace example"
+    },
+    {
+      "id": "operator_notes",
+      "name": "Operator Notes",
+      "version": "1.0.0",
+      "install_type": "memory_slot",
+      "memory_path": "/opt/cogos/memory/operator/notes",
+      "required_tier": "standard",
+      "capabilities": ["memory.append"],
+      "description": "Local operator notes slot"
+    }
+  ]
+}

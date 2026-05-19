@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fast operator boot surface for CoGOS v10."""
+"""Fast operator boot surface for CoGOS v12."""
 
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def main() -> int:
     daemon_running = pid_running(DAEMON_PID)
     dashboard_running = pid_running(DASHBOARD_PID)
 
-    print("Project Infi / CoGOS v10 Fast Operator Boot")
+    print("Project Infi / CoGOS v12 Fast Operator Boot")
     print("=" * 46)
     line("profile", profile.get("profile", "unknown"))
     line("message", profile.get("operator_message", ""))
@@ -63,9 +63,15 @@ def main() -> int:
     print("  cogos-traits prove")
     print("  cogos-patterns ingest")
     print("  cogos-patterns prove")
+    print("  cogos-ul trace /opt/cogos/examples/ul/hello.ul")
+    print("  cogos-voss proof")
     print("  cogos-dashboard-start       start dashboard on demand")
     print("  cogos-dashboard-stop        stop dashboard when laggy")
-    print("  cogos-desktop-hint          show desktop recovery hints")
+    print("  cogos-desktop-start         Phase 1-3 desktop shell :8081")
+    print("  cogos-cockpit               full operator cockpit")
+    print("  cogos-eval run              ship-readiness eval suite")
+    print("  cogos-pkg list              governed packages")
+    print("  cogos-backup list           backup bundles")
     return 0
 
 

@@ -2,12 +2,13 @@
 
 ## Boot Flow
 
-1. Boot the v10 ISO in Hyper-V.
+1. Boot the v12 ISO in Hyper-V.
 2. Wait for Puppy/Trixie to finish loading.
 3. Open a terminal.
-4. Run `cogos-operator` for the fast operator surface.
-5. Run `cogos-status` to confirm the boot report exists.
-6. Start the dashboard only when needed with `cogos-dashboard-start`.
+4. Run `cogos-pid1-proof` to confirm the PID 1 gate passed.
+5. Run `cogos-operator` for the fast operator surface.
+6. Run `cogos-status` to confirm the boot report exists.
+7. Start the dashboard only when needed with `cogos-dashboard-start`.
 
 ## Known-Good Proof Sequence
 
@@ -52,6 +53,9 @@ cogos-patterns prove
 cogos-proof
 ```
 
+In v11, run `cogos-pid1-proof` before this sequence to confirm the gatekeeper
+ran before native init handoff.
+
 Lag recovery:
 
 ```sh
@@ -59,6 +63,59 @@ cogos-dashboard-stop
 cogos-perf
 cat /var/log/cogos-service.log
 ```
+
+## V11 PID 1 Gatekeeper
+
+v11 makes CoGOS the first userspace process. The kernel starts
+`/opt/cogos/bin/cognitive_init`; CoGOS verifies law/runtime integrity, starts
+the governed daemon, writes PID 1 proof, and then execs native init from
+`/usr/sbin/init.original`.
+
+Known-good v11 sequence:
+
+```sh
+cogos-pid1-proof
+cogos-operator
+cogos-daemon --verify-laws
+cogos-module admit /opt/cogos/modules/local/trace_analyzer
+cogos-module run trace_analyzer
+cogos-traits prove
+cogos-patterns ingest
+cogos-patterns prove
+cogos-proof
+```
+
+If PID 1 verification fails, v11 fails closed into maintenance shell instead of
+starting native init.
+
+## V12 UL/VOSS Governed Runtime
+
+v12 adds the Universal Language and VOSS execution core as local governed
+runtime surfaces. The v11 PID 1 boot chain is unchanged.
+
+Known-good v12 sequence:
+
+```sh
+cogos-ul trace /opt/cogos/examples/ul/hello.ul
+cogos-ul substrate /opt/cogos/examples/ul/safe_substrate.ulsub
+cogos-voss run-golden
+cogos-voss verify-golden
+cogos-voss validate
+cogos-voss binding-demo
+cogos-voss proof
+cogos-proof
+```
+
+Adversarial substrate checks:
+
+```sh
+cogos-ul substrate /opt/cogos/examples/ul/dangerous_substrate.ulsub
+cogos-ul substrate /opt/cogos/examples/ul/oversized_substrate.ulsub
+```
+
+Both should fail closed and write audit evidence under
+`/opt/cogos/memory/ul/substrate_audit.jsonl`. VOSS proof records are stored
+under `/opt/cogos/memory/voss/`.
 
 From Windows, tune an existing Hyper-V VM with fixed 6GB memory and 4 CPUs:
 
@@ -192,7 +249,8 @@ The dashboard shows daemon health, law decisions, module registry, trait ledger,
 trace verification, sandbox status, recent module runs, sandbox denials,
 identity state, drift score, trait warnings, quarantined modules, snapshots,
 reflections, Pattern Ledger, Hall of Fame, Hall of Shame, immune recommendations,
-guidance candidates, boot profile, performance status, and recovery hints.
+guidance candidates, UL/VOSS runtime proof, boot profile, performance status,
+and recovery hints.
 
 ```text
 cogos-dashboard-start

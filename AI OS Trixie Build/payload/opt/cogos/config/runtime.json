@@ -1,6 +1,6 @@
 {
   "name": "Project Infi / ARIS Cognitive OS Runtime",
-  "version": "0.1",
+  "version": "0.12",
   "root": "/opt/cogos",
   "paths": {
     "runtime": "/opt/cogos/runtime",
@@ -12,8 +12,24 @@
     "traces": "/opt/cogos/memory/traces",
     "events": "/opt/cogos/memory/events"
   },
+  "ul_runtime": {
+    "path": "/opt/cogos/runtime/ul",
+    "runs": "/opt/cogos/memory/ul/runs.jsonl",
+    "substrate_audit": "/opt/cogos/memory/ul/substrate_audit.jsonl",
+    "examples": "/opt/cogos/examples/ul"
+  },
+  "voss_runtime": {
+    "path": "/opt/cogos/runtime/voss",
+    "rep_traces": "/opt/cogos/memory/voss/rep_traces.jsonl",
+    "verifications": "/opt/cogos/memory/voss/verifications.jsonl",
+    "bindings": "/opt/cogos/memory/voss/bindings.jsonl",
+    "proof": "/opt/cogos/memory/voss/proof.jsonl"
+  },
   "boot": {
     "entrypoint": "/opt/cogos/bin/cognitive_init",
+    "mode": "pid1_gatekeeper",
+    "native_handoff": "/usr/sbin/init.original",
+    "pid1_proof": "/opt/cogos/memory/logs/pid1_proof.json",
     "shell": "/opt/cogos/bin/cogos_shell",
     "report": "/opt/cogos/memory/logs/boot_report.json",
     "profile": "/opt/cogos/config/boot_profile.json"
@@ -140,5 +156,28 @@
   },
   "operator_handbook": {
     "path": "/opt/cogos/docs/OPERATOR_HANDBOOK.md"
+  },
+  "phase3": {
+    "compute_tiers": "/opt/cogos/config/compute_tiers.json",
+    "package_catalog": "/opt/cogos/config/package_catalog.json",
+    "release_manifest": "/opt/cogos/config/release_manifest.json",
+    "eval_report": "/opt/cogos/memory/logs/eval_report.json",
+    "backups_root": "/opt/cogos/memory/backups"
+  },
+  "phase2": {
+    "creative_root": "/opt/cogos/memory/creative",
+    "mesh_root": "/opt/cogos/memory/mesh",
+    "mesh_config": "/opt/cogos/config/mesh.json",
+    "creative_entry": "/opt/cogos/bin/cogos_creative.py",
+    "mesh_entry": "/opt/cogos/bin/cogos_mesh.py"
+  },
+  "phase1": {
+    "desktop_port": 8081,
+    "desktop_entry": "/opt/cogos/bin/cogos_desktop.py",
+    "hal_entry": "/opt/cogos/bin/cogos_hal.py",
+    "update_entry": "/opt/cogos/bin/cogos_update.py",
+    "users_config": "/opt/cogos/config/users.json",
+    "hal_snapshot": "/opt/cogos/memory/logs/hal_snapshot.json",
+    "determinism_corridor": "/opt/cogos/memory/logs/determinism_corridor.json"
   }
 }

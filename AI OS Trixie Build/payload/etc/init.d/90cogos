@@ -4,10 +4,13 @@
 COGOS_ROOT=/opt/cogos
 COGOS_LOG=/var/log/cogos-service.log
 BOOT_REPORT=/opt/cogos/memory/logs/boot_report.json
+PID1_PROOF=/opt/cogos/memory/logs/pid1_proof.json
 BOOT_PROFILE=/opt/cogos/config/boot_profile.json
 PID_FILE=/run/cogos-boot.pid
 DAEMON_PID_FILE=/run/cogos-daemon.pid
 DASHBOARD_PID_FILE=/run/cogos-dashboard.pid
+DESKTOP_PID_FILE=/run/cogos-desktop.pid
+HAL_PID_FILE=/run/cogos-hal.pid
 
 log() {
   mkdir -p /var/log /opt/cogos/memory/logs /run 2>/dev/null || true
@@ -45,9 +48,19 @@ case "${1:-start}" in
       BOOT_VERIFY_AUTOSTART="$(profile_value boot_verify_autostart true)"
       DAEMON_AUTOSTART="$(profile_value daemon_autostart true)"
       DASHBOARD_AUTOSTART="$(profile_value dashboard_autostart false)"
-      log "boot profile: $PROFILE; dashboard_autostart=$DASHBOARD_AUTOSTART"
+      DESKTOP_AUTOSTART="$(profile_value desktop_autostart false)"
+      HAL_AUTOSTART="$(profile_value hal_autostart true)"
+      PERSISTENCE_AUTOSTART="$(profile_value persistence_autostart true)"
+      log "boot profile: $PROFILE; dashboard=$DASHBOARD_AUTOSTART desktop=$DESKTOP_AUTOSTART hal=$HAL_AUTOSTART persistence=$PERSISTENCE_AUTOSTART"
 
-      if [ "$BOOT_VERIFY_AUTOSTART" = "true" ]; then
+      if [ "$PERSISTENCE_AUTOSTART" = "true" ] && [ -x /usr/local/bin/cogos-persist ]; then
+        /usr/local/bin/cogos-persist mount >> "$COGOS_LOG" 2>&1 || true
+        log "persistence mount requested"
+      fi
+
+      if [ -s "$PID1_PROOF" ]; then
+        log "PID 1 proof exists; boot verification already handled by cognitive_init"
+      elif [ "$BOOT_VERIFY_AUTOSTART" = "true" ]; then
         (
           sleep 2
           python3 "$COGOS_ROOT/bin/cogos_boot.py" --boot
@@ -61,7 +74,9 @@ case "${1:-start}" in
         log "boot verifier deferred by boot profile"
       fi
 
-      if [ "$DAEMON_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_daemon.py" ]; then
+      if [ -s "$DAEMON_PID_FILE" ] && kill -0 "$(cat "$DAEMON_PID_FILE")" 2>/dev/null; then
+        log "daemon already running from PID 1 gate"
+      elif [ "$DAEMON_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_daemon.py" ]; then
         python3 "$COGOS_ROOT/bin/cogos_daemon.py" --daemon >> "$COGOS_LOG" 2>&1 &
         echo $! > "$DAEMON_PID_FILE" 2>/dev/null || true
         log "daemon launched; task inbox: /opt/cogos/tasks/inbox"
@@ -75,6 +90,14 @@ case "${1:-start}" in
         log "dashboard launched: http://localhost:8080"
       else
         log "dashboard deferred; run cogos-dashboard-start when needed"
+      fi
+      if [ "$HAL_AUTOSTART" = "true" ] && [ -x /usr/local/bin/cogos-hal-start ]; then
+        /usr/local/bin/cogos-hal-start >> "$COGOS_LOG" 2>&1 || true
+        log "HAL daemon launch requested"
+      fi
+      if [ "$DESKTOP_AUTOSTART" = "true" ] && [ -x /usr/local/bin/cogos-desktop-start ]; then
+        /usr/local/bin/cogos-desktop-start >> "$COGOS_LOG" 2>&1 || true
+        log "desktop shell launch requested"
       fi
     else
       log "python3 missing; governed runtime layer not started"

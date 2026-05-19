@@ -1,0 +1,7 @@
+{
+  "channel": "stable",
+  "manifest_path": "/opt/cogos/config/release_manifest.json",
+  "snapshots_dir": "/opt/cogos/memory/snapshots",
+  "rollback_points_max": 8,
+  "require_operator_for_apply": true
+}

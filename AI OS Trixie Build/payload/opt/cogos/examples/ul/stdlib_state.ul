@@ -1,0 +1,5 @@
+set key to "project"
+set value to "UL stdlib v0.1 is online"
+ul_remember(key, value)
+print ul_recall(key)
+print ul_slug("Dragon Game Workspace")

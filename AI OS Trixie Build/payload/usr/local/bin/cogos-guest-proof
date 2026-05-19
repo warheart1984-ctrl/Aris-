@@ -1,0 +1,34 @@
+#!/bin/sh
+set -eu
+
+export COGOS_ROOT=/opt/cogos
+export PYTHONPATH=/opt/cogos/runtime:/opt/cogos/runtime/ul:/opt/cogos/runtime/voss:${PYTHONPATH:-}
+
+PROOF_DIR=/mnt/proofs
+LOG=/opt/cogos/memory/logs/guest_proof_export.log
+
+mkdir -p "$PROOF_DIR" /opt/cogos/memory/logs
+
+if ! mountpoint -q "$PROOF_DIR"; then
+  mount -t 9p -o trans=virtio,version=9p2000.L proofs "$PROOF_DIR" 2>>"$LOG" || {
+    echo "proofs 9p mount not available; skipping export" >> "$LOG"
+    exit 0
+  }
+fi
+
+echo "CoGOS guest proof export $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$PROOF_DIR/boot.log"
+
+if [ -s /opt/cogos/memory/logs/pid1_proof.json ]; then
+  cp /opt/cogos/memory/logs/pid1_proof.json "$PROOF_DIR/pid1_proof.json"
+fi
+
+if [ -s /opt/cogos/memory/logs/boot_report.json ]; then
+  cp /opt/cogos/memory/logs/boot_report.json "$PROOF_DIR/boot_report.json"
+fi
+
+python3 -m cogos_runtime --proof > "$PROOF_DIR/runtime_proof.json" 2> "$PROOF_DIR/runtime_proof.err" || true
+python3 /opt/cogos/bin/cogos_eval.py report > "$PROOF_DIR/eval_report.json" 2> "$PROOF_DIR/eval_report.err" || true
+python3 /opt/cogos/bin/cogos_ship.py report > "$PROOF_DIR/ship_preflight.json" 2> "$PROOF_DIR/ship_preflight.err" || true
+
+sync "$PROOF_DIR" 2>/dev/null || true
+echo "Proof export complete $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$PROOF_DIR/boot.log"

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "mesh_name": "infi-family",
+  "require_sigil_exchange": true,
+  "trusted_peer_sigils": [],
+  "max_message_bytes": 65536,
+  "allowed_payload_kinds": [
+    "reasoning_proposal",
+    "creative_handoff",
+    "health_ping",
+    "operator_note"
+  ]
+}

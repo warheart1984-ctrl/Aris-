@@ -1,0 +1,15 @@
+#!/bin/sh
+PID_FILE=/run/cogos-desktop.pid
+LOG=/var/log/cogos-service.log
+PORT="${COGOS_DESKTOP_PORT:-8081}"
+
+mkdir -p /run /var/log 2>/dev/null || true
+
+if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+  echo "CoGOS desktop already running: http://localhost:${PORT}/desktop"
+  exit 0
+fi
+
+python3 /opt/cogos/bin/cogos_desktop.py >> "$LOG" 2>&1 &
+echo $! > "$PID_FILE"
+echo "CoGOS desktop started: http://localhost:${PORT}/desktop"

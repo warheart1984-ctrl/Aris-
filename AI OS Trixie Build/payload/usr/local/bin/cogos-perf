@@ -1,5 +1,8 @@
 #!/bin/sh
-echo "== CoGOS v10 performance =="
+echo "== CoGOS v12 performance =="
+echo
+echo "== PID 1 proof =="
+cogos-pid1-proof 2>&1 || true
 echo
 echo "== Boot profile =="
 cat /opt/cogos/config/boot_profile.json 2>/dev/null || echo "missing boot profile"
