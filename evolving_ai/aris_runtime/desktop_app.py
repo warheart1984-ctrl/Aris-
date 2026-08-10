@@ -356,10 +356,17 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         self.kill_badge = QLabel("NOMINAL")
         self._voice_status_label = QLabel("🔇 Idle")
         self._voice_status_label.setObjectName("voiceStatus")
+        self._voice_toggle_button = QPushButton("🎤")
+        self._voice_toggle_button.setObjectName("voiceToggle")
+        self._voice_toggle_button.setToolTip("Toggle voice listening (requires speaker verification)")
+        self._voice_toggle_button.setCheckable(True)
+        self._voice_toggle_button.setFixedSize(32, 32)
+        self._voice_toggle_button.clicked.connect(self._toggle_voice_listening)
         badge_row.addWidget(self.health_badge)
         badge_row.addWidget(self.mode_badge)
         badge_row.addWidget(self.kill_badge)
         badge_row.addWidget(self._voice_status_label)
+        badge_row.addWidget(self._voice_toggle_button)
 
         action_row = QHBoxLayout()
         action_row.setSpacing(8)
@@ -4081,6 +4088,39 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
 
     def _on_voice_command_result(self, receipt: CommandReceipt) -> None:
         pass
+
+    def _toggle_voice_listening(self, checked: bool) -> None:
+        """Toggle voice listening on/off via microphone button."""
+        if not hasattr(self, '_voice_processor') or self._voice_processor is None:
+            if hasattr(self, '_voice_status_label'):
+                self._voice_status_label.setText("❌ Voice unavailable")
+            if hasattr(self, '_voice_toggle_button'):
+                self._voice_toggle_button.setChecked(False)
+            return
+
+        if checked:
+            # Check if speaker verification is required
+            voice_auth_enabled = getattr(self._voice_processor.config, 'voice_auth_enabled', True)
+            if voice_auth_enabled:
+                # Try to verify speaker first
+                if not self._voice_processor.voice_auth or not self._voice_processor.voice_auth.is_authorized():
+                    if hasattr(self, '_voice_status_label'):
+                        self._voice_status_label.setText("⛔ Enroll speaker first")
+                    if hasattr(self, '_voice_toggle_button'):
+                        self._voice_toggle_button.setChecked(False)
+                    return
+
+            self._voice_processor.start_listening()
+            if hasattr(self, '_voice_status_label'):
+                self._voice_status_label.setText("🎤 Listening...")
+            if hasattr(self, '_voice_toggle_button'):
+                self._voice_toggle_button.setText("🛑")
+        else:
+            self._voice_processor.stop_listening()
+            if hasattr(self, '_voice_status_label'):
+                self._voice_status_label.setText("🔇 Idle")
+            if hasattr(self, '_voice_toggle_button'):
+                self._voice_toggle_button.setText("🎤")
 
     def _activate_soft_kill(self) -> None:
         reason = self.kill_reason.text().strip() or "Manual desktop containment request."
