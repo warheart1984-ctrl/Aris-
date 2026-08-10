@@ -4269,9 +4269,21 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
                 # Try to verify speaker first
                 if not self._voice_processor.voice_auth or not self._voice_processor.voice_auth.is_authorized():
                     if hasattr(self, '_voice_status_label'):
-                        self._voice_status_label.setText("⛔ Enroll speaker first")
+                        self._voice_status_label.setText("⛔ No speaker enrolled")
                     if hasattr(self, '_voice_toggle_button'):
                         self._voice_toggle_button.setChecked(False)
+                    
+                    # Show enrollment prompt
+                    reply = QMessageBox.question(
+                        self,
+                        "Voice Commands Require Speaker Enrollment",
+                        "Voice commands require a verified speaker profile.\n\n"
+                        "No speaker is currently enrolled. Would you like to enroll now?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                        QMessageBox.StandardButton.Yes
+                    )
+                    if reply == QMessageBox.StandardButton.Yes:
+                        self._open_speaker_enrollment()
                     return
 
             self._voice_processor.start_listening()
