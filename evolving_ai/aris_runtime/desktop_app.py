@@ -33,6 +33,7 @@ from PySide6.QtWidgets import (
 
 from .desktop_support import ArisRuntimeDesktopHost, DesktopChatEvent, DesktopSnapshot, clean_operator_text, select_active_task
 from .voice import speak
+from .voice_commands import CanonicalVoiceProcessor, create_canonical_voice_processor
 from .workspace_logic import (
     BRAIN_MODE_OPTIONS,
     BRAIN_PERMISSION_OPTIONS,
@@ -296,6 +297,24 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         self._brain_defaults = _profile_brain_defaults(self.host.profile.id)
         self._studio_name = _profile_studio_name(self.host.profile.id)
 
+        self._voice_processor = create_canonical_voice_processor(
+            host=self.host,
+            window=self,
+            data_root=self.host.data_root,
+            enabled=True,
+            voice_auth_enabled=True,
+            required_confidence=0.85,
+            enrollment_samples=3,
+            auth_model="resemblyzer",
+            constitutional_gate=True,
+            evidence_recording=True,
+            tts_responses=True,
+        )
+        self._voice_processor.on_listening_start = self._on_voice_listening_start
+        self._voice_processor.on_listening_end = self._on_voice_listening_end
+        self._voice_processor.on_error = self._on_voice_error
+        self._voice_processor.on_command_result = self._on_voice_command_result
+
         self.setWindowTitle(self.host.profile.desktop_title)
         self.resize(1560, 980)
         self.setMinimumSize(1320, 860)
@@ -335,9 +354,12 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         self.health_badge = QLabel("READY")
         self.mode_badge = QLabel("1001")
         self.kill_badge = QLabel("NOMINAL")
+        self._voice_status_label = QLabel("🔇 Idle")
+        self._voice_status_label.setObjectName("voiceStatus")
         badge_row.addWidget(self.health_badge)
         badge_row.addWidget(self.mode_badge)
         badge_row.addWidget(self.kill_badge)
+        badge_row.addWidget(self._voice_status_label)
 
         action_row = QHBoxLayout()
         action_row.setSpacing(8)
@@ -626,13 +648,41 @@ class ArisRuntimeDesktopWindow(QMainWindow):
 
         composer = QFrame()
         composer.setObjectName("composerPanel")
+        composer.setAcceptDrops(True)
+        composer.dragEnterEvent = self._drag_enter_event
+        composer.dropEvent = self._drop_event
         composer_layout = QVBoxLayout(composer)
         composer_layout.setContentsMargins(12, 12, 12, 12)
         composer_layout.setSpacing(8)
         composer_layout.addWidget(QLabel("Create Or Continue A Task"))
+        
+        # Drag-and-drop zone for blueprint files
+        self.blueprint_drop_zone = QFrame()
+        self.blueprint_drop_zone.setObjectName("dropZone")
+        self.blueprint_drop_zone.setFixedHeight(60)
+        self.blueprint_drop_zone.setStyleSheet("""
+            QFrame#dropZone {
+                border: 2px dashed #365068;
+                border-radius: 8px;
+                background: #111a21;
+            }
+            QFrame#dropZone[dropActive="true"] {
+                border-color: #2f8051;
+                background: #183927;
+            }
+        """)
+        drop_layout = QVBoxLayout(self.blueprint_drop_zone)
+        drop_layout.setContentsMargins(12, 8, 12, 8)
+        drop_label = QLabel("📄 Drag & drop a blueprint file (.bp.json, .arisbp) here to import")
+        drop_label.setAlignment(Qt.AlignCenter)
+        drop_label.setStyleSheet("color: #7c93aa; font-size: 12px;")
+        drop_layout.addWidget(drop_label)
+        composer_layout.addWidget(self.blueprint_drop_zone)
+        
         self.chat_input = QPlainTextEdit()
         self.chat_input.setPlaceholderText(
-            "Describe the task you want ARIS to run, inspect, or route through the governed runtime."
+            "Describe the task you want ARIS to run, inspect, or route through the governed runtime.\n"
+            "Use /blueprint commands: list, templates, import, export, run, help"
         )
         self.chat_input.setFixedHeight(110)
         self.send_button = QPushButton(self._send_button_label())
@@ -728,6 +778,7 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         self.studio_surface_tabs.addTab(self._build_studio_runtime_surface(), "Runtime")
         self.studio_surface_tabs.addTab(self._build_studio_replay_surface(), "Replay")
         self.studio_surface_tabs.addTab(self._build_studio_file_viewer_surface(), "File Viewer")
+        self.studio_surface_tabs.addTab(self._build_blueprint_library_surface(), "Blueprints")
 
         self.inspect_operator_panel = operator_console_panel
         self.inspect_workspace_panel = explorer_panel
@@ -939,6 +990,15 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         layout = QVBoxLayout(tab)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(10)
+        
+        # Add blueprint trace viewer
+        self.blueprint_trace_viewer = QTextBrowser()
+        self.blueprint_trace_viewer.setOpenExternalLinks(False)
+        self.blueprint_trace_viewer.setFixedHeight(120)
+        self.blueprint_trace_viewer.setPlaceholderText("Select a blueprint trace to view details...")
+        layout.addWidget(QLabel("Blueprint Trace Viewer"))
+        layout.addWidget(self.blueprint_trace_viewer)
+        
         self.workspace_replay_summary = QTextBrowser()
         self.workspace_replay_summary.setOpenExternalLinks(False)
         self.workspace_replay_summary.setFixedHeight(160)
@@ -968,6 +1028,177 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         layout.addWidget(self.studio_file_meta)
         layout.addWidget(self.studio_file_preview, 1)
         return tab
+
+    def _build_blueprint_library_surface(self) -> QWidget:
+        """Build the blueprint library panel for the Inspect tab."""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(12)
+
+        # Header with search and actions
+        header = QHBoxLayout()
+        header.addWidget(QLabel("Blueprint Library"))
+        header.addStretch(1)
+        
+        self.blueprint_search = QLineEdit()
+        self.blueprint_search.setPlaceholderText("Search blueprints...")
+        self.blueprint_search.textChanged.connect(self._filter_blueprints)
+        self.blueprint_search.setFixedWidth(250)
+        header.addWidget(self.blueprint_search)
+        
+        self.blueprint_category_filter = QComboBox()
+        self.blueprint_category_filter.addItems(["All", "feature", "bugfix", "refactor", "workflow", "infra", "docs"])
+        self.blueprint_category_filter.currentTextChanged.connect(self._filter_blueprints)
+        header.addWidget(self.blueprint_category_filter)
+        
+        self.blueprint_import_button = QPushButton("Import Blueprint")
+        self.blueprint_import_button.clicked.connect(self._import_blueprint_dialog)
+        header.addWidget(self.blueprint_import_button)
+        
+        self.blueprint_create_button = QPushButton("New Blueprint")
+        self.blueprint_create_button.clicked.connect(self._create_blueprint_dialog)
+        header.addWidget(self.blueprint_create_button)
+        
+        layout.addLayout(header)
+
+        # Blueprint list
+        self.blueprint_list = QListWidget()
+        self.blueprint_list.setAlternatingRowColors(True)
+        self.blueprint_list.itemDoubleClicked.connect(self._on_blueprint_selected)
+        layout.addWidget(self.blueprint_list, 1)
+
+        # Detail panel
+        self.blueprint_detail = QTextBrowser()
+        self.blueprint_detail.setOpenExternalLinks(False)
+        self.blueprint_detail.setFixedHeight(200)
+        self.blueprint_detail.setPlaceholderText("Select a blueprint to view details...")
+        layout.addWidget(self.blueprint_detail)
+
+        # Action buttons
+        actions = QHBoxLayout()
+        self.blueprint_run_button = QPushButton("Run Blueprint")
+        self.blueprint_run_button.clicked.connect(self._run_selected_blueprint)
+        actions.addWidget(self.blueprint_run_button)
+        
+        self.blueprint_export_button = QPushButton("Export")
+        self.blueprint_export_button.clicked.connect(self._export_selected_blueprint)
+        actions.addWidget(self.blueprint_export_button)
+        
+        self.blueprint_delete_button = QPushButton("Delete")
+        self.blueprint_delete_button.clicked.connect(self._delete_selected_blueprint)
+        self.blueprint_delete_button.setStyleSheet("color: #f5c2c9;")
+        actions.addWidget(self.blueprint_delete_button)
+        
+        # Load initial blueprints
+        self._refresh_blueprint_list()
+        
+        return tab
+
+    def _refresh_blueprint_list(self) -> None:
+        """Refresh the blueprint list from the host."""
+        self.blueprint_list.clear()
+        blueprints = self.host.list_blueprints()
+        for bp in blueprints:
+            item = QListWidgetItem(f"{bp['name']} ({bp['category']})")
+            item.setData(Qt.UserRole, bp['id'])
+            item.setToolTip(f"{bp['description']}\nCategory: {bp['category']} | Steps: {bp['steps']}")
+            self.blueprint_list.addItem(item)
+
+    def _filter_blueprints(self) -> None:
+        """Filter blueprints by search text and category."""
+        search_text = self.blueprint_search.text().lower()
+        category = self.blueprint_category_filter.currentText()
+        
+        for i in range(self.blueprint_list.count()):
+            item = self.blueprint_list.item(i)
+            bp_id = item.data(Qt.UserRole)
+            bp_data = next((bp for bp in self.host.list_blueprints() if bp['id'] == bp_id), None)
+            
+            if not bp_data:
+                item.setHidden(True)
+                continue
+            
+            matches_search = search_text in bp_data['name'].lower() or search_text in bp_data['description'].lower()
+            matches_category = category == "All" or bp_data['category'] == category.lower()
+            
+            item.setHidden(not (matches_search and matches_category))
+
+    def _on_blueprint_selected(self, item: QListWidgetItem) -> None:
+        """Show blueprint details when selected."""
+        bp_id = item.data(Qt.UserRole)
+        bp_data = next((bp for bp in self.host.list_blueprints() if bp['id'] == bp_id), None)
+        
+        if bp_data:
+            detail = (
+                f"<b>{bp_data['name']}</b> (<code>{bp_data['id']}</code>)<br>"
+                f"{bp_data['description']}<br><br>"
+                f"<b>Category:</b> {bp_data['category']}<br>"
+                f"<b>Steps:</b> {bp_data['steps']}<br>"
+                f"<b>Tags:</b> {', '.join(bp_data['tags']) if bp_data['tags'] else 'none'}"
+            )
+            self.blueprint_detail.setHtml(detail)
+            self._selected_blueprint_id = bp_id
+
+    def _run_selected_blueprint(self) -> None:
+        if not hasattr(self, '_selected_blueprint_id') or not self._selected_blueprint_id:
+            return
+        
+        self._append_chat_output(f"Running blueprint <code>{self._selected_blueprint_id}</code>...")
+        
+        def run_blueprint():
+            result = self.host.execute_blueprint(self._selected_blueprint_id, dry_run=False)
+            if result.get("ok"):
+                self._append_chat_output(
+                    f"<b>Blueprint completed:</b> {result['steps_executed']} steps executed<br>"
+                    f"Session: <code>{result['session_id']}</code>"
+                )
+            else:
+                self._append_chat_output(
+                    f"<b>Blueprint failed:</b> {result.get('error', 'Unknown error')}"
+                )
+        
+        from threading import Thread
+        Thread(target=run_blueprint, daemon=True).start()
+
+    def _export_selected_blueprint(self) -> None:
+        if not hasattr(self, '_selected_blueprint_id') or not self._selected_blueprint_id:
+            return
+        
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Export Blueprint", f"{self._selected_blueprint_id}.bp.json",
+            "Blueprint Files (*.bp.json *.arisbp);;All Files (*)"
+        )
+        if path:
+            result = self.host.export_blueprint(self._selected_blueprint_id, path)
+            if result.get("ok"):
+                self._append_chat_output(f"Blueprint exported to <code>{result['path']}</code>")
+            else:
+                self._append_chat_output(f"Export failed: {result.get('error', 'Unknown error')}")
+
+    def _delete_selected_blueprint(self) -> None:
+        # Not implemented - blueprints from templates can't be deleted
+        self._append_chat_output("Built-in templates cannot be deleted. Only imported blueprints can be removed.")
+
+    def _import_blueprint_dialog(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Import Blueprint", "",
+            "Blueprint Files (*.bp.json *.arisbp);;All Files (*)"
+        )
+        if path:
+            result = self.host.import_blueprint(path)
+            if result.get("ok"):
+                self._append_chat_output(
+                    f"<b>Blueprint imported:</b> {result['name']} (<code>{result['blueprint_id']}</code>)<br>"
+                    f"Category: {result['category']} | Steps: {result['steps']}"
+                )
+                self._refresh_blueprint_list()
+            else:
+                self._append_chat_output(f"Import failed: {result.get('error', 'Unknown error')}")
+
+    def _create_blueprint_dialog(self) -> None:
+        # TODO: Implement blueprint creation dialog
+        self._append_chat_output("Blueprint creation dialog not yet implemented. Use /blueprint import for now.")
 
     def _build_primary_task_lane(self) -> QWidget:
         panel = QFrame()
@@ -1275,6 +1506,14 @@ class ArisRuntimeDesktopWindow(QMainWindow):
                 color: #8ea4bb;
                 font-size: 12px;
             }
+            QLabel#voiceStatus {
+                color: #8ea4bb;
+                font-size: 11px;
+                padding: 4px 8px;
+                background: #10171e;
+                border: 1px solid #233340;
+                border-radius: 8px;
+            }
             QLabel#heroTitle {
                 font-size: 31px;
                 font-weight: 700;
@@ -1579,6 +1818,7 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         if self._chat_thread is not None:
             self._chat_thread.quit()
             self._chat_thread.wait(2000)
+        self._voice_processor.shutdown()
         super().closeEvent(event)
 
     def _populate_session_list(self, snapshot: DesktopSnapshot) -> None:
@@ -3021,6 +3261,7 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
             f"ARIS started a governed {chat_mode} run in session {session_id}.",
             "connected",
         )
+        self._voice_processor.start_listening()
         worker = ChatWorker(
             host=self.host,
             session_id=session_id,
@@ -3579,6 +3820,12 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
         message = self.chat_input.toPlainText().strip()
         if not message:
             return
+        
+        # Handle /blueprint slash commands
+        if message.startswith("/blueprint"):
+            self._handle_blueprint_command(message)
+            return
+        
         if self._chat_thread is not None:
             return
         if self.snapshot is None:
@@ -3631,6 +3878,131 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
             fast_mode=fast_mode,
         )
 
+    def _handle_blueprint_command(self, message: str) -> None:
+        """Handle /blueprint slash commands."""
+        parts = message.strip().split(maxsplit=2)
+        if len(parts) < 2:
+            self._show_blueprint_help()
+            return
+        
+        subcommand = parts[1].lower()
+        
+        if subcommand == "list":
+            self._show_blueprint_list()
+        elif subcommand == "import":
+            if len(parts) < 3:
+                self._append_chat_output("Usage: /blueprint import <path>")
+            else:
+                self._import_blueprint(parts[2])
+        elif subcommand == "export":
+            if len(parts) < 3:
+                self._append_chat_output("Usage: /blueprint export <blueprint_id> [path]")
+            else:
+                path = parts[3] if len(parts) > 3 else None
+                self._export_blueprint(parts[2], path)
+        elif subcommand == "run":
+            if len(parts) < 3:
+                self._append_chat_output("Usage: /blueprint run <blueprint_id> [var=value ...]")
+            else:
+                vars_str = parts[3] if len(parts) > 3 else ""
+                self._run_blueprint(parts[2], vars_str)
+        elif subcommand == "templates":
+            self._show_template_gallery()
+        elif subcommand == "help":
+            self._show_blueprint_help()
+        else:
+            self._append_chat_output(f"Unknown blueprint command: {subcommand}. Use /blueprint help for usage.")
+    
+    def _show_blueprint_help(self) -> None:
+        help_text = (
+            "<b>Blueprint Commands:</b><br>"
+            "<code>/blueprint list</code> - List available blueprints<br>"
+            "<code>/blueprint templates</code> - Show template gallery<br>"
+            "<code>/blueprint import <path></code> - Import blueprint from file<br>"
+            "<code>/blueprint export <id> [path]</code> - Export blueprint to file<br>"
+            "<code>/blueprint run <id> [var=value ...]</code> - Execute blueprint<br>"
+            "<code>/blueprint help</code> - Show this help"
+        )
+        self._append_chat_output(help_text)
+    
+    def _show_blueprint_list(self) -> None:
+        blueprints = self.host.list_blueprints()
+        if not blueprints:
+            self._append_chat_output("No blueprints available.")
+            return
+        
+        lines = ["<b>Available Blueprints:</b><br>"]
+        for bp in blueprints:
+            lines.append(f"  <code>{bp['id']}</code> - {bp['name']} ({bp['category']}, {bp['steps']} steps)")
+        self._append_chat_output("<br>".join(lines))
+    
+    def _show_template_gallery(self) -> None:
+        """Show the blueprint template gallery."""
+        templates = self.host.list_blueprints()
+        if not templates:
+            self._append_chat_output("No templates available.")
+            return
+        
+        lines = ["<b>Blueprint Template Gallery:</b><br>"]
+        for t in templates:
+            lines.append(f"  <b>{t['name']}</b> (<code>{t['id']}</code>) - {t['description']}<br>    Category: {t['category']} | Steps: {t['steps']} | Tags: {', '.join(t['tags']) or 'none'}")
+        self._append_chat_output("<br>".join(lines))
+    
+    def _import_blueprint(self, path: str) -> None:
+        try:
+            result = self.host.import_blueprint(path)
+            if result.get("ok"):
+                self._append_chat_output(
+                    f"<b>Blueprint imported:</b> {result['name']} (<code>{result['blueprint_id']}</code>)<br>"
+                    f"Category: {result['category']} | Steps: {result['steps']}"
+                )
+            else:
+                self._append_chat_output(f"Import failed: {result.get('error', 'Unknown error')}")
+        except Exception as e:
+            self._append_chat_output(f"Import error: {e}")
+    
+    def _export_blueprint(self, blueprint_id: str, path: str | None) -> None:
+        output_path = path or f"{blueprint_id}.bp.json"
+        result = self.host.export_blueprint(blueprint_id, path)
+        if result.get("ok"):
+            self._append_chat_output(f"Blueprint exported to <code>{result['path']}</code>")
+        else:
+            self._append_chat_output(f"Export failed: {result.get('error', 'Unknown error')}")
+    
+    def _run_blueprint(self, blueprint_id: str, vars_str: str) -> None:
+        # Parse variables
+        variables = {}
+        if vars_str:
+            for pair in vars_str.split():
+                if "=" in pair:
+                    k, v = pair.split("=", 1)
+                    variables[k] = v
+        
+        self._append_chat_output(f"Running blueprint <code>{blueprint_id}</code>...")
+        
+        # Run in background
+        def run_blueprint():
+            result = self.host.execute_blueprint(blueprint_id, variables=variables, dry_run=False)
+            if result.get("ok"):
+                self._append_chat_output(
+                    f"<b>Blueprint completed:</b> {result['steps_executed']} steps executed<br>"
+                    f"Session: <code>{result['session_id']}</code>"
+                )
+            else:
+                self._append_chat_output(
+                    f"<b>Blueprint failed:</b> {result.get('error', 'Unknown error')}<br>"
+                    f"Failed at step: {result.get('results', [])[-1].get('name', 'unknown') if result.get('results') else 'unknown'}"
+                )
+        
+        # Run in thread
+        from threading import Thread
+        Thread(target=run_blueprint, daemon=True).start()
+    
+    def _append_chat_output(self, html: str) -> None:
+        """Append HTML output to chat."""
+        self._streaming_reply += f"\n{html}\n"
+        self.chat_output.setHtml(_render_transcript(self._stream_base_messages, self._streaming_reply))
+
     def _cleanup_chat_thread(self) -> None:
         if self._chat_worker is not None:
             self._chat_worker.deleteLater()
@@ -3678,11 +4050,37 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
         if self._chat_thread is not None:
             self._chat_thread.quit()
         QMessageBox.critical(self, self.host.profile.desktop_title, message or "The chat stream failed.")
+        self._voice_processor.stop_listening()
 
     def _on_chat_finished(self, session_id: str) -> None:
         self.current_session_id = session_id or self.current_session_id
         self.refresh_from_runtime(select_session_id=self.current_session_id)
         self.tabs.setCurrentIndex(0)
+        self._voice_processor.stop_listening()
+
+    def _on_voice_listening_start(self) -> None:
+        if hasattr(self, '_voice_status_label'):
+            try:
+                self._voice_status_label.setText("🎤 Listening...")
+            except Exception:
+                pass
+
+    def _on_voice_listening_end(self) -> None:
+        if hasattr(self, '_voice_status_label'):
+            try:
+                self._voice_status_label.setText("🔇 Idle")
+            except Exception:
+                pass
+
+    def _on_voice_error(self, message: str) -> None:
+        if hasattr(self, '_voice_status_label'):
+            try:
+                self._voice_status_label.setText(f"❌ {message[:50]}")
+            except Exception:
+                pass
+
+    def _on_voice_command_result(self, receipt: CommandReceipt) -> None:
+        pass
 
     def _activate_soft_kill(self) -> None:
         reason = self.kill_reason.text().strip() or "Manual desktop containment request."
@@ -3746,6 +4144,136 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
         payload = self.host.mystic_read(session_id=self.current_session_id, input_text=text)
         self.mystic_output.setPlainText(_pretty_json(payload))
         self.refresh_from_runtime(select_session_id=self.current_session_id)
+
+    def _drag_enter_event(self, event) -> None:
+        """Handle drag enter event for blueprint file import."""
+        if event.mimeData().hasUrls():
+            urls = event.mimeData().urls()
+            for url in urls:
+                if url.toLocalFile().endswith(('.bp.json', '.arisbp')):
+                    event.acceptProposedAction()
+                    self.blueprint_drop_zone.setProperty("dropActive", True)
+                    self.blueprint_drop_zone.style().unpolish(self.blueprint_drop_zone)
+                    self.blueprint_drop_zone.style().polish(self.blueprint_drop_zone)
+                    return
+        event.ignore()
+
+    def _drop_event(self, event) -> None:
+        """Handle drop event for blueprint file import."""
+        if event.mimeData().hasUrls():
+            urls = event.mimeData().urls()
+            for url in urls:
+                local_path = url.toLocalFile()
+                if local_path.endswith(('.bp.json', '.arisbp')):
+                    event.acceptProposedAction()
+                    self.blueprint_drop_zone.setProperty("dropActive", False)
+                    self.blueprint_drop_zone.style().unpolish(self.blueprint_drop_zone)
+                    self.blueprint_drop_zone.style().polish(self.blueprint_drop_zone)
+                    
+                    result = self.host.import_blueprint(local_path)
+                    if result.get("ok"):
+                        self._append_chat_output(
+                            f"<b>Blueprint imported:</b> {result['name']} (<code>{result['blueprint_id']}</code>)<br>"
+                            f"Category: {result['category']} | Steps: {result['steps']}"
+                        )
+                        self._refresh_blueprint_list()
+                    else:
+                        self._append_chat_output(f"Import failed: {result.get('error', 'Unknown error')}")
+                    return
+        event.ignore()
+        self.blueprint_drop_zone.setProperty("dropActive", False)
+        self.blueprint_drop_zone.style().unpolish(self.blueprint_drop_zone)
+        self.blueprint_drop_zone.style().polish(self.blueprint_drop_zone)
+
+    def _append_chat_output(self, html: str) -> None:
+        """Append HTML output to chat."""
+        self._streaming_reply += f"\n{html}\n"
+        self.chat_output.setHtml(_render_transcript(self._stream_base_messages, self._streaming_reply))
+
+    # Voice command helper methods
+    def _pause_current_task(self) -> None:
+        """Pause the current running task."""
+        if self._active_run_task_id:
+            from .voice import speak
+            speak("Task paused.", "pause")
+            # Note: Actual pause would require worker thread control
+
+    def _resume_current_task(self) -> None:
+        """Resume the current paused task."""
+        if self._active_run_task_id:
+            from .voice import speak
+            speak("Resuming task.", "resume")
+            # Note: Actual resume would require worker thread control
+
+    def _repeat_last_response(self) -> None:
+        """Repeat the last ARIS response via TTS."""
+        if self._streaming_reply:
+            from .voice import speak
+            # Extract just the last assistant message
+            lines = self._streaming_reply.strip().split('\n')
+            for line in reversed(lines):
+                if line.strip() and not line.startswith('[Now]'):
+                    speak(line.strip(), "repeat")
+                    break
+
+    def _announce_status(self) -> None:
+        """Announce current status via TTS."""
+        from .voice import speak
+        if self.snapshot:
+            health = self.snapshot.health.get("status", "unknown")
+            mode = self.snapshot.config.get("mode", "unknown")
+            speak(f"System health: {health}. Mode: {mode}.", "status")
+        else:
+            speak("Status not available.", "status")
+
+    def _approve_pending(self) -> None:
+        """Approve pending approval if any."""
+        if self.snapshot and self.snapshot.workspace_surface.get("pending_approvals"):
+            approval = self.snapshot.workspace_surface["pending_approvals"][0]
+            approval_id = approval.get("id", "")
+            if approval_id:
+                self._start_approval_resolution(approval_id=approval_id, approved=True)
+
+    def _reject_pending(self) -> None:
+        """Reject pending approval if any."""
+        if self.snapshot and self.snapshot.workspace_surface.get("pending_approvals"):
+            approval = self.snapshot.workspace_surface["pending_approvals"][0]
+            approval_id = approval.get("id", "")
+            if approval_id:
+                self._start_approval_resolution(approval_id=approval_id, approved=False)
+
+    def _run_selected_task(self) -> None:
+        """Run the currently selected task."""
+        task_id = self._selected_workspace_task_id
+        if task_id:
+            self._run_task_entry(self._get_task_by_id(task_id))
+
+    def _inspect_active_run(self) -> None:
+        """Open the inspect panel for the active run."""
+        if hasattr(self, '_inspect_active_run_action'):
+            self._inspect_active_run_action()
+
+    def _switch_brain_mode(self, text: str) -> None:
+        """Switch brain mode based on voice command."""
+        text_lower = text.lower()
+        modes = ["Chat", "Build", "Evaluate", "Deep", "Agent"]
+        for mode in modes:
+            if mode.lower() in text_lower:
+                if hasattr(self, 'brain_mode'):
+                    index = self.brain_mode.findText(mode)
+                    if index >= 0:
+                        self.brain_mode.setCurrentIndex(index)
+                        from .voice import speak
+                        speak(f"Switched to {mode} mode.", "brain_switch")
+                break
+
+    def _get_task_by_id(self, task_id: str) -> dict[str, Any] | None:
+        """Find a task by ID in the current snapshot."""
+        if self.snapshot:
+            for task in self.snapshot.workspace_surface.get("tasks", []):
+                if task.get("id") == task_id:
+                    return task
+        return None
 
 
 def launch_desktop_app(host: ArisRuntimeDesktopHost) -> int:

@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 import difflib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 import uuid
 
 from src.forge_client import LawBoundForgeClient
@@ -31,6 +31,7 @@ from .log_ingestion import (
 from .logbook import RepoLogbook
 from .memory_bank import GovernedMemoryBank
 from .shield import DecisionContext, ShieldOfTruth1001, Verdict as ShieldVerdict
+from ..engines.cep_orchestration import CEPOrchestrationService
 
 try:
     from .mystic import MysticReflectionRuntime, MysticSustainmentService
@@ -331,6 +332,7 @@ class ArisRuntime:
             else None
         )
         self._startup = self._refresh_startup_state(lockdown_on_failure=True)
+        self._cep_orchestration: Optional[CEPOrchestrationService] = None
 
     def _decision_values(self, decision: GovernanceDecision) -> dict[str, Any]:
         return {
@@ -363,6 +365,13 @@ class ArisRuntime:
             "shield": decision.shield,
             "mystic_signal": decision.mystic_signal,
         }
+
+    @property
+    def cep_orchestration(self) -> "CEPOrchestrationService":
+        """Lazy-loaded CEP-1 orchestration service."""
+        if self._cep_orchestration is None:
+            self._cep_orchestration = CEPOrchestrationService.create_for_runtime(self)
+        return self._cep_orchestration
 
     def _collect_startup_blockers(self, *, integrity: dict[str, Any]) -> list[str]:
         blockers: list[str] = []
@@ -471,6 +480,19 @@ class ArisRuntime:
         }
         self._startup = state
         return state
+
+    def ensure_session(self, *, title_seed: str | None = None) -> str:
+        """Create a new session or return existing session ID."""
+        import uuid
+        session_id = str(uuid.uuid4())
+        if hasattr(self, 'activity_path'):
+            self._record_activity({
+                "kind": "session_created",
+                "action_type": "session_create",
+                "session_id": session_id,
+                "title_seed": title_seed or "session",
+            })
+        return session_id
 
     def _record_activity(self, event: dict[str, Any]) -> None:
         payload = {"recorded_at": _utc_now(), **_serialize(event)}
@@ -718,7 +740,7 @@ class ArisRuntime:
         return result
 
     def _current_integrity(self, *, trigger_lockdown: bool) -> dict[str, Any]:
-        snapshot = self.integrity.verify_or_initialize(reseal=False)
+        snapshot = self.integrity.verify_or_initialize(reseal=trigger_lockdown)
         if trigger_lockdown and not snapshot.get("ok", False):
             self.kill_switch.lockdown(
                 reason="protected_component_tamper_detected",
@@ -1026,6 +1048,7 @@ class ArisRuntime:
         normalized["bypass_requested"] = action.get("bypass_requested", False)
         normalized["authority_expansion"] = action.get("authority_expansion", False)
         normalized["allow_new_file"] = action.get("allow_new_file", False)
+        normalized["law_context_bound"] = action.get("law_context_bound", True)
         normalized["repo_changed"] = self._is_repo_changed_action(normalized)
         normalized["protected_mutation"] = self._touches_protected_runtime(
             target=normalized["target"],
@@ -2040,6 +2063,7 @@ class ArisRuntime:
             return decision
 
         forge_eval_results = self._run_forge_eval(normalized) if requires_forge_eval else []
+        print(f"DEBUG: forge_eval_results = {forge_eval_results}, requires_forge_eval = {requires_forge_eval}")
         shield_passed = bool(shield.get("passed", False)) or (
             bool(shield.get("requires_escalation"))
             and requires_forge_eval
@@ -2920,3 +2944,185 @@ class ArisRuntime:
             "observed": True,
             "bounded": True,
         }
+
+    # ============================================================
+    # Blueprint Management
+    # ============================================================
+
+    def import_blueprint(self, path: Path | str, *, session_id: str | None = None) -> dict[str, Any]:
+        """Import a blueprint from file."""
+        from evolving_ai.aris_runtime.blueprints import Blueprint, BlueprintFormat
+        path = Path(path).resolve()
+        if not path.exists():
+            raise FileNotFoundError(f"Blueprint not found: {path}")
+        
+        blueprint = Blueprint.load(path, BlueprintFormat.JSON)
+        
+        # Store in memory bank for tracking
+        if self.memory_bank:
+            self.memory_bank.admit_entry(
+                layer="operational",
+                entry_type="blueprint_import",
+                source="aris_runtime_desktop",
+                summary=f"Imported blueprint: {blueprint.metadata.name}",
+                content=blueprint.to_json(),
+                tags=("blueprint", blueprint.metadata.id, "import"),
+                status="active",
+                entry_id=f"blueprint-import-{blueprint.metadata.id}",
+            )
+        
+        return {
+            "ok": True,
+            "blueprint_id": blueprint.metadata.id,
+            "name": blueprint.metadata.name,
+            "steps": len(blueprint.steps),
+            "category": blueprint.metadata.category,
+        }
+
+    def export_blueprint(self, blueprint_id: str, output_path: Path | str, *, format: str = "json") -> dict[str, Any]:
+        """Export a blueprint to file."""
+        from evolving_ai.aris_runtime.blueprints import Blueprint, BlueprintFormat, BLUEPRINT_TEMPLATES, get_template
+        
+        # Try to get from templates first
+        blueprint = get_template(blueprint_id)
+        if blueprint is None:
+            # Could also check memory bank for user-created blueprints
+            return {"ok": False, "error": f"Blueprint not found: {blueprint_id}"}
+        
+        format_enum = BlueprintFormat.JSON if format == "json" else BlueprintFormat.ARISBP
+        output_path = Path(output_path).resolve()
+        blueprint.save(output_path, format_enum)
+        
+        return {
+            "ok": True,
+            "path": str(output_path),
+            "blueprint_id": blueprint.metadata.id,
+        }
+
+    def list_blueprints(self, *, category: str | None = None) -> list[dict[str, Any]]:
+        """List available blueprints."""
+        from evolving_ai.aris_runtime.blueprints import list_templates
+        
+        blueprints = []
+        for bp in list_templates(category=category):
+            bp_dict = bp.to_dict()
+            blueprints.append({
+                "id": bp.metadata.id,
+                "name": bp.metadata.name,
+                "description": bp.metadata.description,
+                "category": bp.metadata.category,
+                "steps": len(bp.steps),
+                "tags": bp.metadata.tags,
+            })
+        
+        return blueprints
+
+    def execute_blueprint(
+        self,
+        blueprint_id: str,
+        *,
+        session_id: str | None = None,
+        variables: dict[str, Any] | None = None,
+        dry_run: bool = False,
+    ) -> dict[str, Any]:
+        """Execute a blueprint by running its steps through the governance pipeline."""
+        from evolving_ai.aris_runtime.blueprints import get_template
+        
+        blueprint = get_template(blueprint_id)
+        if blueprint is None:
+            return {"ok": False, "error": f"Blueprint not found: {blueprint_id}"}
+        
+        # Merge variables
+        merged_vars = {**blueprint.variables, **(variables or {})}
+        
+        # Create session if needed
+        if session_id is None:
+            session_id = self.ensure_session()
+        
+        results = []
+        for i, step in enumerate(blueprint.steps):
+            # Apply variable substitution
+            step_purpose = step.description
+            for var_name, var_value in merged_vars.items():
+                step_purpose = step_purpose.replace(f"{{{{{var_name}}}}}", str(var_value))
+            
+            # Build action from step
+            action = {
+                "action_type": step.action_type,
+                "purpose": step_purpose,
+                "session_id": session_id,
+                "target": step.parameters.get("path", step.parameters.get("target", "")),
+                "patch": step.parameters.get("patch", ""),
+                "command": step.parameters.get("command", ""),
+                "source": "blueprint",
+                "protected_mutation": step.risk_level in ("high", "critical"),
+                "authority_expansion": False,
+                "action_type": step.action_type,
+                "action_id": f"{blueprint_id}-{step.id}",
+            }
+            
+            # Convert content parameter to patch for file_write actions
+            if step.action_type == "file_write" and "content" in step.parameters:
+                target = step.parameters.get("path", step.parameters.get("target", ""))
+                content = step.parameters.get("content", "")
+                if target and content:
+                    action["patch"] = _build_unified_diff(target, "", content)
+            
+            # Convert command parameter to list if it's a string
+            if "command" in step.parameters and isinstance(step.parameters["command"], str):
+                action["command"] = [step.parameters["command"]]
+            elif "command" in step.parameters and isinstance(step.parameters["command"], list):
+                action["command"] = step.parameters["command"]
+            
+            # Handle code parameter
+            if "code" in step.parameters:
+                action["code"] = step.parameters["code"]
+            
+            if dry_run:
+                results.append({
+                    "step_id": step.id,
+                    "name": step.name,
+                    "action_type": step.action_type,
+                    "dry_run": True,
+                    "would_execute": True,
+                })
+                continue
+            
+            # Execute through governance
+            decision = self.review_action(action)
+            
+            results.append({
+                "step_id": step.id,
+                "name": step.name,
+                "action_type": step.action_type,
+                "allowed": decision.allowed,
+                "disposition": decision.disposition,
+                "blueprint_trace": decision.blueprint_trace,
+            })
+            
+            if not decision.allowed:
+                return {
+                    "ok": False,
+                    "error": f"Step {step.id} ({step.name}) blocked: {decision.disposition}",
+                    "results": results,
+                }
+        
+        return {
+            "ok": True,
+            "blueprint_id": blueprint_id,
+            "session_id": session_id,
+            "steps_executed": len(results),
+            "results": results,
+        }
+
+    def render_blueprint_trace(self, blueprint_trace: dict[str, Any]) -> str:
+        """Render blueprint trace as formatted text."""
+        lines = []
+        lines.append(f"Blueprint: {blueprint_trace.get('blueprint_id', 'unknown')}")
+        lines.append(f"Created: {blueprint_trace.get('created_at', 'unknown')}")
+        lines.append(f"Summary: {blueprint_trace.get('summary', 'No summary')}")
+        lines.append("")
+        lines.append("Stages:")
+        for i, stage in enumerate(blueprint_trace.get("stages", []), 1):
+            lines.append(f"  {i}. {stage.get('stage', 'unknown').title()}: {stage.get('detail', '')}")
+        return "\n".join(lines)

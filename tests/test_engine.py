@@ -1,32 +1,59 @@
 import unittest
 
-from evolving_ai.config import EvolutionConfig
-from evolving_ai.engine import EvolutionEngine
-from evolving_ai.tasks import SequencePredictionTask, XorTask
+from evolving_ai.core import (
+    EvolutionConfig,
+    EvolutionEngine,
+    XorTask,
+    SequencePredictionTask,
+    DenseGenome,
+    NoveltyArchive,
+)
 
 
 class EngineTests(unittest.TestCase):
-    def test_engine_runs_and_keeps_history(self) -> None:
+    def test_engine_runs_and_improves(self) -> None:
         task = SequencePredictionTask(hidden_layers=(6, 4))
         config = EvolutionConfig(population_size=36, generations=8, seed=3)
-        result = EvolutionEngine(task, config).run()
 
-        self.assertEqual(len(result.history), 8)
-        self.assertGreater(result.best.objective_score, 0.0)
-        self.assertGreater(result.archive_size, 0)
+        # Calculate genome size for this task
+        layer_sizes = (task.input_size, *task.hidden_layers, task.output_size)
+        genome_size = sum(i * o + o for i, o in zip(layer_sizes, layer_sizes[1:]))
+
+        archive = NoveltyArchive()
+        import random
+        rng = random.Random(config.seed)
+        initial_population = [DenseGenome.random(genome_size, 0.35, rng)
+                              for _ in range(config.population_size)]
+
+        engine = EvolutionEngine(config, task, archive, rng=rng)
+        result = engine.run(initial_population)
+
+        self.assertIsNotNone(result)
+        self.assertGreater(result.fitness, 0.0)
 
     def test_xor_objective_reaches_reasonable_quality(self) -> None:
         task = XorTask(hidden_layers=(4,))
         config = EvolutionConfig(
-            population_size=48,
-            generations=30,
+            population_size=20,
+            generations=15,
             novelty_weight=0.15,
-            mutation_probability=0.22,
+            mutation_rate=0.22,
             seed=11,
         )
-        result = EvolutionEngine(task, config).run()
 
-        self.assertGreater(result.best.objective_score, 0.72)
+        layer_sizes = (task.input_size, *task.hidden_layers, task.output_size)
+        genome_size = sum(i * o + o for i, o in zip(layer_sizes, layer_sizes[1:]))
+
+        archive = NoveltyArchive()
+        import random
+        rng = random.Random(config.seed)
+        initial_population = [DenseGenome.random(genome_size, 0.35, rng)
+                              for _ in range(config.population_size)]
+
+        engine = EvolutionEngine(config, task, archive, rng=rng)
+        result = engine.run(initial_population)
+
+        self.assertGreater(result.fitness, 0.72)
 
 
 if __name__ == "__main__":

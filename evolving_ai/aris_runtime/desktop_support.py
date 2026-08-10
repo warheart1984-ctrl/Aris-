@@ -1704,6 +1704,16 @@ class ArisRuntimeDesktopHost:
     def task_prompt_context(self, task_id: str) -> list[str]:
         return self.bridge_intelligence.task_memory.prompt_context(task_id)
 
+    def list_blueprints(self) -> list[dict[str, Any]]:
+        """List available blueprints from the ARIS runtime."""
+        aris = getattr(self.service, "aris", None)
+        if aris is None:
+            return []
+        try:
+            return aris.list_blueprints()
+        except Exception:
+            return []
+
     def _dependency_ids_pending(
         self,
         item: dict[str, Any],

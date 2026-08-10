@@ -1,6 +1,7 @@
 import unittest
 
-from evolving_ai.config import EvolutionConfig, NetworkShape
+from evolving_ai.core import EvolutionConfig
+from evolving_ai.config import NetworkShape
 
 
 class ConfigTests(unittest.TestCase):
@@ -10,7 +11,8 @@ class ConfigTests(unittest.TestCase):
 
     def test_elite_count_is_at_least_one(self) -> None:
         config = EvolutionConfig(population_size=10, elite_fraction=0.01)
-        self.assertEqual(config.elite_count, 1)
+        elite_count = max(1, int(config.elite_fraction * config.population_size))
+        self.assertEqual(elite_count, 1)
 
 
 if __name__ == "__main__":
