@@ -10,6 +10,7 @@ from PySide6.QtGui import QDesktopServices, QFont
 from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
+    QDialog,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -21,6 +22,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPlainTextEdit,
+    QProgressBar,
     QPushButton,
     QSplitter,
     QTabWidget,
@@ -256,6 +258,162 @@ class SnapshotWorker(QObject):
         self.ready.emit(snapshot)
 
 
+class SpeakerEnrollmentDialog(QDialog):
+    """Dialog for enrolling a new speaker for voice commands."""
+
+    def __init__(self, voice_processor: CanonicalVoiceProcessor, parent=None):
+        super().__init__(parent)
+        self.voice_processor = voice_processor
+        self.setWindowTitle("Speaker Enrollment")
+        self.setModal(True)
+        self.resize(400, 350)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(16)
+        layout.setContentsMargins(24, 24, 24, 24)
+
+        # Title
+        title = QLabel("Enroll New Speaker")
+        title.setObjectName("heroTitle")
+        layout.addWidget(title)
+
+        subtitle = QLabel("Record 3 voice samples to create a voice profile for speaker verification.")
+        subtitle.setWordWrap(True)
+        subtitle.setObjectName("heroSubtitle")
+        layout.addWidget(subtitle)
+
+        # Speaker ID
+        id_layout = QVBoxLayout()
+        id_layout.addWidget(QLabel("Speaker ID:"))
+        self.speaker_id_edit = QLineEdit()
+        self.speaker_id_edit.setPlaceholderText("e.g., operator_1")
+        id_layout.addWidget(self.speaker_id_edit)
+        layout.addLayout(id_layout)
+
+        # Name
+        name_layout = QVBoxLayout()
+        name_layout.addWidget(QLabel("Display Name:"))
+        self.name_edit = QLineEdit()
+        self.name_edit.setPlaceholderText("e.g., Primary Operator")
+        name_layout.addWidget(self.name_edit)
+        layout.addLayout(name_layout)
+
+        # Privileges
+        priv_layout = QVBoxLayout()
+        priv_layout.addWidget(QLabel("Privileges:"))
+        self.priv_combo = QComboBox()
+        self.priv_combo.addItems(["operator", "admin", "governance", "operator,admin", "admin,governance"])
+        self.priv_combo.setEditable(True)
+        priv_layout.addWidget(self.priv_combo)
+        layout.addLayout(priv_layout)
+
+        # Progress
+        self.progress_label = QLabel("Samples: 0/3")
+        self.progress_label.setObjectName("statusValue")
+        layout.addWidget(self.progress_label)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 3)
+        self.progress_bar.setValue(0)
+        layout.addWidget(self.progress_bar)
+
+        # Record button
+        self.record_button = QPushButton("🎙️ Record Sample")
+        self.record_button.setFixedHeight(44)
+        self.record_button.clicked.connect(self._record_sample)
+        layout.addWidget(self.record_button)
+
+        # Status
+        self.status_label = QLabel("Ready to record")
+        self.status_label.setObjectName("railInfo")
+        self.status_label.setWordWrap(True)
+        layout.addWidget(self.status_label)
+
+        # Buttons
+        button_row = QHBoxLayout()
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.clicked.connect(self.reject)
+        self.done_button = QPushButton("Complete Enrollment")
+        self.done_button.setEnabled(False)
+        self.done_button.clicked.connect(self._complete_enrollment)
+        button_row.addStretch()
+        button_row.addWidget(self.cancel_button)
+        button_row.addWidget(self.done_button)
+        layout.addLayout(button_row)
+
+        self._sample_count = 0
+        self._required_samples = 3
+
+    def _record_sample(self) -> None:
+        """Record a voice sample using the voice processor's microphone."""
+        if not self.voice_processor or not self.voice_processor._recognizer or not self.voice_processor._microphone:
+            self.status_label.setText("❌ Microphone not available")
+            return
+
+        self.record_button.setEnabled(False)
+        self.record_button.setText("🎙️ Recording...")
+        self.status_label.setText("Recording... speak now")
+
+        try:
+            with self.voice_processor._microphone as source:
+                self.voice_processor._recognizer.adjust_for_ambient_noise(source, duration=0.5)
+                audio = self.voice_processor._recognizer.listen(source, timeout=10, phrase_time_limit=5)
+
+            # Convert to bytes
+            audio_data = audio.get_wav_data()
+
+            # Add to enrollment
+            if not hasattr(self.voice_processor, 'voice_auth') or not self.voice_processor.voice_auth:
+                self.status_label.setText("❌ Voice auth not initialized")
+                self.record_button.setEnabled(True)
+                self.record_button.setText("🎙️ Record Sample")
+                return
+
+            voice_auth = self.voice_processor.voice_auth
+            if not voice_auth._enrollment_active:
+                speaker_id = self.speaker_id_edit.text().strip() or "operator_1"
+                name = self.name_edit.text().strip() or "Operator"
+                privileges = [p.strip() for p in self.priv_combo.currentText().split(",")]
+                voice_auth.start_enrollment(speaker_id, name, privileges)
+
+            count, required = voice_auth.add_enrollment_sample(audio_data)
+            self._sample_count = count
+            self.progress_bar.setValue(count)
+            self.progress_label.setText(f"Samples: {count}/{required}")
+
+            if count >= required:
+                self.record_button.setEnabled(False)
+                self.record_button.setText("✅ Done Recording")
+                self.done_button.setEnabled(True)
+                self.status_label.setText(f"✅ {count} samples recorded. Click Complete Enrollment.")
+            else:
+                self.record_button.setEnabled(True)
+                self.record_button.setText("🎙️ Record Sample")
+                self.status_label.setText(f"Sample {count} recorded. Need {required - count} more.")
+
+        except Exception as e:
+            self.status_label.setText(f"❌ Recording failed: {e}")
+            self.record_button.setEnabled(True)
+            self.record_button.setText("🎙️ Record Sample")
+
+    def _complete_enrollment(self) -> None:
+        """Complete the enrollment process."""
+        if not hasattr(self.voice_processor, 'voice_auth') or not self.voice_processor.voice_auth:
+            self.status_label.setText("❌ Voice auth not initialized")
+            return
+
+        voice_auth = self.voice_processor.voice_auth
+        profile = voice_auth.complete_enrollment()
+
+        if profile:
+            self.status_label.setText(f"✅ Enrolled: {profile.name} ({profile.speaker_id})")
+            QMessageBox.information(self, "Enrollment Complete", f"Speaker '{profile.name}' enrolled successfully with {profile.sample_count} samples.")
+            self.accept()
+        else:
+            self.status_label.setText("❌ Enrollment failed")
+            QMessageBox.warning(self, "Enrollment Failed", "Could not complete enrollment. Please try again.")
+
+
 class ArisRuntimeDesktopWindow(QMainWindow):
     def __init__(self, host: ArisRuntimeDesktopHost) -> None:
         super().__init__()
@@ -362,11 +520,17 @@ class ArisRuntimeDesktopWindow(QMainWindow):
         self._voice_toggle_button.setCheckable(True)
         self._voice_toggle_button.setFixedSize(32, 32)
         self._voice_toggle_button.clicked.connect(self._toggle_voice_listening)
+        self._voice_enroll_button = QPushButton("👤")
+        self._voice_enroll_button.setObjectName("voiceEnroll")
+        self._voice_enroll_button.setToolTip("Enroll new speaker for voice commands")
+        self._voice_enroll_button.setFixedSize(32, 32)
+        self._voice_enroll_button.clicked.connect(self._open_speaker_enrollment)
         badge_row.addWidget(self.health_badge)
         badge_row.addWidget(self.mode_badge)
         badge_row.addWidget(self.kill_badge)
         badge_row.addWidget(self._voice_status_label)
         badge_row.addWidget(self._voice_toggle_button)
+        badge_row.addWidget(self._voice_enroll_button)
 
         action_row = QHBoxLayout()
         action_row.setSpacing(8)
@@ -4121,6 +4285,11 @@ This window is a declared host over the existing ARIS V2 service. UL remains the
                 self._voice_status_label.setText("🔇 Idle")
             if hasattr(self, '_voice_toggle_button'):
                 self._voice_toggle_button.setText("🎤")
+
+    def _open_speaker_enrollment(self) -> None:
+        """Open speaker enrollment dialog."""
+        dialog = SpeakerEnrollmentDialog(self._voice_processor, self)
+        dialog.exec()
 
     def _activate_soft_kill(self) -> None:
         reason = self.kill_reason.text().strip() or "Manual desktop containment request."
