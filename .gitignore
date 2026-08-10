@@ -1,25 +1,237 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
 .pytest_cache/
-*.pyc
-*.pyo
-*.pyd
+pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.env.local
+.env.*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.code-workspace
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Project-specific
 .forge_chat/
 .runtime/
-build/
-dist/
 release/
-.vscode/
-Code/
-*.code-workspace
-*.err.log
-*.out.log
-*.egg-info/
-*.db
-*.log
 results/
+conformance_output*/
+batch_process_repos.py
+check_*.py
+run_*.py
+show_*.py
+fix_*.py
+test_*.py
+test_*.json
+test_*.yaml
+test_config*.json
+test_config*.yaml
+deep_trace.py
+deep_trace.py
+fix_json.py
+*.spec
+ARIS V2.spec
 
-# CoGOS release artifacts
-AI OS Trixie Build/output/*.iso
-AI OS Trixie Build/output/*.img
-AI OS Trixie Build/work/
-AI OS Trixie Build/**/__pycache__/
+# Legacy/deprecated
+*_legacy.py
+*_archive.py
+
+# Internal docs (keep in repo but separate)
+CONSTITUTIONAL_EXTRACTION.md
+DAR_Z_CORE_CONSTITUTION.md
+PHASE2_100_IMPROVEMENTS.md
+
+# opencode
+.opencode/
+
+# Large data/binary
+*.iso
+*.img
+*.db
+*.sqlite
+
+# Vendor
+archive/vendor/
+AI OS Trixie Build/
+20468376/
+Grok _ X_files/
+e8 files/
+New folder (2)/
+ptemp/
+tmp/
+mnt/
+blobs/
+infinity/
+assets/
+docs/
+manifests/
+specifications/
+standards/
+ratifications/
+schemas/
+repo-review/
+project-infi/
+fae/
+cre/
+CIEMS/
+CIH/
+ceip-temporal-standards/
+nova/
+mythar/
+Math/
+persistence-memory/
+npcme-standards/
+examples/
+earthos/
+LineageStudio/
+Mandala Rendering Software/
+Rag Pipeline/
+Sovereign-X-Constitutional-Compute/
+Sovereign-X-Constitutional-Compute.git/
+windows-skill/
+_temp/
+releases/
+20468376/
