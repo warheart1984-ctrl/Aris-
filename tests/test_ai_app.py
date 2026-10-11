@@ -3574,6 +3574,20 @@ class PythonSandboxTests(unittest.TestCase):
 
 
 class DockerSandboxTests(unittest.TestCase):
+    def test_docker_status_reports_missing_cli_instead_of_raising(self) -> None:
+        # Stock macOS runners have no docker binary; the desktop snapshot must not crash.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = DockerSessionContainerManager(
+                WorkspaceManager(Path(temp_dir)),
+                DockerSandboxConfig(backend_preference="auto"),
+            )
+            with patch("evolving_ai.app.docker_workspace.subprocess.run", side_effect=FileNotFoundError("docker")):
+                info = manager.status("demo")
+
+        self.assertFalse(info.exists)
+        self.assertEqual(info.status, "missing")
+        self.assertIn("Docker CLI is not installed", info.detail)
+
     def test_auto_backend_falls_back_to_local_when_docker_unavailable(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             manager = WorkspaceManager(Path(temp_dir))
