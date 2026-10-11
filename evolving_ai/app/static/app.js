@@ -946,7 +946,7 @@ function renderArisStatus(status) {
     ["Forge Eval", status.forge_eval?.connected ? "Connected" : "Disconnected"],
     [
       "Evolving Engine",
-      status.evolving_engine?.active ? "Active" : demoMode.active ? "Stripped in demo" : "Inactive",
+      status.evolving_engine?.active ? "Active" : runtimeMode.active ? "Stripped in demo" : "Inactive",
     ],
     ["Hall of Discard", status.hall_of_discard?.active ? "Active" : "Unavailable"],
     ["Hall of Shame", status.hall_of_shame?.active ? "Active" : "Unavailable"],

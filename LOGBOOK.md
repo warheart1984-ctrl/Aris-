@@ -2118,6 +2118,16 @@ Verification:
 Remaining risks:
 - Shell commands are gated because the doc channel parses the command string as Python and fails; the gate is incidental rather than a command-specific rule.
 
+## 2026-10-11 - Fix demoMode ReferenceError In Web UI Status Panel
+What changed:
+- `evolving_ai/app/static/app.js`: the Evolving Engine status row read `demoMode.active`, but the variable had been renamed to `runtimeMode`. It now reads `runtimeMode.active`.
+
+Why it changed:
+- Whenever the evolving engine was inactive, page load threw `ReferenceError: demoMode is not defined` and the status panel did not render.
+
+Verification:
+- `node --check` passes. In Chromium, the page loads with no errors and the status panel renders (before the fix: `demoMode is not defined`, no status rows).
+
 ## 2026-10-11 - Desktop Smokecheck Without Docker CLI
 What changed:
 - `evolving_ai/app/docker_workspace.py`: `DockerSessionContainerManager._run` returns a failed result (exit 127, "Docker CLI is not installed.") when the `docker` binary is missing, instead of raising `FileNotFoundError`. `status`, `ensure_session` and `reset_session` already handle a non-zero exit.
