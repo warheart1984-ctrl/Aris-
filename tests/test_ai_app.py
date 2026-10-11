@@ -21,7 +21,7 @@ from evolving_ai.app.attachments import Attachment
 from evolving_ai.app.config import AppConfig
 from evolving_ai.app.agent_runs import AgentRunStore
 from evolving_ai.app.docker_workspace import DockerSessionContainerManager
-from evolving_ai.app.execution import SandboxPolicy, WorkspaceManager
+from evolving_ai.app.execution import PythonExecutor, SandboxPolicy, WorkspaceManager
 from evolving_ai.app.execution_backends import (
     CommandExecutionResult,
     DockerSandboxConfig,
@@ -3508,6 +3508,69 @@ class ToolRouterTests(unittest.IsolatedAsyncioTestCase):
         names = [result.name for result in results]
         self.assertIn("web_search", names)
         self.assertIn("web_page", names)
+
+
+class PythonSandboxTests(unittest.TestCase):
+    """Pins the local Python sandbox directly, without governance in front of it.
+
+    The pathlib case and the escape cases live together so a change to the import hook
+    cannot fix one side while silently breaking the other.
+    """
+
+    def _execute(self, code: str):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        manager = WorkspaceManager(Path(temp_dir.name) / "workspaces")
+        executor = PythonExecutor(manager, 5, policy=SandboxPolicy(timeout_seconds=5))
+        return executor.execute(session_id="pinned", code=code), Path(temp_dir.name)
+
+    def test_user_code_can_use_pathlib(self) -> None:
+        # On Python 3.12+, Path() imports ntpath lazily; the import hook once re-entered
+        # itself on that import and crashed with RecursionError.
+        result, _ = self._execute(
+            "from pathlib import Path\n"
+            "target = Path('notes') / 'note.txt'\n"
+            "target.parent.mkdir(exist_ok=True)\n"
+            "target.write_text('hello sandbox', encoding='utf-8')\n"
+            "print(target.read_text(encoding='utf-8'), target.exists(), target.name)\n"
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "hello sandbox True note.txt")
+        self.assertNotIn("RecursionError", result.stderr)
+
+    def test_escape_attempts_stay_blocked(self) -> None:
+        cases = {
+            "import os": "import os\nprint(os.getcwd())\n",
+            "import shutil": "import shutil\n",
+            "import subprocess": "import subprocess\n",
+            "direct ntpath import": "import ntpath\n",
+            "direct posixpath import": "import posixpath\n",
+            "os.system via pathlib": "import pathlib\npathlib.os.system('echo ESCAPED')\n",
+            "os.popen via pathlib": "import pathlib\nprint(pathlib.os.popen('echo ESCAPED').read())\n",
+            "dunder import": "__import__('subprocess')\n",
+        }
+        for label, code in cases.items():
+            with self.subTest(label):
+                result, _ = self._execute(code)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertNotIn("ESCAPED", result.stdout)
+
+    def test_file_access_outside_workspace_stays_blocked(self) -> None:
+        cases = {
+            "pathlib absolute": "from pathlib import Path\nPath({target!r}).write_text('x')\n",
+            "pathlib parent": "from pathlib import Path\nPath('..', '..', 'escaped.txt').write_text('x')\n",
+            "open absolute": "open({target!r}, 'w').write('x')\n",
+        }
+        for label, template in cases.items():
+            with self.subTest(label):
+                temp_dir = tempfile.TemporaryDirectory()
+                self.addCleanup(temp_dir.cleanup)
+                outside = Path(temp_dir.name) / "outside.txt"
+                result, root = self._execute(template.format(target=str(outside)))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(outside.exists())
+                self.assertFalse((root / "escaped.txt").exists())
 
 
 class DockerSandboxTests(unittest.TestCase):
