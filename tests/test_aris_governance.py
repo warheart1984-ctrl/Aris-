@@ -27,7 +27,7 @@ from fastapi.testclient import TestClient
 
 from evolving_ai.app.config import AppConfig
 from evolving_ai.app.server import create_app
-from evolving_ai.aris.runtime import ArisRuntime
+from evolving_ai.aris.runtime import SHELL_GIT_LAW, ArisRuntime, _invokes_git
 from evolving_ai.aris.service import ArisChatService
 
 
@@ -794,6 +794,97 @@ class ArisServiceTests(unittest.TestCase):
         if result["returncode"] != 0:
             self.assertTrue(result["sandbox"].get("blocked"))
             self.assertTrue(result["sandbox"]["aris"]["reason"])
+
+    def _command_action(self, command: list[str]) -> dict[str, object]:
+        return {
+            "action_type": "command_execute",
+            "session_id": "alpha",
+            "purpose": f"Execute governed shell command: {' '.join(command)}",
+            "target": ".",
+            "source": "api",
+            "operator_decision": "approved",
+            "command": list(command),
+            "authorized": True,
+            "observed": True,
+            "bounded": True,
+        }
+
+    def test_shell_git_rule_refuses_git_status(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        result = service.execute_command(
+            session_id="alpha",
+            command=["git", "status"],
+            cwd=".",
+            timeout_seconds=10,
+        )
+
+        decision = result["sandbox"]["aris"]
+        self.assertEqual(result["returncode"], 126)
+        self.assertEqual(result["stdout"], "")
+        self.assertIn(SHELL_GIT_LAW["title"], result["stderr"])
+        self.assertEqual(
+            [(item["id"], item["passed"]) for item in decision["law_results"]],
+            [(SHELL_GIT_LAW["id"], False)],
+        )
+
+    def test_shell_git_rule_holds_when_parser_and_forge_eval_pass(self) -> None:
+        # The old block only held because the doc channel failed to parse "git status" as
+        # Python. Simulate a better parser and a passing Forge Eval: git must still be refused.
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        passing = [{"mode": "io_tests", "passed": True, "status_code": 200, "reason": "ok", "raw": {}}]
+
+        with patch("src.forge_eval_client.evaluate_program_against_doc_channel", return_value=[]), patch.object(
+            ArisRuntime, "_run_forge_eval", return_value=passing
+        ):
+            git_decision = service.aris.review_action(self._command_action(["git", "status"]))
+            other_decision = service.aris.review_action(self._command_action(["ls"]))
+
+        self.assertFalse(git_decision.allowed)
+        self.assertIn(SHELL_GIT_LAW["title"], git_decision.reason)
+        self.assertEqual(git_decision.law_results[0]["id"], SHELL_GIT_LAW["id"])
+        # The rule is scoped to git: the same conditions do not refuse other commands by it.
+        self.assertNotIn(SHELL_GIT_LAW["id"], [item["id"] for item in other_decision.law_results])
+
+    def test_repeated_git_refusals_do_not_escalate(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        for _ in range(5):
+            decision = service.aris.review_action(self._command_action(["git", "status"]))
+            self.assertFalse(decision.allowed)
+            self.assertIn(SHELL_GIT_LAW["title"], decision.reason)
+            self.assertIsNone(decision.hall_name)
+
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+    def test_invokes_git_matches_git_however_it_is_spelled(self) -> None:
+        for command in (
+            ["git", "status"],
+            ["git status"],
+            ["/usr/bin/git", "log"],
+            ["git.exe", "status"],
+            ["C:\\Program Files\\Git\\bin\\git.exe", "status"],
+            ["GIT", "status"],
+            ["env", "git", "status"],
+            ["env", "-i", "git", "status"],
+            ["nice", "-n", "10", "git", "status"],
+            ["sudo", "-u", "someone", "git", "status"],
+        ):
+            with self.subTest(command=command):
+                self.assertTrue(_invokes_git(command))
+        for command in (
+            ["ls"],
+            ["pytest", "-q"],
+            ["python", "-m", "pytest"],
+            ["echo", "git"],
+            ["gitk"],
+            [],
+        ):
+            with self.subTest(command=command):
+                self.assertFalse(_invokes_git(command))
 
     def test_non_git_workspace_review_does_not_route_git_probe_through_aris(self) -> None:
         service, root = _make_service()

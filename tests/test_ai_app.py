@@ -234,7 +234,7 @@ class AiAppEndpointTests(unittest.TestCase):
                     self.assertIn("event: exec_start", stream_body)
                     self.assertIn("event: exec_chunk", stream_body)
                     self.assertIn("event: exec_done", stream_body)
-                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    # git is refused by the Shell Git Denial rule before anything runs.
                     self.assertIn('"returncode": 126', stream_body)
             finally:
                 os.chdir(original_cwd)
@@ -2372,12 +2372,12 @@ class AiAppEndpointTests(unittest.TestCase):
                         json={"session_id": "scratchpad", "command": ["git", "status"]},
                     )
 
-                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    # git is refused by the Shell Git Denial rule before anything runs.
                     self.assertEqual(response.status_code, 200)
                     payload = response.json()
                     self.assertEqual(payload["returncode"], 126)
                     self.assertEqual(payload["stdout"], "")
-                    self.assertIn("Forge Eval rejected the command request.", payload["stderr"])
+                    self.assertIn("Shell Git Denial", payload["stderr"])
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()
@@ -2408,9 +2408,9 @@ class AiAppEndpointTests(unittest.TestCase):
                     self.assertIn("event: exec_start", body)
                     self.assertIn("event: exec_chunk", body)
                     self.assertIn("event: exec_done", body)
-                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    # git is refused by the Shell Git Denial rule before anything runs.
                     self.assertIn('"returncode": 126', body)
-                    self.assertIn("Forge Eval rejected the command request.", body)
+                    self.assertIn("Shell Git Denial", body)
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()

@@ -79,6 +79,41 @@ FOUNDATION_LAW = {
     ),
 }
 
+SHELL_GIT_LAW = {
+    "id": "shell_git_denied",
+    "title": "Shell Git Denial",
+    "summary": (
+        "Governed shell execution may not run git. Even read-only subcommands can execute "
+        "repository-configured programs (for example core.fsmonitor or hooks)."
+    ),
+}
+
+# Launchers that run their argument as the real command, skipped when finding the executable.
+_COMMAND_LAUNCHERS = frozenset({"env", "command", "exec", "nohup", "time", "nice", "sudo", "doas"})
+
+
+def _executable_name(token: str) -> str:
+    name = Path(str(token).replace("\\", "/")).name.lower()
+    return name[: -len(".exe")] if name.endswith(".exe") else name
+
+
+def _reads_as_git(tokens: list[str]) -> bool:
+    names = [_executable_name(token) for token in tokens]
+    if not names:
+        return False
+    if names[0] in _COMMAND_LAUNCHERS:
+        # A launcher's own options can hide where the real command starts, so any git token counts.
+        return "git" in names[1:]
+    return names[0] == "git"
+
+
+def _invokes_git(command: list[str]) -> bool:
+    as_given = [str(part) for part in command]
+    # Read it both as given (paths may contain spaces) and whitespace-split (["git status"]).
+    split = [token for part in as_given for token in part.split()]
+    return _reads_as_git(as_given) or _reads_as_git(split)
+
+
 GUARDRAILS = (
     {
         "id": "declared_purpose",
@@ -1693,6 +1728,47 @@ class ArisRuntime:
                 fingerprint="",
                 blueprint_trace=blueprint_trace,
                 law_results=[],
+                guardrails=[],
+                forge_eval=[],
+                integrity=self._startup["integrity"],
+                reentry_blocker=None,
+                kill_switch=kill_snapshot,
+                action=normalized,
+                created_at=_utc_now(),
+                mystic_signal=mystic_signal,
+            )
+            self._record_activity({**decision.payload(), "kind": "governance_review"})
+            return decision
+
+        if normalized["action_type"] == "command_execute" and _invokes_git(normalized["command"]):
+            # A standing policy refusal, not a failure: no Hall entry and no kill-switch
+            # escalation, so repeated attempts get the same answer instead of a lockdown.
+            reason = f"{SHELL_GIT_LAW['title']}: git may not run through governed shell execution."
+            decision = GovernanceDecision(
+                action_id=normalized["action_id"],
+                action_type=normalized["action_type"],
+                purpose=normalized["purpose"],
+                target=normalized["target"],
+                source=normalized["source"],
+                session_id=normalized["session_id"],
+                operator_decision=normalized["operator_decision"],
+                risky=True,
+                requires_forge_eval=False,
+                allowed=False,
+                verified=False,
+                disposition="blocked",
+                reason=reason,
+                fingerprint="",
+                blueprint_trace=self._build_blueprint_trace(normalized),
+                law_results=[
+                    {
+                        "id": SHELL_GIT_LAW["id"],
+                        "title": SHELL_GIT_LAW["title"],
+                        "passed": False,
+                        "checks": {"git_command_absent": False},
+                        "reason": reason,
+                    }
+                ],
                 guardrails=[],
                 forge_eval=[],
                 integrity=self._startup["integrity"],

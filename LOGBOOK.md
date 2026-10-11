@@ -2116,3 +2116,18 @@ Verification:
 
 Remaining risks:
 - Shell commands are gated because the doc channel parses the command string as Python and fails; the gate is incidental rather than a command-specific rule.
+
+## 2026-10-11 - Shell Git Denial Rule
+What changed:
+- Added the `shell_git_denied` rule ("Shell Git Denial") to `evolving_ai/aris/runtime.py`. `review_action` refuses any governed shell command (`command_execute`) that runs git, however it is spelled: `git`, a path such as `/usr/bin/git` or `C:\Program Files\Git\bin\git.exe`, `git.exe`, a single string like `"git status"`, or behind a launcher (`env`, `nice -n 10`, `sudo -u …`).
+- The refusal names the rule (reason and `law_results` entry). It is a standing policy refusal: no Hall entry and no kill-switch escalation, so repeated attempts get the same answer instead of a lockdown.
+- Scope is git only. Other commands keep their previous behavior, so the agent's `run_command` tool and workspace-task test commands are unaffected. Internal governed git actions such as `git_branch_create` do not go through shell execution and are unaffected.
+
+Why it changed:
+- `git status` was previously refused only because the doc channel failed to parse the command string as Python. A better parser would have silently allowed it. Even read-only git can run repository-configured programs (`core.fsmonitor`, hooks).
+- The rule is not a law in `_evaluate_laws`: any failed law makes the Shield of Truth quarantine the action, which locks ARIS down. A policy refusal must not do that.
+
+Verification:
+- New tests in `tests/test_aris_governance.py`: `git status` refused by the rule; still refused when the doc-channel parser and Forge Eval both pass; five repeated refusals leave the kill switch nominal with no Hall entry; `_invokes_git` matches every spelling above and rejects `ls`, `pytest -q`, `python -m pytest`, `echo git`, `gitk`.
+- With the rule disabled, the three rule tests fail.
+- `python -m pytest tests` on Python 3.12: 225 passed, 1 failed (Inspect panel, tracked separately).
