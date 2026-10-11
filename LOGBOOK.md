@@ -2131,3 +2131,15 @@ Verification:
 - New tests in `tests/test_aris_governance.py`: `git status` refused by the rule; still refused when the doc-channel parser and Forge Eval both pass; five repeated refusals leave the kill switch nominal with no Hall entry; `_invokes_git` matches every spelling above and rejects `ls`, `pytest -q`, `python -m pytest`, `echo git`, `gitk`.
 - With the rule disabled, the three rule tests fail.
 - `python -m pytest tests` on Python 3.12: 225 passed, 1 failed (Inspect panel, tracked separately).
+
+## 2026-10-11 - Desktop Smokecheck Without Docker CLI
+What changed:
+- `evolving_ai/app/docker_workspace.py`: `DockerSessionContainerManager._run` returns a failed result (exit 127, "Docker CLI is not installed.") when the `docker` binary is missing, instead of raising `FileNotFoundError`. `status`, `ensure_session` and `reset_session` already handle a non-zero exit.
+
+Why it changed:
+- The first real CI run (after the Actions billing lock cleared) failed only on macOS: `python -m evolving_ai.aris_runtime.desktop --headless-smokecheck` crashed because the desktop snapshot asks Docker for session status and macOS runners have no `docker` binary. Any user machine without Docker hit the same crash. `_detect_availability` already handled a missing binary; `status()` bypassed it.
+
+Verification:
+- Reproduced locally with `docker` removed from `PATH`; the smokecheck now exits 0.
+- New test `test_docker_status_reports_missing_cli_instead_of_raising` passes with the fix and fails without it.
+- CI on the PR #7 head: Linux and Windows green end to end (tests, smokecheck, native bundle built and uploaded); macOS failed only at this smokecheck.

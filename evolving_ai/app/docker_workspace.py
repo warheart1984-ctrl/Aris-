@@ -244,14 +244,19 @@ class DockerSessionContainerManager:
         return True, f"Docker server {completed.stdout.strip() or 'unknown'} is available."
 
     def _run(self, args: list[str], *, timeout: float) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(
-            ["docker", *args],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            timeout=timeout,
-            creationflags=_creation_flags(),
-        )
+        command = ["docker", *args]
+        try:
+            return subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=timeout,
+                creationflags=_creation_flags(),
+            )
+        except FileNotFoundError:
+            # No Docker CLI on this machine (e.g. stock macOS): report it like any failed call.
+            return subprocess.CompletedProcess(command, 127, "", "Docker CLI is not installed.")
 
 
 def _creation_flags() -> int:
