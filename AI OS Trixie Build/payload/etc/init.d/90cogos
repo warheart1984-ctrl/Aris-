@@ -33,6 +33,10 @@ else:
 PY
 }
 
+pid_alive() {
+  [ -s "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null
+}
+
 case "${1:-start}" in
   start)
     log "starting Project Infi / ARIS governed runtime layer"
@@ -61,14 +65,18 @@ case "${1:-start}" in
         log "boot verifier deferred by boot profile"
       fi
 
-      if [ "$DAEMON_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_daemon.py" ]; then
+      if [ "$DAEMON_AUTOSTART" = "true" ] && pid_alive "$DAEMON_PID_FILE"; then
+        log "daemon already running (pid $(cat "$DAEMON_PID_FILE")); not launching another"
+      elif [ "$DAEMON_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_daemon.py" ]; then
         python3 "$COGOS_ROOT/bin/cogos_daemon.py" --daemon >> "$COGOS_LOG" 2>&1 &
         echo $! > "$DAEMON_PID_FILE" 2>/dev/null || true
         log "daemon launched; task inbox: /opt/cogos/tasks/inbox"
       else
         log "daemon deferred by boot profile"
       fi
-      if [ "$DASHBOARD_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_dashboard.py" ]; then
+      if [ "$DASHBOARD_AUTOSTART" = "true" ] && pid_alive "$DASHBOARD_PID_FILE"; then
+        log "dashboard already running (pid $(cat "$DASHBOARD_PID_FILE"))"
+      elif [ "$DASHBOARD_AUTOSTART" = "true" ] && [ -x "$COGOS_ROOT/bin/cogos_dashboard.py" ]; then
         python3 "$COGOS_ROOT/bin/cogos_daemon.py" --verify-laws >> "$COGOS_LOG" 2>&1 || true
         python3 "$COGOS_ROOT/bin/cogos_dashboard.py" >> "$COGOS_LOG" 2>&1 &
         echo $! > "$DASHBOARD_PID_FILE" 2>/dev/null || true
@@ -104,6 +112,8 @@ case "${1:-start}" in
     fi
     ;;
   restart)
+    "$0" stop
+    sleep 1
     "$0" start
     ;;
   *)
