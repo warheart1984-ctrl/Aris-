@@ -689,7 +689,7 @@ class PythonExecutor:
         self.workspace_manager = workspace_manager
         self.policy = policy or SandboxPolicy(timeout_seconds=timeout_seconds)
 
-    def execute(self, *, session_id: str, code: str) -> ExecutionResult:
+    def execute(self, *, session_id: str, code: str, request_source: str = "internal") -> ExecutionResult:
         workspace = self.workspace_manager.workspace_for(session_id)
         violations = self._validate_code(workspace=workspace, code=code)
         if violations:

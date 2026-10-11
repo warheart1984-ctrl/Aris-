@@ -2101,6 +2101,7 @@ Remaining risks:
 What changed:
 - The doc channel's `aris.python` laws (including `no_print`) now apply to ARIS's own code only. Operator scratch code sent through `/api/execute` (`python_execute`, source `api`) is tagged `subject: user_workspace` and skips those laws. Codex-log candidates and every untagged request stay fully enforced. Sandbox checks (`must_not_contain`, blocked imports, workspace-only file access) still apply to user code.
 - Shell commands stay gated. `git status` and other commands are still refused by governance (exit 126).
+- Code provenance is explicit (Codex review follow-up). `execute_code` takes `request_source`, default `internal`. `/api/execute` passes `api`, and the agent's `run_python` tool passes `agent`. Previously the governed executor hard-coded `api`, so agent-generated Python was wrongly exempted. Only `api` is exempt.
 - `review_workspace` no longer falls back to ARIS's own install folder. It reviews only the session workspace. A workspace that is not a git repository and has no pending patches or tracked edits is refused (`ok: false`) with a clear message. Pending patches remain reviewable without git. The web UI shows the refusal instead of "clean".
 - Fixed infinite recursion in the execution sandbox's import hook on Python 3.12+: `pathlib.Path()` imports `ntpath` lazily, and the hook's workspace check built a `Path`, re-entering itself. Any user code using `pathlib` crashed.
 
