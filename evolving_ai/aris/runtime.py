@@ -1732,48 +1732,6 @@ class ArisRuntime:
             return decision
 
         integrity = self._current_integrity(trigger_lockdown=True)
-        if normalized["action_type"] == "command_execute" and _invokes_git(normalized["command"]):
-            # A standing policy refusal, not a failure: no Hall entry and no kill-switch
-            # escalation of its own. It runs after the integrity check above, so tampering
-            # still triggers lockdown on a git request like on any other action.
-            reason = f"{SHELL_GIT_LAW['title']}: git may not run through governed shell execution."
-            decision = GovernanceDecision(
-                action_id=normalized["action_id"],
-                action_type=normalized["action_type"],
-                purpose=normalized["purpose"],
-                target=normalized["target"],
-                source=normalized["source"],
-                session_id=normalized["session_id"],
-                operator_decision=normalized["operator_decision"],
-                risky=True,
-                requires_forge_eval=False,
-                allowed=False,
-                verified=False,
-                disposition="blocked",
-                reason=reason,
-                fingerprint="",
-                blueprint_trace=self._build_blueprint_trace(normalized),
-                law_results=[
-                    {
-                        "id": SHELL_GIT_LAW["id"],
-                        "title": SHELL_GIT_LAW["title"],
-                        "passed": False,
-                        "checks": {"git_command_absent": False},
-                        "reason": reason,
-                    }
-                ],
-                guardrails=[],
-                forge_eval=[],
-                integrity=integrity,
-                reentry_blocker=None,
-                kill_switch=self.kill_switch.snapshot(),
-                action=normalized,
-                created_at=_utc_now(),
-                mystic_signal=mystic_signal,
-            )
-            # policy_refusal keeps standing refusals out of unsafe-escalation counting.
-            self._record_activity({**decision.payload(), "kind": "governance_review", "policy_refusal": True})
-            return decision
 
         preflight = self.operator_router.preflight(
             action=normalized,
@@ -1866,6 +1824,50 @@ class ArisRuntime:
                 mystic_signal=mystic_signal,
             )
             self._record_activity({**decision.payload(), "kind": "governance_review"})
+            return decision
+
+        if normalized["action_type"] == "command_execute" and _invokes_git(normalized["command"]):
+            # A standing policy refusal, not a failure: no Hall entry and no kill-switch
+            # escalation of its own. It runs after the integrity check and law preflight
+            # above, so tampering or a law-bypass attempt wrapped in a git request is still
+            # caught and escalated exactly as on any other action.
+            reason = f"{SHELL_GIT_LAW['title']}: git may not run through governed shell execution."
+            decision = GovernanceDecision(
+                action_id=normalized["action_id"],
+                action_type=normalized["action_type"],
+                purpose=normalized["purpose"],
+                target=normalized["target"],
+                source=normalized["source"],
+                session_id=normalized["session_id"],
+                operator_decision=normalized["operator_decision"],
+                risky=True,
+                requires_forge_eval=False,
+                allowed=False,
+                verified=False,
+                disposition="blocked",
+                reason=reason,
+                fingerprint="",
+                blueprint_trace=blueprint_trace,
+                law_results=[
+                    {
+                        "id": SHELL_GIT_LAW["id"],
+                        "title": SHELL_GIT_LAW["title"],
+                        "passed": False,
+                        "checks": {"git_command_absent": False},
+                        "reason": reason,
+                    }
+                ],
+                guardrails=[],
+                forge_eval=[],
+                integrity=integrity,
+                reentry_blocker=None,
+                kill_switch=self.kill_switch.snapshot(),
+                action=normalized,
+                created_at=_utc_now(),
+                mystic_signal=mystic_signal,
+            )
+            # policy_refusal keeps standing refusals out of unsafe-escalation counting.
+            self._record_activity({**decision.payload(), "kind": "governance_review", "policy_refusal": True})
             return decision
         risky = self._is_risky(normalized, law_results=law_results, guardrails=guardrails) or bool(
             shield.get("requires_escalation") or shield.get("quarantined") or not shield.get("passed", False)

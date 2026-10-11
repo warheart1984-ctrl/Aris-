@@ -926,6 +926,19 @@ class ArisServiceTests(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertFalse(_invokes_git(command))
 
+    def test_bypass_attempt_inside_git_request_is_still_escalated(self) -> None:
+        # Wrapping a law-bypass claim in a git request must not turn it into a quiet,
+        # escalation-exempt policy refusal.
+        for claim in ({"bypass_requested": True}, {"verified": True}):
+            with self.subTest(claim=claim):
+                service, root = _make_service()
+                self.addCleanup(lambda root=root: shutil.rmtree(root, ignore_errors=True))
+                decision = service.aris.review_action({**self._command_action(["git", "status"]), **claim})
+
+                self.assertFalse(decision.allowed)
+                self.assertNotIn(SHELL_GIT_LAW["title"], decision.reason)
+                self.assertEqual(decision.kill_switch.get("mode"), "hard_kill")
+
     def test_git_refusal_still_runs_the_integrity_check(self) -> None:
         service, root = _make_service()
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
