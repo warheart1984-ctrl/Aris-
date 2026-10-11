@@ -895,6 +895,10 @@ class ArisServiceTests(unittest.TestCase):
             ["xargs", "git", "status"],
             ["sh", "-c", "git status"],
             ["python", "-c", "import subprocess; subprocess.run(['git', 'status'])"],
+            # git's helper programs run git directly (and honor core.fsmonitor).
+            ["find", ".", "-maxdepth", "0", "-exec", "/usr/lib/git-core/git-status", "--short", ";"],
+            ["git-upload-pack", "."],
+            ["C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-status.exe"],
             # Deliberately conservative: a bare git word is refused even when harmless.
             ["echo", "git"],
         ):
@@ -909,6 +913,8 @@ class ArisServiceTests(unittest.TestCase):
             ["python", "-m", "pytest"],
             ["gitk"],
             ["echo", "github", "legit"],
+            ["ls", "/usr/lib/git-core/"],
+            ["pre-commit", "run"],
             [],
         ):
             with self.subTest(command=command):

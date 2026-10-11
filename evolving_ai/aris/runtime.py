@@ -90,11 +90,12 @@ SHELL_GIT_LAW = {
 }
 
 # git as a command word anywhere in the arguments: as argv[0], a path (/usr/bin/git,
-# C:\\...\\git.exe), or handed to an indirect executor (find -exec, xargs, sh -c, python -c).
+# C:\\...\\git.exe), git's own helper programs (/usr/lib/git-core/git-status), or handed to
+# an indirect executor (find -exec, xargs, sh -c, python -c).
 # Deliberately conservative: `echo git` is refused too. `.git`, `.gitignore`, `gitk` and
 # `test_git.py` are not git invocations and pass.
 _GIT_COMMAND_WORD = re.compile(
-    r"""(?:^|[\s"'`;&|()\[\]{},=/\\])git(?:\.exe)?(?=$|[\s"'`;&|()\[\]{},])""",
+    r"""(?:^|[\s"'`;&|()\[\]{},=/\\])git(?:-[a-z0-9][a-z0-9-]*)?(?:\.exe)?(?=$|[\s"'`;&|()\[\]{},])""",
     re.IGNORECASE,
 )
 
