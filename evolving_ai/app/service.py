@@ -920,8 +920,16 @@ class ChatService:
             "summary": parsed.summary,
         }
 
-    def execute_code(self, *, session_id: str, code: str) -> dict[str, object]:
-        result = self.executor.execute(session_id=session_id, code=code)
+    def execute_code(
+        self,
+        *,
+        session_id: str,
+        code: str,
+        request_source: str = "internal",
+    ) -> dict[str, object]:
+        # Only "api" (the operator's /api/execute) is exempt from ARIS's own code laws; the
+        # internal default keeps any new caller governed unless it opts in explicitly.
+        result = self.executor.execute(session_id=session_id, code=code, request_source=request_source)
         return {
             "session_id": result.session_id,
             "returncode": result.returncode,
@@ -5180,7 +5188,7 @@ class ChatService:
             return self._format_symbol_edit_result(result)
         if tool == "run_python":
             code = str(args.get("code", ""))
-            result = self.execute_code(session_id=session.id, code=code)
+            result = self.execute_code(session_id=session.id, code=code, request_source="agent")
             return json.dumps(result, indent=2)
         if tool == "run_command":
             command, error = self._coerce_agent_command(args.get("command"))
