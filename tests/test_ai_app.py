@@ -3589,6 +3589,7 @@ class DockerSandboxTests(unittest.TestCase):
             image=image,
             detail="",
             container_id="c0ffee01",
+            immutable=True,
         )
         return manager, info
 
@@ -3648,6 +3649,44 @@ class DockerSandboxTests(unittest.TestCase):
 
         probe_calls = [call for call in run.call_args_list if call.args[0][:1] == ["exec"]]
         self.assertEqual(len(probe_calls), 2)
+
+    def test_mutable_container_is_probed_before_every_execution(self) -> None:
+        # With a writable root or network access, git could be installed after the first clean
+        # probe without the container ID changing, so nothing is cached.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            mutable = DockerSessionInfo(**{**{field: getattr(info, field) for field in info.__slots__}, "immutable": False})
+            with patch.object(manager, "status", return_value=mutable):
+                with patch.object(manager, "_run", return_value=self._probe(0, "")):
+                    manager.ensure_container("demo")
+                with patch.object(manager, "_run", return_value=self._probe(0, "/usr/local/bin/git\n")):
+                    with self.assertRaisesRegex(RuntimeError, "contains git"):
+                        manager.ensure_container("demo")
+
+    def test_status_reports_immutability_from_docker(self) -> None:
+        cases = (
+            ({"ReadonlyRootfs": True, "NetworkMode": "none"}, True),
+            ({"ReadonlyRootfs": False, "NetworkMode": "none"}, False),
+            ({"ReadonlyRootfs": True, "NetworkMode": "bridge"}, False),
+            ({}, False),
+        )
+        for host_config, expected in cases:
+            with self.subTest(host_config=host_config), tempfile.TemporaryDirectory() as temp_dir:
+                manager, _ = self._running_container_manager(temp_dir)
+                inspect = json.dumps(
+                    [
+                        {
+                            "Id": "c0ffee01",
+                            "State": {"Status": "running", "Running": True},
+                            "Config": {"Image": "python:3.11-alpine"},
+                            "HostConfig": host_config,
+                        }
+                    ]
+                )
+                with patch.object(manager, "_run", return_value=self._probe(0, inspect)):
+                    info = manager.status("demo")
+                self.assertEqual(info.immutable, expected)
+                self.assertEqual(info.container_id, "c0ffee01")
 
     def test_sandbox_refuses_when_git_check_cannot_run(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
