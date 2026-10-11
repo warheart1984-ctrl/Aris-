@@ -2118,6 +2118,32 @@ Verification:
 Remaining risks:
 - Shell commands are gated because the doc channel parses the command string as Python and fails; the gate is incidental rather than a command-specific rule.
 
+## 2026-10-11 - Shell Git Denial Rule
+What changed:
+- Added the `shell_git_denied` rule ("Shell Git Denial") to `evolving_ai/aris/runtime.py`. `review_action` refuses any governed shell command (`command_execute`) that runs git, however it is spelled: `git`, a path such as `/usr/bin/git` or `C:\Program Files\Git\bin\git.exe`, `git.exe`, a single string like `"git status"`, or behind a launcher (`env`, `nice -n 10`, `sudo -u …`).
+- The refusal names the rule (reason and `law_results` entry). It is a standing policy refusal: no Hall entry and no kill-switch escalation, so repeated attempts get the same answer instead of a lockdown.
+- Scope is git only. Other commands keep their previous behavior, so the agent's `run_command` tool and workspace-task test commands are unaffected. Internal governed git actions such as `git_branch_create` do not go through shell execution and are unaffected.
+
+Why it changed:
+- `git status` was previously refused only because the doc channel failed to parse the command string as Python. A better parser would have silently allowed it. Even read-only git can run repository-configured programs (`core.fsmonitor`, hooks).
+- The rule is not a law in `_evaluate_laws`: any failed law makes the Shield of Truth quarantine the action, which locks ARIS down. A policy refusal must not do that.
+
+Verification:
+- New tests in `tests/test_aris_governance.py`: `git status` refused by the rule; still refused when the doc-channel parser and Forge Eval both pass; five repeated refusals leave the kill switch nominal with no Hall entry; `_invokes_git` matches every spelling above and rejects `ls`, `pytest -q`, `python -m pytest`, `echo git`, `gitk`.
+- With the rule disabled, the three rule tests fail.
+- `python -m pytest tests` on Python 3.12: 225 passed, 1 failed (Inspect panel, tracked separately).
+
+Review follow-up (Codex review on PR #8):
+- Matching now refuses git as a command word anywhere in the arguments, not just as the executable. The first version missed indirect executors from the default allowlist: `find . -exec git status ;`, `xargs git`, `sh -c "git status"`, `python -c "...['git', ...]"`. It is deliberately conservative (`echo git` is refused); `.git`, `.gitignore`, `gitk`, `test_git.py` and `GitPython` are not matched.
+- The refusal now runs after `_current_integrity(trigger_lockdown=True)` and after the law preflight, so tampering, or a law-bypass claim (`bypass_requested`, `verified`, …) wrapped in a git request, is still caught and escalated like on any other action.
+- Residual: deliberately obfuscated interpreter code (for example building the string "git" at runtime inside `python -c`) cannot be caught by an argument check; the sandbox and container image are the boundary for that.
+- Tests updated and added; both fail against the first version. Full suite: 227 passed, 1 failed (Inspect panel).
+- Git refusals are recorded with `policy_refusal: true` and excluded from `_recent_unsafe_escalations`. Before this, two git refusals followed by any ordinary rejection triggered `hard_kill` (`repeated_unsafe_escalation_attempts`). Genuine repeated unsafe attempts still trigger it; `test_git_refusals_do_not_count_toward_unsafe_escalation` pins both.
+- git's helper programs (`/usr/lib/git-core/git-status`, `git-upload-pack`, `git-*.exe`) are matched too; they run git directly and honor `core.fsmonitor`. `ls /usr/lib/git-core/` and `pre-commit` still pass.
+- `git+` VCS URLs (`pip install git+file:///…`, `pkg @ git+https://…`, `uv pip install git+ssh://…`) are refused; pip and uv run git to clone them.
+- Allowed programs that can start other programs (pip with a requirements file, python, uv) can launch git in ways their arguments don't show, which an argument check cannot close. So the Docker sandbox now enforces the environment boundary: when a container starts, `DockerSessionContainerManager` runs `command -v git` and looks for `git-core` helpers inside it, and refuses governed execution if either is present. If the check itself cannot run (for example no shell in the image), it refuses too. The result is cached per Docker container ID, and only for containers Docker reports as immutable (read-only root filesystem and `NetworkMode: none`, the defaults). A container recreated under the same name and tag is probed again, and a writable or networked container is probed before every execution, since git could be installed into it after a clean check. The default image `python:3.11-alpine` has no git and passes; `forge.env.example` documents the requirement.
+- Known sandbox property, out of scope by owner decision: `/workspace` is a writable, executable bind mount, so code in the sandbox can write and run an arbitrary binary there (a renamed git included). A by-name git check cannot stop that, and it adds no capability beyond arbitrary binary execution itself. The general mitigation would be mounting `/workspace` `noexec` (as `/tmp` already is); not done because it affects compiled extensions and scripts kept in the workspace.
+
 ## 2026-10-11 - Desktop Smokecheck Without Docker CLI
 What changed:
 - `evolving_ai/app/docker_workspace.py`: `DockerSessionContainerManager._run` returns a failed result (exit 127, "Docker CLI is not installed.") when the `docker` binary is missing, instead of raising `FileNotFoundError`. `status`, `ensure_session` and `reset_session` already handle a non-zero exit.

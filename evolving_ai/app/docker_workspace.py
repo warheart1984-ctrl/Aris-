@@ -49,6 +49,10 @@ class DockerSessionInfo:
     workspace: str
     image: str
     detail: str
+    container_id: str = ""
+    # True only when Docker reports a read-only root filesystem and no network, so nothing
+    # can be installed into the container after it was checked.
+    immutable: bool = False
 
     def payload(self) -> dict[str, object]:
         return {
@@ -72,6 +76,7 @@ class DockerSessionContainerManager:
         self.workspace_manager = workspace_manager
         self.config = config
         self._availability: tuple[bool, str] | None = None
+        self._git_free_verified: set[str] = set()
 
     def availability(self) -> tuple[bool, str]:
         if self._availability is None:
@@ -111,9 +116,52 @@ class DockerSessionContainerManager:
             workspace=str(workspace),
             image=image,
             detail=f"Container status is {status}.",
+            container_id=str(payload.get("Id", "")),
+            immutable=bool(payload.get("HostConfig", {}).get("ReadonlyRootfs"))
+            and str(payload.get("HostConfig", {}).get("NetworkMode", "")) == "none",
         )
 
     def ensure_container(self, session_id: str) -> DockerSessionInfo:
+        info = self._start_container(session_id)
+        self._require_git_free(info)
+        return info
+
+    def _require_git_free(self, info: DockerSessionInfo) -> None:
+        # ARIS refuses git in governed shell execution, but allowed programs (pip with a
+        # requirements file, python) can start git in ways an argument check cannot see.
+        # A git-free sandbox image is what actually closes that, so it is verified, not assumed.
+        # Keyed on Docker's immutable container ID: a container recreated under the same name
+        # and image tag (after a reset, or from a rebuilt tag) is probed again. Only containers
+        # that cannot be modified (read-only root, no network) are cached; any other container
+        # is probed before every execution, since git could be installed into it later.
+        if info.immutable and info.container_id and info.container_id in self._git_free_verified:
+            return
+        probe = self._run(
+            [
+                "exec",
+                info.container_name,
+                "sh",
+                "-c",
+                "command -v git; ls -d /usr/lib/git-core /usr/libexec/git-core 2>/dev/null; exit 0",
+            ],
+            timeout=20,
+        )
+        if probe.returncode != 0:
+            raise RuntimeError(
+                f"Could not verify that sandbox image `{info.image}` is free of git "
+                f"({(probe.stderr or probe.stdout).strip() or 'probe failed'}). "
+                "Governed execution needs a git-free image with a POSIX shell."
+            )
+        found = " ".join(line.strip() for line in probe.stdout.splitlines() if line.strip())
+        if found:
+            raise RuntimeError(
+                f"Sandbox image `{info.image}` contains git ({found}). Governed execution "
+                "requires a git-free image; set FORGE_DOCKER_IMAGE to one without git."
+            )
+        if info.immutable and info.container_id:
+            self._git_free_verified.add(info.container_id)
+
+    def _start_container(self, session_id: str) -> DockerSessionInfo:
         info = self.status(session_id)
         if info.running:
             return info

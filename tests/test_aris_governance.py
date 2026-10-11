@@ -29,7 +29,7 @@ from evolving_ai.app.agent import AgentAction, AgentToolPermissions
 from evolving_ai.app.config import AppConfig
 from evolving_ai.app.service import AgentRunConfig, ChatSession
 from evolving_ai.app.server import create_app
-from evolving_ai.aris.runtime import ArisRuntime
+from evolving_ai.aris.runtime import SHELL_GIT_LAW, ArisRuntime, _invokes_git
 from evolving_ai.aris.service import ArisChatService
 
 
@@ -797,6 +797,160 @@ class ArisServiceTests(unittest.TestCase):
             self.assertTrue(result["sandbox"].get("blocked"))
             self.assertTrue(result["sandbox"]["aris"]["reason"])
 
+    def _command_action(self, command: list[str]) -> dict[str, object]:
+        return {
+            "action_type": "command_execute",
+            "session_id": "alpha",
+            "purpose": f"Execute governed shell command: {' '.join(command)}",
+            "target": ".",
+            "source": "api",
+            "operator_decision": "approved",
+            "command": list(command),
+            "authorized": True,
+            "observed": True,
+            "bounded": True,
+        }
+
+    def test_shell_git_rule_refuses_git_status(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        result = service.execute_command(
+            session_id="alpha",
+            command=["git", "status"],
+            cwd=".",
+            timeout_seconds=10,
+        )
+
+        decision = result["sandbox"]["aris"]
+        self.assertEqual(result["returncode"], 126)
+        self.assertEqual(result["stdout"], "")
+        self.assertIn(SHELL_GIT_LAW["title"], result["stderr"])
+        self.assertEqual(
+            [(item["id"], item["passed"]) for item in decision["law_results"]],
+            [(SHELL_GIT_LAW["id"], False)],
+        )
+
+    def test_shell_git_rule_holds_when_parser_and_forge_eval_pass(self) -> None:
+        # The old block only held because the doc channel failed to parse "git status" as
+        # Python. Simulate a better parser and a passing Forge Eval: git must still be refused.
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        passing = [{"mode": "io_tests", "passed": True, "status_code": 200, "reason": "ok", "raw": {}}]
+
+        with patch("src.forge_eval_client.evaluate_program_against_doc_channel", return_value=[]), patch.object(
+            ArisRuntime, "_run_forge_eval", return_value=passing
+        ):
+            git_decision = service.aris.review_action(self._command_action(["git", "status"]))
+            other_decision = service.aris.review_action(self._command_action(["ls"]))
+
+        self.assertFalse(git_decision.allowed)
+        self.assertIn(SHELL_GIT_LAW["title"], git_decision.reason)
+        self.assertEqual(git_decision.law_results[0]["id"], SHELL_GIT_LAW["id"])
+        # The rule is scoped to git: the same conditions do not refuse other commands by it.
+        self.assertNotIn(SHELL_GIT_LAW["id"], [item["id"] for item in other_decision.law_results])
+
+    def test_repeated_git_refusals_do_not_escalate(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        for _ in range(5):
+            decision = service.aris.review_action(self._command_action(["git", "status"]))
+            self.assertFalse(decision.allowed)
+            self.assertIn(SHELL_GIT_LAW["title"], decision.reason)
+            self.assertIsNone(decision.hall_name)
+
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+    def test_git_refusals_do_not_count_toward_unsafe_escalation(self) -> None:
+        # A rejection after two recorded unsafe attempts triggers a hard kill. Two git
+        # refusals must not count as those attempts, or "no escalation" only holds until the
+        # next ordinary rejection.
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        for _ in range(2):
+            service.aris.review_action(self._command_action(["git", "status"]))
+        rejected = service.aris.review_action(self._command_action(["rm", "-rf", "build"]))
+
+        self.assertFalse(rejected.allowed)
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+        # Genuine repeated unsafe attempts still trip the hard kill.
+        service.aris.review_action(self._command_action(["rm", "-rf", "dist"]))
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+        service.aris.review_action(self._command_action(["rm", "-rf", "out"]))
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "hard_kill")
+
+    def test_invokes_git_matches_git_however_it_is_spelled(self) -> None:
+        for command in (
+            ["git", "status"],
+            ["git status"],
+            ["/usr/bin/git", "log"],
+            ["git.exe", "status"],
+            ["C:\\Program Files\\Git\\bin\\git.exe", "status"],
+            ["GIT", "status"],
+            ["env", "git", "status"],
+            ["nice", "-n", "10", "git", "status"],
+            # Indirect executors from the default allowlist hand git to another program.
+            ["find", ".", "-maxdepth", "0", "-exec", "git", "status", ";"],
+            ["xargs", "git", "status"],
+            ["sh", "-c", "git status"],
+            ["python", "-c", "import subprocess; subprocess.run(['git', 'status'])"],
+            # git's helper programs run git directly (and honor core.fsmonitor).
+            ["find", ".", "-maxdepth", "0", "-exec", "/usr/lib/git-core/git-status", "--short", ";"],
+            ["git-upload-pack", "."],
+            ["C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-status.exe"],
+            # Package managers clone VCS URLs with git themselves.
+            ["pip", "install", "git+file:///workspace/repo"],
+            ["pip", "install", "pkg @ git+https://example.com/repo.git"],
+            ["uv", "pip", "install", "git+ssh://git@example.com/repo.git"],
+            # Deliberately conservative: a bare git word is refused even when harmless.
+            ["echo", "git"],
+        ):
+            with self.subTest(command=command):
+                self.assertTrue(_invokes_git(command))
+        for command in (
+            ["ls"],
+            ["ls", ".git"],
+            ["cat", ".gitignore"],
+            ["pytest", "-q", "tests/test_git.py"],
+            ["pip", "install", "GitPython"],
+            ["python", "-m", "pytest"],
+            ["gitk"],
+            ["echo", "github", "legit"],
+            ["ls", "/usr/lib/git-core/"],
+            ["pre-commit", "run"],
+            [],
+        ):
+            with self.subTest(command=command):
+                self.assertFalse(_invokes_git(command))
+
+    def test_bypass_attempt_inside_git_request_is_still_escalated(self) -> None:
+        # Wrapping a law-bypass claim in a git request must not turn it into a quiet,
+        # escalation-exempt policy refusal.
+        for claim in ({"bypass_requested": True}, {"verified": True}):
+            with self.subTest(claim=claim):
+                service, root = _make_service()
+                self.addCleanup(lambda root=root: shutil.rmtree(root, ignore_errors=True))
+                decision = service.aris.review_action({**self._command_action(["git", "status"]), **claim})
+
+                self.assertFalse(decision.allowed)
+                self.assertNotIn(SHELL_GIT_LAW["title"], decision.reason)
+                self.assertEqual(decision.kill_switch.get("mode"), "hard_kill")
+
+    def test_git_refusal_still_runs_the_integrity_check(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        with patch.object(
+            ArisRuntime, "_current_integrity", wraps=service.aris._current_integrity
+        ) as integrity_check:
+            decision = service.aris.review_action(self._command_action(["git", "status"]))
+
+        self.assertFalse(decision.allowed)
+        self.assertIn(SHELL_GIT_LAW["title"], decision.reason)
+        integrity_check.assert_called_once_with(trigger_lockdown=True)
     def test_doc_channel_exemption_applies_only_to_operator_code(self) -> None:
         # Only code the operator submits through /api/execute ("api") is exempt from the
         # aris.python laws; agent-generated and internal code stay governed.

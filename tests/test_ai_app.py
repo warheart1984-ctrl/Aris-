@@ -20,7 +20,7 @@ from fastapi.testclient import TestClient
 from evolving_ai.app.attachments import Attachment
 from evolving_ai.app.config import AppConfig
 from evolving_ai.app.agent_runs import AgentRunStore
-from evolving_ai.app.docker_workspace import DockerSessionContainerManager
+from evolving_ai.app.docker_workspace import DockerSessionContainerManager, DockerSessionInfo
 from evolving_ai.app.execution import PythonExecutor, SandboxPolicy, WorkspaceManager
 from evolving_ai.app.execution_backends import (
     CommandExecutionResult,
@@ -234,7 +234,7 @@ class AiAppEndpointTests(unittest.TestCase):
                     self.assertIn("event: exec_start", stream_body)
                     self.assertIn("event: exec_chunk", stream_body)
                     self.assertIn("event: exec_done", stream_body)
-                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    # git is refused by the Shell Git Denial rule before anything runs.
                     self.assertIn('"returncode": 126', stream_body)
             finally:
                 os.chdir(original_cwd)
@@ -2372,12 +2372,12 @@ class AiAppEndpointTests(unittest.TestCase):
                         json={"session_id": "scratchpad", "command": ["git", "status"]},
                     )
 
-                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    # git is refused by the Shell Git Denial rule before anything runs.
                     self.assertEqual(response.status_code, 200)
                     payload = response.json()
                     self.assertEqual(payload["returncode"], 126)
                     self.assertEqual(payload["stdout"], "")
-                    self.assertIn("Forge Eval rejected the command request.", payload["stderr"])
+                    self.assertIn("Shell Git Denial", payload["stderr"])
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()
@@ -2408,9 +2408,9 @@ class AiAppEndpointTests(unittest.TestCase):
                     self.assertIn("event: exec_start", body)
                     self.assertIn("event: exec_chunk", body)
                     self.assertIn("event: exec_done", body)
-                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    # git is refused by the Shell Git Denial rule before anything runs.
                     self.assertIn('"returncode": 126', body)
-                    self.assertIn("Forge Eval rejected the command request.", body)
+                    self.assertIn("Shell Git Denial", body)
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()
@@ -3574,6 +3574,157 @@ class PythonSandboxTests(unittest.TestCase):
 
 
 class DockerSandboxTests(unittest.TestCase):
+    def _running_container_manager(self, temp_dir: str, image: str = "python:3.11-alpine"):
+        manager = DockerSessionContainerManager(
+            WorkspaceManager(Path(temp_dir)),
+            DockerSandboxConfig(backend_preference="docker", image=image),
+        )
+        info = DockerSessionInfo(
+            session_id="demo",
+            container_name="forge-demo",
+            exists=True,
+            running=True,
+            status="running",
+            workspace=temp_dir,
+            image=image,
+            detail="",
+            container_id="c0ffee01",
+            immutable=True,
+        )
+        return manager, info
+
+    def _probe(self, returncode: int, stdout: str = "", stderr: str = ""):
+        return subprocess.CompletedProcess(["docker"], returncode, stdout, stderr)
+
+    def test_sandbox_refuses_images_that_contain_git(self) -> None:
+        # Allowed programs (pip with a requirements file, python) can start git in ways an
+        # argument check cannot see, so a git-free image is required, not assumed.
+        for label, probe_stdout in (
+            ("git binary", "/usr/bin/git\n"),
+            ("git helpers", "/usr/lib/git-core\n"),
+        ):
+            with self.subTest(label), tempfile.TemporaryDirectory() as temp_dir:
+                manager, info = self._running_container_manager(temp_dir, image="python:3.11")
+                with patch.object(manager, "status", return_value=info), patch.object(
+                    manager, "_run", return_value=self._probe(0, probe_stdout)
+                ):
+                    with self.assertRaisesRegex(RuntimeError, r"python:3\.11.*contains git"):
+                        manager.ensure_container("demo")
+
+    def test_sandbox_accepts_git_free_image_and_verifies_once(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            with patch.object(manager, "status", return_value=info), patch.object(
+                manager, "_run", return_value=self._probe(0, "")
+            ) as run:
+                self.assertIs(manager.ensure_container("demo"), info)
+                self.assertIs(manager.ensure_container("demo"), info)
+
+        probe_calls = [call for call in run.call_args_list if call.args[0][:1] == ["exec"]]
+        self.assertEqual(len(probe_calls), 1)
+
+    def test_recreated_container_is_probed_again(self) -> None:
+        # Same name and image tag, new container (after a reset, or a rebuilt tag that now
+        # ships git): the cache must not carry the old verification over.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, first = self._running_container_manager(temp_dir)
+            recreated = DockerSessionInfo(**{**{field: getattr(first, field) for field in first.__slots__}, "container_id": "c0ffee02"})
+            with patch.object(manager, "_run", return_value=self._probe(0, "")):
+                with patch.object(manager, "status", return_value=first):
+                    manager.ensure_container("demo")
+            with patch.object(manager, "_run", return_value=self._probe(0, "/usr/bin/git\n")):
+                with patch.object(manager, "status", return_value=recreated):
+                    with self.assertRaisesRegex(RuntimeError, "contains git"):
+                        manager.ensure_container("demo")
+
+    def test_container_without_id_is_never_cached(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            anonymous = DockerSessionInfo(**{**{field: getattr(info, field) for field in info.__slots__}, "container_id": ""})
+            with patch.object(manager, "status", return_value=anonymous), patch.object(
+                manager, "_run", return_value=self._probe(0, "")
+            ) as run:
+                manager.ensure_container("demo")
+                manager.ensure_container("demo")
+
+        probe_calls = [call for call in run.call_args_list if call.args[0][:1] == ["exec"]]
+        self.assertEqual(len(probe_calls), 2)
+
+    def test_mutable_container_is_probed_before_every_execution(self) -> None:
+        # With a writable root or network access, git could be installed after the first clean
+        # probe without the container ID changing, so nothing is cached.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            mutable = DockerSessionInfo(**{**{field: getattr(info, field) for field in info.__slots__}, "immutable": False})
+            with patch.object(manager, "status", return_value=mutable):
+                with patch.object(manager, "_run", return_value=self._probe(0, "")):
+                    manager.ensure_container("demo")
+                with patch.object(manager, "_run", return_value=self._probe(0, "/usr/local/bin/git\n")):
+                    with self.assertRaisesRegex(RuntimeError, "contains git"):
+                        manager.ensure_container("demo")
+
+    def test_status_reports_immutability_from_docker(self) -> None:
+        cases = (
+            ({"ReadonlyRootfs": True, "NetworkMode": "none"}, True),
+            ({"ReadonlyRootfs": False, "NetworkMode": "none"}, False),
+            ({"ReadonlyRootfs": True, "NetworkMode": "bridge"}, False),
+            ({}, False),
+        )
+        for host_config, expected in cases:
+            with self.subTest(host_config=host_config), tempfile.TemporaryDirectory() as temp_dir:
+                manager, _ = self._running_container_manager(temp_dir)
+                inspect = json.dumps(
+                    [
+                        {
+                            "Id": "c0ffee01",
+                            "State": {"Status": "running", "Running": True},
+                            "Config": {"Image": "python:3.11-alpine"},
+                            "HostConfig": host_config,
+                        }
+                    ]
+                )
+                with patch.object(manager, "_run", return_value=self._probe(0, inspect)):
+                    info = manager.status("demo")
+                self.assertEqual(info.immutable, expected)
+                self.assertEqual(info.container_id, "c0ffee01")
+
+    def test_sandbox_refuses_when_git_check_cannot_run(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            with patch.object(manager, "status", return_value=info), patch.object(
+                manager, "_run", return_value=self._probe(126, stderr="exec: sh: not found")
+            ):
+                with self.assertRaisesRegex(RuntimeError, "Could not verify"):
+                    manager.ensure_container("demo")
+
+    def test_docker_command_is_blocked_when_image_contains_git(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = WorkspaceManager(Path(temp_dir))
+            policy = SandboxPolicy(timeout_seconds=5)
+            executor = DockerSandboxExecutor(
+                PythonExecutor(manager, 5, policy=policy),
+                manager,
+                policy,
+                DockerSandboxConfig(backend_preference="docker", image="python:3.11"),
+            )
+            _, info = self._running_container_manager(temp_dir, image="python:3.11")
+            with patch.object(executor.container_manager, "status", return_value=info), patch.object(
+                executor.container_manager, "_run", return_value=self._probe(0, "/usr/bin/git\n")
+            ), patch("evolving_ai.app.execution_backends.subprocess.run") as docker_exec:
+                result = executor.execute_command(
+                    session_id="demo",
+                    command=["pip", "install", "-r", "requirements.txt"],
+                    cwd=".",
+                    timeout_seconds=5,
+                    requested_backend="docker",
+                    command_policy={},
+                )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("contains git", result.stderr)
+        self.assertTrue(result.sandbox["blocked"])
+        docker_exec.assert_not_called()
+
     def test_docker_status_reports_missing_cli_instead_of_raising(self) -> None:
         # Stock macOS runners have no docker binary; the desktop snapshot must not crash.
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 import difflib
 import json
+import re
 from pathlib import Path
 from typing import Any, Optional
 import uuid
@@ -78,6 +79,30 @@ FOUNDATION_LAW = {
         "instead of silently progressing."
     ),
 }
+
+SHELL_GIT_LAW = {
+    "id": "shell_git_denied",
+    "title": "Shell Git Denial",
+    "summary": (
+        "Governed shell execution may not run git. Even read-only subcommands can execute "
+        "repository-configured programs (for example core.fsmonitor or hooks)."
+    ),
+}
+
+# git as a command word anywhere in the arguments: as argv[0], a path (/usr/bin/git,
+# C:\\...\\git.exe), git's own helper programs (/usr/lib/git-core/git-status), or handed to
+# an indirect executor (find -exec, xargs, sh -c, python -c), including pip's git+URL installs.
+# Deliberately conservative: `echo git` is refused too. `.git`, `.gitignore`, `gitk` and
+# `test_git.py` are not git invocations and pass.
+_GIT_COMMAND_WORD = re.compile(
+    r"""(?:^|[\s"'`;&|()\[\]{},=/\\])git(?:-[a-z0-9][a-z0-9-]*)?(?:\.exe)?(?=$|[\s"'`;&|()\[\]{},+])""",
+    re.IGNORECASE,
+)
+
+
+def _invokes_git(command: list[str]) -> bool:
+    return any(_GIT_COMMAND_WORD.search(str(part)) for part in command)
+
 
 GUARDRAILS = (
     {
@@ -522,6 +547,7 @@ class ArisRuntime:
             if (
                 _text(entry.get("disposition")) in {"blocked", "discarded"}
                 and _truthy(entry.get("risky"))
+                and not _truthy(entry.get("policy_refusal"))
             ):
                 count += 1
         return count
@@ -1706,6 +1732,7 @@ class ArisRuntime:
             return decision
 
         integrity = self._current_integrity(trigger_lockdown=True)
+
         preflight = self.operator_router.preflight(
             action=normalized,
             actor=normalized["source"],
@@ -1797,6 +1824,50 @@ class ArisRuntime:
                 mystic_signal=mystic_signal,
             )
             self._record_activity({**decision.payload(), "kind": "governance_review"})
+            return decision
+
+        if normalized["action_type"] == "command_execute" and _invokes_git(normalized["command"]):
+            # A standing policy refusal, not a failure: no Hall entry and no kill-switch
+            # escalation of its own. It runs after the integrity check and law preflight
+            # above, so tampering or a law-bypass attempt wrapped in a git request is still
+            # caught and escalated exactly as on any other action.
+            reason = f"{SHELL_GIT_LAW['title']}: git may not run through governed shell execution."
+            decision = GovernanceDecision(
+                action_id=normalized["action_id"],
+                action_type=normalized["action_type"],
+                purpose=normalized["purpose"],
+                target=normalized["target"],
+                source=normalized["source"],
+                session_id=normalized["session_id"],
+                operator_decision=normalized["operator_decision"],
+                risky=True,
+                requires_forge_eval=False,
+                allowed=False,
+                verified=False,
+                disposition="blocked",
+                reason=reason,
+                fingerprint="",
+                blueprint_trace=blueprint_trace,
+                law_results=[
+                    {
+                        "id": SHELL_GIT_LAW["id"],
+                        "title": SHELL_GIT_LAW["title"],
+                        "passed": False,
+                        "checks": {"git_command_absent": False},
+                        "reason": reason,
+                    }
+                ],
+                guardrails=[],
+                forge_eval=[],
+                integrity=integrity,
+                reentry_blocker=None,
+                kill_switch=self.kill_switch.snapshot(),
+                action=normalized,
+                created_at=_utc_now(),
+                mystic_signal=mystic_signal,
+            )
+            # policy_refusal keeps standing refusals out of unsafe-escalation counting.
+            self._record_activity({**decision.payload(), "kind": "governance_review", "policy_refusal": True})
             return decision
         risky = self._is_risky(normalized, law_results=law_results, guardrails=guardrails) or bool(
             shield.get("requires_escalation") or shield.get("quarantined") or not shield.get("passed", False)
