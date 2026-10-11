@@ -18,6 +18,7 @@ from docx import Document
 from fastapi.testclient import TestClient
 
 from evolving_ai.app.attachments import Attachment
+from evolving_ai.app.config import AppConfig
 from evolving_ai.app.agent_runs import AgentRunStore
 from evolving_ai.app.docker_workspace import DockerSessionContainerManager
 from evolving_ai.app.execution import SandboxPolicy, WorkspaceManager

@@ -5,25 +5,28 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "evolving-ai"
 version = "0.1.0"
-description = "A modular evolutionary AI framework built in pure Python."
+description = "ARIS: a law-governed execution system."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "beautifulsoup4>=4.12",
   "fastapi>=0.115",
+  "flask>=3.0",
   "httpx>=0.27",
+  "numpy>=1.24",
   "pypdf>=6.0",
   "python-docx>=1.1",
   "python-multipart>=0.0.9",
+  "pyyaml>=6.0",
   "requests>=2.32",
   "uvicorn>=0.30",
 ]
-authors = [{ name = "OpenAI Codex" }]
-license = { text = "MIT" }
+authors = [{ name = "Jon Halstead" }]
+license = { text = "Apache-2.0" }
 keywords = ["ai", "evolution", "genetic-algorithm", "neural-networks"]
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
@@ -42,13 +45,13 @@ aris-runtime-ship-release = "evolving_ai.aris_runtime.shipping_lane:main"
 desktop = [
   "PySide6>=6.7",
   "pyttsx3>=2.90",
-  "speech_recognition>=3.10",
+  "SpeechRecognition>=3.10",
 ]
 desktop-build = [
   "PyInstaller>=6.11",
   "PySide6>=6.7",
   "pyttsx3>=2.90",
-  "speech_recognition>=3.10",
+  "SpeechRecognition>=3.10",
 ]
 
 [tool.setuptools]

@@ -10,8 +10,6 @@ import re
 import sys
 import threading
 import time
-import tkinter as tk
-from tkinter import filedialog
 from typing import Any
 
 from evolving_ai.app.attachments import Attachment
@@ -104,6 +102,10 @@ def default_desktop_data_root(
 
 
 def select_project_folder() -> str | None:
+    # Imported lazily so build, shipping, and headless paths work on Python installs without Tk.
+    import tkinter as tk
+    from tkinter import filedialog
+
     root = tk.Tk()
     root.withdraw()
     root.update_idletasks()

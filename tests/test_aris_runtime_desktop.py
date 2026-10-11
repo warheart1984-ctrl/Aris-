@@ -324,8 +324,8 @@ class ArisRuntimeDesktopSupportTests(unittest.TestCase):
 
     def test_select_project_folder_returns_none_on_cancel(self) -> None:
         root = unittest.mock.Mock()
-        with patch("evolving_ai.aris_runtime.desktop_support.tk.Tk", return_value=root), patch(
-            "evolving_ai.aris_runtime.desktop_support.filedialog.askdirectory",
+        with patch("tkinter.Tk", return_value=root), patch(
+            "tkinter.filedialog.askdirectory",
             return_value="",
         ):
             selected = select_project_folder()

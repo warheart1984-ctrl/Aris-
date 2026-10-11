@@ -37,13 +37,11 @@ and runtime modules, and the ARIS desktop/runtime package entrypoints.
 
 - [`cli.py`](./cli.py)
   - package CLI entrypoint
-- [`engine.py`](./engine.py)
+- [`core/engine.py`](./core/engine.py)
   - evolutionary training loop
-- [`advanced_code_agents.py`](./advanced_code_agents.py)
-  - code-agent benchmark and synthesis logic
-- [`tasks.py`](./tasks.py)
+- [`core/task.py`](./core/task.py) and [`tasks/`](./tasks/)
   - pluggable evaluation tasks
-- [`config.py`](./config.py)
+- [`config/`](./config/)
   - core experiment configuration
 
 ## Read Next
