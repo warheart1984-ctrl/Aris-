@@ -106,6 +106,9 @@ Actions: analyze → propose → apply → validate
 /SCARS.md        → stability model
 ```
 
+The bootable CoGOS operating system build (Puppy/Trixie ISO remaster) lives in
+its own repository: [warheart1984-ctrl/Cogos](https://github.com/warheart1984-ctrl/Cogos).
+
 ---
 
 ## 🧠 Why This Exists
