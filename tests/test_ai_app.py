@@ -21,7 +21,7 @@ from evolving_ai.app.attachments import Attachment
 from evolving_ai.app.config import AppConfig
 from evolving_ai.app.agent_runs import AgentRunStore
 from evolving_ai.app.docker_workspace import DockerSessionContainerManager
-from evolving_ai.app.execution import SandboxPolicy, WorkspaceManager
+from evolving_ai.app.execution import PythonExecutor, SandboxPolicy, WorkspaceManager
 from evolving_ai.app.execution_backends import (
     CommandExecutionResult,
     DockerSandboxConfig,
@@ -234,7 +234,8 @@ class AiAppEndpointTests(unittest.TestCase):
                     self.assertIn("event: exec_start", stream_body)
                     self.assertIn("event: exec_chunk", stream_body)
                     self.assertIn("event: exec_done", stream_body)
-                    self.assertIn("Docker backend", stream_body)
+                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    self.assertIn('"returncode": 126', stream_body)
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()
@@ -2352,7 +2353,7 @@ class AiAppEndpointTests(unittest.TestCase):
                 _cleanup_temp_root(root)
                 _build_service.cache_clear()
 
-    def test_exec_endpoint_requires_docker_backend(self) -> None:
+    def test_exec_endpoint_gates_shell_commands_under_governance(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             original_cwd = Path.cwd()
@@ -2371,10 +2372,12 @@ class AiAppEndpointTests(unittest.TestCase):
                         json={"session_id": "scratchpad", "command": ["git", "status"]},
                     )
 
+                    # Shell commands stay gated: ARIS governance refuses before anything runs.
                     self.assertEqual(response.status_code, 200)
                     payload = response.json()
-                    self.assertEqual(payload["returncode"], 127)
-                    self.assertIn("Docker backend", payload["stderr"])
+                    self.assertEqual(payload["returncode"], 126)
+                    self.assertEqual(payload["stdout"], "")
+                    self.assertIn("Forge Eval rejected the command request.", payload["stderr"])
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()
@@ -2405,7 +2408,9 @@ class AiAppEndpointTests(unittest.TestCase):
                     self.assertIn("event: exec_start", body)
                     self.assertIn("event: exec_chunk", body)
                     self.assertIn("event: exec_done", body)
-                    self.assertIn("Docker backend", body)
+                    # Shell commands stay gated: ARIS governance refuses before anything runs.
+                    self.assertIn('"returncode": 126', body)
+                    self.assertIn("Forge Eval rejected the command request.", body)
             finally:
                 os.chdir(original_cwd)
                 os.environ.clear()
@@ -3233,6 +3238,38 @@ class AiAppEndpointTests(unittest.TestCase):
                 os.environ.update(original_env)
                 _build_service.cache_clear()
 
+    def test_review_workspace_refuses_non_git_workspace(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            original_cwd = Path.cwd()
+            original_env = dict(os.environ)
+            try:
+                os.chdir(root)
+                os.environ["FORGE_PROVIDER_MODE"] = "mock"
+                os.environ["FORGE_EXECUTION_BACKEND"] = "local"
+                os.environ["FORGE_KNOWLEDGE_DIR"] = str(root / "knowledge")
+                os.environ["FORGE_SESSIONS_PATH"] = str(root / "sessions.json")
+                os.environ["FORGE_WORKSPACES_DIR"] = str(root / "workspaces")
+                _build_service.cache_clear()
+                service = _build_service()
+                workspace = service.workspace_manager.workspace_for("plain")
+                (workspace / "notes.md").write_text("draft\n", encoding="utf-8")
+
+                review = service.review_workspace(session_id="plain")
+
+                # Never falls back to another repository, such as ARIS's own install folder.
+                self.assertFalse(review["ok"])
+                self.assertFalse(review["git_available"])
+                self.assertIn("not a git repository", review["error"])
+                self.assertEqual(review["changed_files"], [])
+                self.assertEqual(review["changed_entries"], [])
+                self.assertEqual(review["diff"], "")
+            finally:
+                os.chdir(original_cwd)
+                os.environ.clear()
+                os.environ.update(original_env)
+                _build_service.cache_clear()
+
     def test_review_workspace_parses_git_status_entries(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -3247,49 +3284,30 @@ class AiAppEndpointTests(unittest.TestCase):
                 os.environ["FORGE_WORKSPACES_DIR"] = str(root / "workspaces")
                 _build_service.cache_clear()
                 service = _build_service()
-                with patch.object(
-                    service,
-                    "execute_command",
-                    side_effect=[
-                        {
-                            "returncode": 0,
-                            "stdout": "M  src/app.py\n?? notes.md\n",
-                            "stderr": "",
-                            "timed_out": False,
-                            "files": [],
-                            "sandbox": {},
-                        },
-                        {
-                            "returncode": 0,
-                            "stdout": (
-                                " src/app.py | 2 +-\n"
-                                " notes.md   | 1 +\n"
-                                " 2 files changed, 2 insertions(+), 1 deletion(-)\n"
-                            ),
-                            "stderr": "",
-                            "timed_out": False,
-                            "files": [],
-                            "sandbox": {},
-                        },
-                        {
-                            "returncode": 0,
-                            "stdout": (
-                                "diff --git a/src/app.py b/src/app.py\n"
-                                "--- a/src/app.py\n"
-                                "+++ b/src/app.py\n"
-                            ),
-                            "stderr": "",
-                            "timed_out": False,
-                            "files": [],
-                            "sandbox": {},
-                        },
-                    ],
-                ):
-                    review = service.review_workspace(session_id="repo")
+                workspace = service.workspace_manager.workspace_for("repo")
+                (workspace / "src").mkdir(parents=True, exist_ok=True)
+                (workspace / "src" / "app.py").write_text("value = 1\n", encoding="utf-8")
+
+                def git(*args: str) -> None:
+                    subprocess.run(
+                        ["git", "-c", "user.name=ARIS Test", "-c", "user.email=aris@example.invalid", *args],
+                        cwd=workspace,
+                        check=True,
+                        capture_output=True,
+                    )
+
+                git("init", "-q")
+                git("add", "src/app.py")
+                git("commit", "-q", "-m", "initial")
+                (workspace / "src" / "app.py").write_text("value = 2\n", encoding="utf-8")
+                git("add", "src/app.py")
+                (workspace / "notes.md").write_text("draft\n", encoding="utf-8")
+
+                review = service.review_workspace(session_id="repo")
 
                 self.assertTrue(review["ok"])
+                self.assertTrue(review["git_available"])
                 self.assertEqual(review["changed_files"], ["notes.md", "src/app.py"])
-                self.assertIn("2 files changed", review["diff_stat"])
                 self.assertTrue(
                     any(
                         entry["source"] == "git"
@@ -3490,6 +3508,69 @@ class ToolRouterTests(unittest.IsolatedAsyncioTestCase):
         names = [result.name for result in results]
         self.assertIn("web_search", names)
         self.assertIn("web_page", names)
+
+
+class PythonSandboxTests(unittest.TestCase):
+    """Pins the local Python sandbox directly, without governance in front of it.
+
+    The pathlib case and the escape cases live together so a change to the import hook
+    cannot fix one side while silently breaking the other.
+    """
+
+    def _execute(self, code: str):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        manager = WorkspaceManager(Path(temp_dir.name) / "workspaces")
+        executor = PythonExecutor(manager, 5, policy=SandboxPolicy(timeout_seconds=5))
+        return executor.execute(session_id="pinned", code=code), Path(temp_dir.name)
+
+    def test_user_code_can_use_pathlib(self) -> None:
+        # On Python 3.12+, Path() imports ntpath lazily; the import hook once re-entered
+        # itself on that import and crashed with RecursionError.
+        result, _ = self._execute(
+            "from pathlib import Path\n"
+            "target = Path('notes') / 'note.txt'\n"
+            "target.parent.mkdir(exist_ok=True)\n"
+            "target.write_text('hello sandbox', encoding='utf-8')\n"
+            "print(target.read_text(encoding='utf-8'), target.exists(), target.name)\n"
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "hello sandbox True note.txt")
+        self.assertNotIn("RecursionError", result.stderr)
+
+    def test_escape_attempts_stay_blocked(self) -> None:
+        cases = {
+            "import os": "import os\nprint(os.getcwd())\n",
+            "import shutil": "import shutil\n",
+            "import subprocess": "import subprocess\n",
+            "direct ntpath import": "import ntpath\n",
+            "direct posixpath import": "import posixpath\n",
+            "os.system via pathlib": "import pathlib\npathlib.os.system('echo ESCAPED')\n",
+            "os.popen via pathlib": "import pathlib\nprint(pathlib.os.popen('echo ESCAPED').read())\n",
+            "dunder import": "__import__('subprocess')\n",
+        }
+        for label, code in cases.items():
+            with self.subTest(label):
+                result, _ = self._execute(code)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertNotIn("ESCAPED", result.stdout)
+
+    def test_file_access_outside_workspace_stays_blocked(self) -> None:
+        cases = {
+            "pathlib absolute": "from pathlib import Path\nPath({target!r}).write_text('x')\n",
+            "pathlib parent": "from pathlib import Path\nPath('..', '..', 'escaped.txt').write_text('x')\n",
+            "open absolute": "open({target!r}, 'w').write('x')\n",
+        }
+        for label, template in cases.items():
+            with self.subTest(label):
+                temp_dir = tempfile.TemporaryDirectory()
+                self.addCleanup(temp_dir.cleanup)
+                outside = Path(temp_dir.name) / "outside.txt"
+                result, root = self._execute(template.format(target=str(outside)))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(outside.exists())
+                self.assertFalse((root / "escaped.txt").exists())
 
 
 class DockerSandboxTests(unittest.TestCase):

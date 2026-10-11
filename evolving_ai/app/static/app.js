@@ -5060,14 +5060,14 @@ function renderWorkspaceReview(review) {
   if (!review || review.ok === false) {
     state.workspace.selectedChangedFile = null;
     state.workspace.reviewDiffIndex = {};
-    elements.reviewCount.textContent = "clean";
+    elements.reviewCount.textContent = review?.error ? "unavailable" : "clean";
     resetSelectedReviewPane({
       fileMessage: "Select a changed file to inspect or edit it.",
       diffMessage: "Select a changed file to focus its diff.",
     });
     const item = document.createElement("div");
     item.className = "context-item muted";
-    item.textContent = "No workspace review yet.";
+    item.textContent = review?.error || "No workspace review yet.";
     elements.reviewSummary.appendChild(item);
     return;
   }

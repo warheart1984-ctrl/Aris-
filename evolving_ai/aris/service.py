@@ -81,13 +81,13 @@ class GovernedExecutor:
             sandbox=sandbox,
         )
 
-    def execute(self, *, session_id: str, code: str) -> ExecutionResult:
+    def execute(self, *, session_id: str, code: str, request_source: str = "internal") -> ExecutionResult:
         action = {
             "action_type": "python_execute",
             "session_id": session_id,
             "purpose": "Execute Python code in a governed ARIS workspace sandbox.",
             "target": session_id,
-            "source": "api",
+            "source": request_source,
             "operator_decision": "approved",
             "code": code,
             "authorized": True,

@@ -363,7 +363,7 @@ def create_app(build_service: Callable[[], ChatService] | None = None) -> FastAP
     @app.post("/api/execute")
     async def execute(request: ExecuteRequest) -> JSONResponse:
         session_id = request.session_id or "scratchpad"
-        return JSONResponse(service.execute_code(session_id=session_id, code=request.code))
+        return JSONResponse(service.execute_code(session_id=session_id, code=request.code, request_source="api"))
 
     @app.post("/api/exec")
     async def execute_command(request: ExecCommandRequest) -> JSONResponse:

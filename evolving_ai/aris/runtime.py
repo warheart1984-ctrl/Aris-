@@ -9,7 +9,7 @@ from typing import Any, Optional
 import uuid
 
 from src.forge_client import LawBoundForgeClient
-from src.forge_eval_client import LawBoundForgeEvalClient
+from src.forge_eval_client import USER_WORKSPACE_SUBJECT, LawBoundForgeEvalClient
 from src.jarvis_operator import JarvisOperator
 from src.law_context_builder import RuntimeLawContext
 from src.runtime_law import RuntimeLaw
@@ -1319,6 +1319,11 @@ class ArisRuntime:
                     "diff_present": False,
                     "test_result": "not_run",
                     "config": {
+                        **(
+                            {"subject": USER_WORKSPACE_SUBJECT}
+                            if action["action_type"] == "python_execute" and action["source"] == "api"
+                            else {}
+                        ),
                         "must_not_contain": [
                             "subprocess",
                             "socket",

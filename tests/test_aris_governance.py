@@ -25,7 +25,9 @@ if "requests" not in sys.modules:
 
 from fastapi.testclient import TestClient
 
+from evolving_ai.app.agent import AgentAction, AgentToolPermissions
 from evolving_ai.app.config import AppConfig
+from evolving_ai.app.service import AgentRunConfig, ChatSession
 from evolving_ai.app.server import create_app
 from evolving_ai.aris.runtime import ArisRuntime
 from evolving_ai.aris.service import ArisChatService
@@ -795,24 +797,73 @@ class ArisServiceTests(unittest.TestCase):
             self.assertTrue(result["sandbox"].get("blocked"))
             self.assertTrue(result["sandbox"]["aris"]["reason"])
 
-    def test_workspace_review_fallback_does_not_route_host_git_probe_through_aris(self) -> None:
+    def test_doc_channel_exemption_applies_only_to_operator_code(self) -> None:
+        # Only code the operator submits through /api/execute ("api") is exempt from the
+        # aris.python laws; agent-generated and internal code stay governed.
+        for request_source, exempt in (("api", True), ("agent", False), ("internal", False)):
+            with self.subTest(request_source=request_source):
+                service, root = _make_service()
+                self.addCleanup(lambda root=root: shutil.rmtree(root, ignore_errors=True))
+
+                result = service.execute_code(
+                    session_id="alpha",
+                    code="print('hello from scratch')\n",
+                    request_source=request_source,
+                )
+
+                if exempt:
+                    self.assertEqual(result["returncode"], 0, result["stderr"])
+                    self.assertIn("hello from scratch", result["stdout"])
+                else:
+                    self.assertEqual(result["returncode"], 126)
+                    self.assertEqual(result["stdout"], "")
+
+    def test_agent_run_python_tool_is_labelled_as_agent(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        session = ChatSession(id="alpha", title="alpha", created_at="", updated_at="")
+        run_config = AgentRunConfig(
+            permissions=AgentToolPermissions(
+                allow_python=True,
+                allow_shell=False,
+                allow_filesystem_read=True,
+                allow_filesystem_write=False,
+            ),
+            max_command_tier="read_only",
+            allowed_commands=(),
+        )
+
+        with patch.object(service, "execute_code", return_value={"returncode": 0}) as execute_code:
+            asyncio.run(
+                service._execute_agent_action(
+                    session=session,
+                    action=AgentAction(tool="run_python", args={"code": "print(1)"}),
+                    run_config=run_config,
+                )
+            )
+
+        execute_code.assert_called_once_with(session_id="alpha", code="print(1)", request_source="agent")
+
+    def test_non_git_workspace_review_does_not_route_git_probe_through_aris(self) -> None:
         service, root = _make_service()
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
 
         with patch.object(service.aris, "review_action", wraps=service.aris.review_action) as spy:
             review = service.review_workspace(session_id="alpha")
 
-        self.assertTrue(review["ok"])
+        self.assertFalse(review["ok"])
+        self.assertFalse(review["git_available"])
         self.assertNotIn("command_execute", _action_types(spy))
         self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
 
-    def test_repeated_workspace_review_fallback_does_not_trigger_hard_kill(self) -> None:
+    def test_repeated_non_git_workspace_review_does_not_trigger_hard_kill(self) -> None:
         service, root = _make_service()
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
 
         for _ in range(3):
             review = service.review_workspace(session_id="alpha")
-            self.assertTrue(review["ok"])
+            self.assertFalse(review["ok"])
+            self.assertIn("not a git repository", review["error"])
 
         self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
 
