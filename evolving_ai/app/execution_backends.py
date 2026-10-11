@@ -83,7 +83,7 @@ class DockerSandboxExecutor:
         payload["docker"] = self.config.payload()
         return payload
 
-    def execute(self, *, session_id: str, code: str) -> ExecutionResult:
+    def execute(self, *, session_id: str, code: str, request_source: str = "internal") -> ExecutionResult:
         workspace = self.workspace_manager.workspace_for(session_id)
         try:
             container = self.container_manager.ensure_container(session_id)
@@ -417,7 +417,7 @@ class ManagedSandboxExecutor:
         self.backend_preference = _normalize_backend_preference(backend_preference)
         self.policy = local_executor.policy
 
-    def execute(self, *, session_id: str, code: str) -> ExecutionResult:
+    def execute(self, *, session_id: str, code: str, request_source: str = "internal") -> ExecutionResult:
         docker_available, docker_detail = self.docker_executor.availability()
         if self.backend_preference == "local":
             return self.local_executor.execute(session_id=session_id, code=code)
