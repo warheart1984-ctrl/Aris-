@@ -546,6 +546,7 @@ class ArisRuntime:
             if (
                 _text(entry.get("disposition")) in {"blocked", "discarded"}
                 and _truthy(entry.get("risky"))
+                and not _truthy(entry.get("policy_refusal"))
             ):
                 count += 1
         return count
@@ -1769,7 +1770,8 @@ class ArisRuntime:
                 created_at=_utc_now(),
                 mystic_signal=mystic_signal,
             )
-            self._record_activity({**decision.payload(), "kind": "governance_review"})
+            # policy_refusal keeps standing refusals out of unsafe-escalation counting.
+            self._record_activity({**decision.payload(), "kind": "governance_review", "policy_refusal": True})
             return decision
 
         preflight = self.operator_router.preflight(

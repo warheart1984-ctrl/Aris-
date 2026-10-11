@@ -2137,6 +2137,7 @@ Review follow-up (Codex review on PR #8):
 - The refusal now runs after `_current_integrity(trigger_lockdown=True)`, so tampering still triggers lockdown on a git request like on any other action.
 - Residual: deliberately obfuscated interpreter code (for example building the string "git" at runtime inside `python -c`) cannot be caught by an argument check; the sandbox and container image are the boundary for that.
 - Tests updated and added; both fail against the first version. Full suite: 227 passed, 1 failed (Inspect panel).
+- Git refusals are recorded with `policy_refusal: true` and excluded from `_recent_unsafe_escalations`. Before this, two git refusals followed by any ordinary rejection triggered `hard_kill` (`repeated_unsafe_escalation_attempts`). Genuine repeated unsafe attempts still trigger it; `test_git_refusals_do_not_count_toward_unsafe_escalation` pins both.
 
 ## 2026-10-11 - Desktop Smokecheck Without Docker CLI
 What changed:

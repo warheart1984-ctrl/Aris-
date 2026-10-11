@@ -860,6 +860,26 @@ class ArisServiceTests(unittest.TestCase):
 
         self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
 
+    def test_git_refusals_do_not_count_toward_unsafe_escalation(self) -> None:
+        # A rejection after two recorded unsafe attempts triggers a hard kill. Two git
+        # refusals must not count as those attempts, or "no escalation" only holds until the
+        # next ordinary rejection.
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        for _ in range(2):
+            service.aris.review_action(self._command_action(["git", "status"]))
+        rejected = service.aris.review_action(self._command_action(["rm", "-rf", "build"]))
+
+        self.assertFalse(rejected.allowed)
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+
+        # Genuine repeated unsafe attempts still trip the hard kill.
+        service.aris.review_action(self._command_action(["rm", "-rf", "dist"]))
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
+        service.aris.review_action(self._command_action(["rm", "-rf", "out"]))
+        self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "hard_kill")
+
     def test_invokes_git_matches_git_however_it_is_spelled(self) -> None:
         for command in (
             ["git", "status"],
