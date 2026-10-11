@@ -7,7 +7,7 @@ import uuid
 
 from forge_eval.schemas import EvaluationResult, EvaluationSuccessResponse
 
-from src.forge_eval_client import LawBoundForgeEvalClient
+from src.forge_eval_client import USER_WORKSPACE_SUBJECT, LawBoundForgeEvalClient
 from src.runtime_law import RuntimeLaw
 
 
@@ -65,6 +65,29 @@ class ForgeEvalDocChannelTests(unittest.TestCase):
         self.assertTrue(raw["result"]["details"]["violations"])
         self.assertTrue(any(not item["passed"] for item in raw["result"]["details"]["checks"]))
         self.assertEqual(raw["result"]["details"]["doc_channel"]["namespace"], "aris.python")
+
+    def test_doc_channel_laws_skip_user_workspace_code(self) -> None:
+        runtime_law, root = _make_runtime()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        inner = _InnerEval()
+        client = LawBoundForgeEvalClient(inner, runtime_law)
+
+        response, status_code = client.evaluate(
+            {
+                "task_id": "beta",
+                "mode": "io_tests",
+                "payload": {
+                    "program": "print('hello')\n",
+                    "config": {"subject": USER_WORKSPACE_SUBJECT},
+                },
+            }
+        )
+
+        # aris.python laws govern ARIS's own code, not an operator's scratch code.
+        raw = response.model_dump(exclude_none=True)
+        self.assertEqual(status_code, 200)
+        self.assertEqual(raw["result"]["score"], 0.95)
+        self.assertNotIn("violations", raw["result"]["details"])
 
 
 if __name__ == "__main__":

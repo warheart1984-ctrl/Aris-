@@ -795,24 +795,26 @@ class ArisServiceTests(unittest.TestCase):
             self.assertTrue(result["sandbox"].get("blocked"))
             self.assertTrue(result["sandbox"]["aris"]["reason"])
 
-    def test_workspace_review_fallback_does_not_route_host_git_probe_through_aris(self) -> None:
+    def test_non_git_workspace_review_does_not_route_git_probe_through_aris(self) -> None:
         service, root = _make_service()
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
 
         with patch.object(service.aris, "review_action", wraps=service.aris.review_action) as spy:
             review = service.review_workspace(session_id="alpha")
 
-        self.assertTrue(review["ok"])
+        self.assertFalse(review["ok"])
+        self.assertFalse(review["git_available"])
         self.assertNotIn("command_execute", _action_types(spy))
         self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
 
-    def test_repeated_workspace_review_fallback_does_not_trigger_hard_kill(self) -> None:
+    def test_repeated_non_git_workspace_review_does_not_trigger_hard_kill(self) -> None:
         service, root = _make_service()
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
 
         for _ in range(3):
             review = service.review_workspace(session_id="alpha")
-            self.assertTrue(review["ok"])
+            self.assertFalse(review["ok"])
+            self.assertIn("not a git repository", review["error"])
 
         self.assertEqual(service.aris.kill_switch.snapshot()["mode"], "nominal")
 

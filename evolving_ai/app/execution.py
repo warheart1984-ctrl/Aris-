@@ -862,6 +862,10 @@ class PythonExecutor:
         WORKSPACE = Path(__WORKSPACE__).resolve()
         PAYLOAD = Path(__PAYLOAD__).resolve()
         ALLOWED_MODULES = set(__ALLOWED_MODULES__)
+        # pathlib imports these lazily (Python 3.12+); they are already reachable as
+        # pathlib.ntpath / pathlib.posixpath, so passing them grants nothing new.
+        INTERNAL_MODULES = {"ntpath", "posixpath"}
+        WORKSPACE_DIR = str(WORKSPACE)
         MAX_FILE_BYTES = __MAX_FILE_BYTES__
         MAX_FILES = __MAX_FILES__
         TIMEOUT_SECONDS = __TIMEOUT_SECONDS__
@@ -994,10 +998,11 @@ class PythonExecutor:
 
         def _module_allowed(name: str) -> bool:
             root = name.split(".")[0]
-            if root in ALLOWED_MODULES or root == "__future__":
+            if root in ALLOWED_MODULES or root in INTERNAL_MODULES or root == "__future__":
                 return True
-            return (WORKSPACE / f"{root}.py").exists() or (
-                (WORKSPACE / root).is_dir() and (WORKSPACE / root / "__init__.py").exists()
+            # os.path, not pathlib: building a Path here would import ntpath and re-enter this hook.
+            return os.path.isfile(os.path.join(WORKSPACE_DIR, f"{root}.py")) or os.path.isfile(
+                os.path.join(WORKSPACE_DIR, root, "__init__.py")
             )
 
         def _safe_import(name, globals=None, locals=None, fromlist=(), level=0):

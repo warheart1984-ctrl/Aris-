@@ -2527,8 +2527,10 @@ class ChatService:
                     diff_sections.append(diff_text)
 
         git_review = self.project_manager.collect_git_review(session_id, cwd=cwd)
-        if not any(str(git_review.get(field, "")).strip() for field in ("status", "diff_stat", "diff")):
-            git_review = self._collect_git_review(session_id, cwd=cwd)
+        # Only the session workspace is ever reviewed; never fall back to another repository.
+        git_available = bool(str(git_review.get("repo_path", "")).strip())
+        if not git_available:
+            summary_lines.append(_WORKSPACE_NOT_GIT_MESSAGE)
         git_changed = git_review.get("changed_files", [])
         if isinstance(git_changed, list):
             for item in git_changed:
@@ -2564,15 +2566,19 @@ class ChatService:
             diff_sections.append(git_diff)
 
         unique_changed_files = sorted({item for item in changed_files if item})
-        if not unique_changed_files:
+        if not unique_changed_files and git_available:
             summary_lines.append("Workspace looks clean right now.")
 
         diff_text = "\n\n".join(section for section in diff_sections if section).strip()
         if len(diff_text) > 12_000:
             diff_text = f"{diff_text[:12_000]}\n...[review diff truncated]..."
 
+        # Pending patches and tracked edits are reviewable without git; with neither, refuse.
+        refused = not git_available and not pending_patches and not applied_changes
         return {
-            "ok": True,
+            "ok": not refused,
+            **({"error": _WORKSPACE_NOT_GIT_MESSAGE} if refused else {}),
+            "git_available": git_available,
             "session_id": session_id,
             "summary": "\n".join(summary_lines),
             "changed_files": unique_changed_files,
@@ -2583,79 +2589,6 @@ class ChatService:
             "pending_patches": pending_patches,
             "files": files,
         }
-
-    def _collect_git_review(
-        self,
-        session_id: str,
-        *,
-        cwd: str | None = None,
-    ) -> dict[str, object]:
-        review = {
-            "status": "",
-            "diff_stat": "",
-            "diff": "",
-            "changed_files": [],
-            "status_entries": [],
-        }
-        repo_root = self._resolve_host_git_root(cwd=cwd)
-        if repo_root is None:
-            return review
-
-        commands = (
-            ("status", ["status", "--short"]),
-            ("diff_stat", ["diff", "--stat"]),
-            ("diff", ["diff", "--no-ext-diff", "--unified=3"]),
-        )
-        for field, arguments in commands:
-            completed = self.project_manager._run_git(repo_root, list(arguments))
-            if completed is None or completed.returncode != 0:
-                continue
-            review[field] = (completed.stdout or "").strip()
-        status = str(review.get("status", "")).strip()
-        if status:
-            changed_files: list[str] = []
-            status_entries: list[dict[str, str]] = []
-            for line in status.splitlines():
-                raw_line = line.rstrip()
-                if not raw_line:
-                    continue
-                status_code = raw_line[:2].strip() or "?"
-                path = raw_line[3:].strip() if len(raw_line) > 3 else raw_line.strip()
-                if not path:
-                    continue
-                changed_files.append(path)
-                status_entries.append(
-                    {
-                        "status": status_code,
-                        "path": path,
-                        "summary": f"{status_code} {path}".strip(),
-                    }
-                )
-            review["changed_files"] = changed_files
-            review["status_entries"] = status_entries
-        return review
-
-    def _resolve_host_git_root(self, *, cwd: str | None = None) -> Path | None:
-        repo_root = Path(__file__).resolve().parents[2]
-        normalized_cwd = str(cwd or ".").strip() or "."
-        candidate = repo_root
-        if normalized_cwd not in {"", "."}:
-            raw = Path(normalized_cwd)
-            candidate = raw.resolve(strict=False) if raw.is_absolute() else (repo_root / raw).resolve(strict=False)
-            try:
-                candidate.relative_to(repo_root)
-            except ValueError:
-                return None
-            if candidate.exists() and candidate.is_file():
-                candidate = candidate.parent
-
-        for path in [candidate, *candidate.parents]:
-            if path == repo_root.parent:
-                break
-            if path == repo_root or repo_root in path.parents:
-                if (path / ".git").exists():
-                    return path
-        return repo_root if (repo_root / ".git").exists() else None
 
     async def stream_workspace_task(
         self,
@@ -6670,6 +6603,12 @@ def _truncate_agent_text(value: str, *, max_chars: int) -> str:
 
 def _utc_now() -> str:
     return datetime.now(UTC).isoformat()
+
+
+_WORKSPACE_NOT_GIT_MESSAGE = (
+    "This workspace is not a git repository, so there is no git status or diff to review. "
+    "Run `git init` in the workspace or open a git project to enable git review."
+)
 
 
 def _dedupe_changed_entries(

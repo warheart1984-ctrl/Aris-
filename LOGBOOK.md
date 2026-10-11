@@ -2096,3 +2096,23 @@ Remaining risks:
 - 6 `test_ai_app.py` endpoint tests predate ARIS governance on `/api/execute` and `/api/exec`; Forge Eval now rejects their requests (`print()` trips the doc-channel `no_print` law, `git status` is rejected as risky). Tests or policy need a decision.
 - `review_workspace` falls back to ARIS's own install directory when a session workspace is not a git repo, which `test_review_workspace_parses_git_status_entries` does not expect.
 - `test_v2_window_inspect_button_expands_secondary_surfaces_for_active_run` fails (inspect panel stays hidden); not investigated.
+
+## 2026-10-11 - Scope Doc-Channel Law To ARIS Code And Refuse Non-Git Workspace Review
+What changed:
+- The doc channel's `aris.python` laws (including `no_print`) now apply to ARIS's own code only. Operator scratch code sent through `/api/execute` (`python_execute`, source `api`) is tagged `subject: user_workspace` and skips those laws. Codex-log candidates and every untagged request stay fully enforced. Sandbox checks (`must_not_contain`, blocked imports, workspace-only file access) still apply to user code.
+- Shell commands stay gated. `git status` and other commands are still refused by governance (exit 126).
+- `review_workspace` no longer falls back to ARIS's own install folder. It reviews only the session workspace. A workspace that is not a git repository and has no pending patches or tracked edits is refused (`ok: false`) with a clear message. Pending patches remain reviewable without git. The web UI shows the refusal instead of "clean".
+- Fixed infinite recursion in the execution sandbox's import hook on Python 3.12+: `pathlib.Path()` imports `ntpath` lazily, and the hook's workspace check built a `Path`, re-entering itself. Any user code using `pathlib` crashed.
+
+Why it changed:
+- A user's `print('hello')` is not a governance violation; `no_print` exists to keep ARIS's own code clean.
+- Showing ARIS's install folder in a user's review was wrong and leaked internals. It also happened when the workspace was a clean git repo.
+
+Verification:
+- `python -m pytest tests` on Python 3.12: 218 passed, 1 failed (`test_v2_window_inspect_button_expands_secondary_surfaces_for_active_run`, tracked separately).
+- `tests/test_ai_app.py` and `tests/test_forge_eval_doc_channel.py` also pass on Python 3.13.
+- Sandbox escape probes (`import os`, `import shutil`, `posixpath.os.popen`, writes outside the workspace) are still refused.
+- Web UI: Refresh workspace on a non-git workspace shows the refusal message.
+
+Remaining risks:
+- Shell commands are gated because the doc channel parses the command string as Python and fails; the gate is incidental rather than a command-specific rule.

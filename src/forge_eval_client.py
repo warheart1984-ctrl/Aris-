@@ -9,6 +9,12 @@ from .law_decorators import law_wrapped
 from .runtime_law import RuntimeLaw
 
 
+# Requests tagged with this subject carry an operator's own workspace code, not ARIS code.
+# The doc channel's aris.python laws govern ARIS itself, so they are not applied to it;
+# sandbox checks such as must_not_contain still are. Untagged requests stay fully enforced.
+USER_WORKSPACE_SUBJECT = "user_workspace"
+
+
 class LawBoundForgeEvalClient:
     def __init__(self, inner: Any, runtime_law: RuntimeLaw) -> None:
         self.inner = inner
@@ -35,6 +41,8 @@ class LawBoundForgeEvalClient:
             return response, status_code
         program = str(metadata.get("program") or "").strip()
         if not program or self.runtime_law.doc_channel is None:
+            return response, status_code
+        if config.get("subject") == USER_WORKSPACE_SUBJECT:
             return response, status_code
         violations = evaluate_program_against_doc_channel(program, self.runtime_law.doc_channel)
         if not violations:
