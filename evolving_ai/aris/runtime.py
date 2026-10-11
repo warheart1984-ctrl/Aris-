@@ -2063,7 +2063,6 @@ class ArisRuntime:
             return decision
 
         forge_eval_results = self._run_forge_eval(normalized) if requires_forge_eval else []
-        print(f"DEBUG: forge_eval_results = {forge_eval_results}, requires_forge_eval = {requires_forge_eval}")
         shield_passed = bool(shield.get("passed", False)) or (
             bool(shield.get("requires_escalation"))
             and requires_forge_eval

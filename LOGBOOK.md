@@ -2071,3 +2071,40 @@ Verification:
 Remaining risks:
 - The PDF artifacts are preserved as reference documents, but I did not attempt OCR or semantic reconciliation between the PDFs and the text exports in this pass.
 - The repo contains both `voss_binding.py` and `voss_binary.py` as supplied reference implementations; no behavioral merge between them was attempted here.
+
+## 2026-10-11 - Install, Packaging, And Test Truth Pass
+What changed:
+- `pyproject.toml` now declares `numpy`, `pyyaml`, and `flask`, which were imported unconditionally but missing, so a clean `pip install` could not import `evolving_ai`.
+- The `desktop` and `desktop-build` extras now name `SpeechRecognition` (the real PyPI name) instead of `speech_recognition`, which pip could not resolve. This blocked `pip install -e .[desktop-build]`, the first step of the desktop build workflow.
+- Package metadata now matches `LICENSE`: Apache-2.0, author Jon Halstead.
+- `desktop_support.py` imports `tkinter` lazily inside `select_project_folder()`, so build, shipping, and headless smokecheck paths work on Python installs without Tk.
+- Removed a leftover `print("DEBUG: forge_eval_results ...")` from the governed execution path in `evolving_ai/aris/runtime.py`.
+- Removed `tests/test_code_agents.py`, which tested `code_agents`, `engine`, and `network` modules deleted in the open-source restructure.
+- Fixed `tests/test_ai_app.py` missing its `AppConfig` import.
+- Made the shipping-lane test's fake packaged-launch check platform-neutral (it only matched `.exe`, so it failed on Linux and macOS, which the CI matrix runs).
+- Pointed the folder-picker test's patches at `tkinter` to match the lazy import, and fixed dead links in `evolving_ai/README.md`.
+
+Why it changed:
+- ARIS could not be installed from a clean environment, and its only CI workflow could not get past dependency install.
+
+Verification:
+- Clean Python 3.12 venv: `pip install -e .[desktop-build]` succeeds and `import evolving_ai, forge, forge_eval, src, jon_core` succeeds.
+- `python -m pytest tests`: 209 passed, 8 failed. All 8 failed before this pass too.
+- `python -m evolving_ai.aris_runtime.desktop --headless-smokecheck --no-workers` runs.
+
+Remaining risks:
+- 6 `test_ai_app.py` endpoint tests predate ARIS governance on `/api/execute` and `/api/exec`; Forge Eval now rejects their requests (`print()` trips the doc-channel `no_print` law, `git status` is rejected as risky). Tests or policy need a decision.
+- `review_workspace` falls back to ARIS's own install directory when a session workspace is not a git repo, which `test_review_workspace_parses_git_status_entries` does not expect.
+- `test_v2_window_inspect_button_expands_secondary_surfaces_for_active_run` fails (inspect panel stays hidden); not investigated.
+
+## 2026-10-11 - Desktop Smokecheck Without Docker CLI
+What changed:
+- `evolving_ai/app/docker_workspace.py`: `DockerSessionContainerManager._run` returns a failed result (exit 127, "Docker CLI is not installed.") when the `docker` binary is missing, instead of raising `FileNotFoundError`. `status`, `ensure_session` and `reset_session` already handle a non-zero exit.
+
+Why it changed:
+- The first real CI run (after the Actions billing lock cleared) failed only on macOS: `python -m evolving_ai.aris_runtime.desktop --headless-smokecheck` crashed because the desktop snapshot asks Docker for session status and macOS runners have no `docker` binary. Any user machine without Docker hit the same crash. `_detect_availability` already handled a missing binary; `status()` bypassed it.
+
+Verification:
+- Reproduced locally with `docker` removed from `PATH`; the smokecheck now exits 0.
+- New test `test_docker_status_reports_missing_cli_instead_of_raising` passes with the fix and fails without it.
+- CI on the PR #7 head: Linux and Windows green end to end (tests, smokecheck, native bundle built and uploaded); macOS failed only at this smokecheck.

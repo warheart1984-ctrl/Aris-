@@ -63,7 +63,7 @@ class ArisRuntimeShippingLaneTests(unittest.TestCase):
                     "stderr": "",
                     "ok": True,
                 }
-            if command and str(command[0]).endswith(".exe"):
+            if command and Path(str(command[0])).name == _entrypoint_name(Path(str(command[0])).parent.name):
                 return {"command": command, "returncode": 0, "stdout": "", "stderr": "", "ok": True}
             return {"command": command, "returncode": 1, "stdout": "", "stderr": "unexpected", "ok": False}
 
