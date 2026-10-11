@@ -869,22 +869,43 @@ class ArisServiceTests(unittest.TestCase):
             ["C:\\Program Files\\Git\\bin\\git.exe", "status"],
             ["GIT", "status"],
             ["env", "git", "status"],
-            ["env", "-i", "git", "status"],
             ["nice", "-n", "10", "git", "status"],
-            ["sudo", "-u", "someone", "git", "status"],
+            # Indirect executors from the default allowlist hand git to another program.
+            ["find", ".", "-maxdepth", "0", "-exec", "git", "status", ";"],
+            ["xargs", "git", "status"],
+            ["sh", "-c", "git status"],
+            ["python", "-c", "import subprocess; subprocess.run(['git', 'status'])"],
+            # Deliberately conservative: a bare git word is refused even when harmless.
+            ["echo", "git"],
         ):
             with self.subTest(command=command):
                 self.assertTrue(_invokes_git(command))
         for command in (
             ["ls"],
-            ["pytest", "-q"],
+            ["ls", ".git"],
+            ["cat", ".gitignore"],
+            ["pytest", "-q", "tests/test_git.py"],
+            ["pip", "install", "GitPython"],
             ["python", "-m", "pytest"],
-            ["echo", "git"],
             ["gitk"],
+            ["echo", "github", "legit"],
             [],
         ):
             with self.subTest(command=command):
                 self.assertFalse(_invokes_git(command))
+
+    def test_git_refusal_still_runs_the_integrity_check(self) -> None:
+        service, root = _make_service()
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+
+        with patch.object(
+            ArisRuntime, "_current_integrity", wraps=service.aris._current_integrity
+        ) as integrity_check:
+            decision = service.aris.review_action(self._command_action(["git", "status"]))
+
+        self.assertFalse(decision.allowed)
+        self.assertIn(SHELL_GIT_LAW["title"], decision.reason)
+        integrity_check.assert_called_once_with(trigger_lockdown=True)
 
     def test_non_git_workspace_review_does_not_route_git_probe_through_aris(self) -> None:
         service, root = _make_service()

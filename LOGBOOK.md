@@ -2132,6 +2132,12 @@ Verification:
 - With the rule disabled, the three rule tests fail.
 - `python -m pytest tests` on Python 3.12: 225 passed, 1 failed (Inspect panel, tracked separately).
 
+Review follow-up (Codex review on PR #8):
+- Matching now refuses git as a command word anywhere in the arguments, not just as the executable. The first version missed indirect executors from the default allowlist: `find . -exec git status ;`, `xargs git`, `sh -c "git status"`, `python -c "...['git', ...]"`. It is deliberately conservative (`echo git` is refused); `.git`, `.gitignore`, `gitk`, `test_git.py` and `GitPython` are not matched.
+- The refusal now runs after `_current_integrity(trigger_lockdown=True)`, so tampering still triggers lockdown on a git request like on any other action.
+- Residual: deliberately obfuscated interpreter code (for example building the string "git" at runtime inside `python -c`) cannot be caught by an argument check; the sandbox and container image are the boundary for that.
+- Tests updated and added; both fail against the first version. Full suite: 227 passed, 1 failed (Inspect panel).
+
 ## 2026-10-11 - Desktop Smokecheck Without Docker CLI
 What changed:
 - `evolving_ai/app/docker_workspace.py`: `DockerSessionContainerManager._run` returns a failed result (exit 127, "Docker CLI is not installed.") when the `docker` binary is missing, instead of raising `FileNotFoundError`. `status`, `ensure_session` and `reset_session` already handle a non-zero exit.

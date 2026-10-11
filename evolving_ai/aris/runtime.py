@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 import difflib
 import json
+import re
 from pathlib import Path
 from typing import Any, Optional
 import uuid
@@ -88,30 +89,18 @@ SHELL_GIT_LAW = {
     ),
 }
 
-# Launchers that run their argument as the real command, skipped when finding the executable.
-_COMMAND_LAUNCHERS = frozenset({"env", "command", "exec", "nohup", "time", "nice", "sudo", "doas"})
-
-
-def _executable_name(token: str) -> str:
-    name = Path(str(token).replace("\\", "/")).name.lower()
-    return name[: -len(".exe")] if name.endswith(".exe") else name
-
-
-def _reads_as_git(tokens: list[str]) -> bool:
-    names = [_executable_name(token) for token in tokens]
-    if not names:
-        return False
-    if names[0] in _COMMAND_LAUNCHERS:
-        # A launcher's own options can hide where the real command starts, so any git token counts.
-        return "git" in names[1:]
-    return names[0] == "git"
+# git as a command word anywhere in the arguments: as argv[0], a path (/usr/bin/git,
+# C:\\...\\git.exe), or handed to an indirect executor (find -exec, xargs, sh -c, python -c).
+# Deliberately conservative: `echo git` is refused too. `.git`, `.gitignore`, `gitk` and
+# `test_git.py` are not git invocations and pass.
+_GIT_COMMAND_WORD = re.compile(
+    r"""(?:^|[\s"'`;&|()\[\]{},=/\\])git(?:\.exe)?(?=$|[\s"'`;&|()\[\]{},])""",
+    re.IGNORECASE,
+)
 
 
 def _invokes_git(command: list[str]) -> bool:
-    as_given = [str(part) for part in command]
-    # Read it both as given (paths may contain spaces) and whitespace-split (["git status"]).
-    split = [token for part in as_given for token in part.split()]
-    return _reads_as_git(as_given) or _reads_as_git(split)
+    return any(_GIT_COMMAND_WORD.search(str(part)) for part in command)
 
 
 GUARDRAILS = (
@@ -1740,9 +1729,11 @@ class ArisRuntime:
             self._record_activity({**decision.payload(), "kind": "governance_review"})
             return decision
 
+        integrity = self._current_integrity(trigger_lockdown=True)
         if normalized["action_type"] == "command_execute" and _invokes_git(normalized["command"]):
             # A standing policy refusal, not a failure: no Hall entry and no kill-switch
-            # escalation, so repeated attempts get the same answer instead of a lockdown.
+            # escalation of its own. It runs after the integrity check above, so tampering
+            # still triggers lockdown on a git request like on any other action.
             reason = f"{SHELL_GIT_LAW['title']}: git may not run through governed shell execution."
             decision = GovernanceDecision(
                 action_id=normalized["action_id"],
@@ -1771,9 +1762,9 @@ class ArisRuntime:
                 ],
                 guardrails=[],
                 forge_eval=[],
-                integrity=self._startup["integrity"],
+                integrity=integrity,
                 reentry_blocker=None,
-                kill_switch=kill_snapshot,
+                kill_switch=self.kill_switch.snapshot(),
                 action=normalized,
                 created_at=_utc_now(),
                 mystic_signal=mystic_signal,
@@ -1781,7 +1772,6 @@ class ArisRuntime:
             self._record_activity({**decision.payload(), "kind": "governance_review"})
             return decision
 
-        integrity = self._current_integrity(trigger_lockdown=True)
         preflight = self.operator_router.preflight(
             action=normalized,
             actor=normalized["source"],
