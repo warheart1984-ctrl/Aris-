@@ -49,6 +49,7 @@ class DockerSessionInfo:
     workspace: str
     image: str
     detail: str
+    container_id: str = ""
 
     def payload(self) -> dict[str, object]:
         return {
@@ -72,7 +73,7 @@ class DockerSessionContainerManager:
         self.workspace_manager = workspace_manager
         self.config = config
         self._availability: tuple[bool, str] | None = None
-        self._git_free_verified: set[tuple[str, str]] = set()
+        self._git_free_verified: set[str] = set()
 
     def availability(self) -> tuple[bool, str]:
         if self._availability is None:
@@ -112,6 +113,7 @@ class DockerSessionContainerManager:
             workspace=str(workspace),
             image=image,
             detail=f"Container status is {status}.",
+            container_id=str(payload.get("Id", "")),
         )
 
     def ensure_container(self, session_id: str) -> DockerSessionInfo:
@@ -123,8 +125,9 @@ class DockerSessionContainerManager:
         # ARIS refuses git in governed shell execution, but allowed programs (pip with a
         # requirements file, python) can start git in ways an argument check cannot see.
         # A git-free sandbox image is what actually closes that, so it is verified, not assumed.
-        key = (info.container_name, info.image)
-        if key in self._git_free_verified:
+        # Keyed on Docker's immutable container ID: a container recreated under the same name
+        # and image tag (after a reset, or from a rebuilt tag) is probed again.
+        if info.container_id and info.container_id in self._git_free_verified:
             return
         probe = self._run(
             [
@@ -148,7 +151,8 @@ class DockerSessionContainerManager:
                 f"Sandbox image `{info.image}` contains git ({found}). Governed execution "
                 "requires a git-free image; set FORGE_DOCKER_IMAGE to one without git."
             )
-        self._git_free_verified.add(key)
+        if info.container_id:
+            self._git_free_verified.add(info.container_id)
 
     def _start_container(self, session_id: str) -> DockerSessionInfo:
         info = self.status(session_id)

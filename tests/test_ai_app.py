@@ -3588,6 +3588,7 @@ class DockerSandboxTests(unittest.TestCase):
             workspace=temp_dir,
             image=image,
             detail="",
+            container_id="c0ffee01",
         )
         return manager, info
 
@@ -3620,6 +3621,33 @@ class DockerSandboxTests(unittest.TestCase):
 
         probe_calls = [call for call in run.call_args_list if call.args[0][:1] == ["exec"]]
         self.assertEqual(len(probe_calls), 1)
+
+    def test_recreated_container_is_probed_again(self) -> None:
+        # Same name and image tag, new container (after a reset, or a rebuilt tag that now
+        # ships git): the cache must not carry the old verification over.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, first = self._running_container_manager(temp_dir)
+            recreated = DockerSessionInfo(**{**{field: getattr(first, field) for field in first.__slots__}, "container_id": "c0ffee02"})
+            with patch.object(manager, "_run", return_value=self._probe(0, "")):
+                with patch.object(manager, "status", return_value=first):
+                    manager.ensure_container("demo")
+            with patch.object(manager, "_run", return_value=self._probe(0, "/usr/bin/git\n")):
+                with patch.object(manager, "status", return_value=recreated):
+                    with self.assertRaisesRegex(RuntimeError, "contains git"):
+                        manager.ensure_container("demo")
+
+    def test_container_without_id_is_never_cached(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            anonymous = DockerSessionInfo(**{**{field: getattr(info, field) for field in info.__slots__}, "container_id": ""})
+            with patch.object(manager, "status", return_value=anonymous), patch.object(
+                manager, "_run", return_value=self._probe(0, "")
+            ) as run:
+                manager.ensure_container("demo")
+                manager.ensure_container("demo")
+
+        probe_calls = [call for call in run.call_args_list if call.args[0][:1] == ["exec"]]
+        self.assertEqual(len(probe_calls), 2)
 
     def test_sandbox_refuses_when_git_check_cannot_run(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
