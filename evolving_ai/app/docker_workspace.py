@@ -72,6 +72,7 @@ class DockerSessionContainerManager:
         self.workspace_manager = workspace_manager
         self.config = config
         self._availability: tuple[bool, str] | None = None
+        self._git_free_verified: set[tuple[str, str]] = set()
 
     def availability(self) -> tuple[bool, str]:
         if self._availability is None:
@@ -114,6 +115,42 @@ class DockerSessionContainerManager:
         )
 
     def ensure_container(self, session_id: str) -> DockerSessionInfo:
+        info = self._start_container(session_id)
+        self._require_git_free(info)
+        return info
+
+    def _require_git_free(self, info: DockerSessionInfo) -> None:
+        # ARIS refuses git in governed shell execution, but allowed programs (pip with a
+        # requirements file, python) can start git in ways an argument check cannot see.
+        # A git-free sandbox image is what actually closes that, so it is verified, not assumed.
+        key = (info.container_name, info.image)
+        if key in self._git_free_verified:
+            return
+        probe = self._run(
+            [
+                "exec",
+                info.container_name,
+                "sh",
+                "-c",
+                "command -v git; ls -d /usr/lib/git-core /usr/libexec/git-core 2>/dev/null; exit 0",
+            ],
+            timeout=20,
+        )
+        if probe.returncode != 0:
+            raise RuntimeError(
+                f"Could not verify that sandbox image `{info.image}` is free of git "
+                f"({(probe.stderr or probe.stdout).strip() or 'probe failed'}). "
+                "Governed execution needs a git-free image with a POSIX shell."
+            )
+        found = " ".join(line.strip() for line in probe.stdout.splitlines() if line.strip())
+        if found:
+            raise RuntimeError(
+                f"Sandbox image `{info.image}` contains git ({found}). Governed execution "
+                "requires a git-free image; set FORGE_DOCKER_IMAGE to one without git."
+            )
+        self._git_free_verified.add(key)
+
+    def _start_container(self, session_id: str) -> DockerSessionInfo:
         info = self.status(session_id)
         if info.running:
             return info

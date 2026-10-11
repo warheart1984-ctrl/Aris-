@@ -20,7 +20,7 @@ from fastapi.testclient import TestClient
 from evolving_ai.app.attachments import Attachment
 from evolving_ai.app.config import AppConfig
 from evolving_ai.app.agent_runs import AgentRunStore
-from evolving_ai.app.docker_workspace import DockerSessionContainerManager
+from evolving_ai.app.docker_workspace import DockerSessionContainerManager, DockerSessionInfo
 from evolving_ai.app.execution import PythonExecutor, SandboxPolicy, WorkspaceManager
 from evolving_ai.app.execution_backends import (
     CommandExecutionResult,
@@ -3574,6 +3574,90 @@ class PythonSandboxTests(unittest.TestCase):
 
 
 class DockerSandboxTests(unittest.TestCase):
+    def _running_container_manager(self, temp_dir: str, image: str = "python:3.11-alpine"):
+        manager = DockerSessionContainerManager(
+            WorkspaceManager(Path(temp_dir)),
+            DockerSandboxConfig(backend_preference="docker", image=image),
+        )
+        info = DockerSessionInfo(
+            session_id="demo",
+            container_name="forge-demo",
+            exists=True,
+            running=True,
+            status="running",
+            workspace=temp_dir,
+            image=image,
+            detail="",
+        )
+        return manager, info
+
+    def _probe(self, returncode: int, stdout: str = "", stderr: str = ""):
+        return subprocess.CompletedProcess(["docker"], returncode, stdout, stderr)
+
+    def test_sandbox_refuses_images_that_contain_git(self) -> None:
+        # Allowed programs (pip with a requirements file, python) can start git in ways an
+        # argument check cannot see, so a git-free image is required, not assumed.
+        for label, probe_stdout in (
+            ("git binary", "/usr/bin/git\n"),
+            ("git helpers", "/usr/lib/git-core\n"),
+        ):
+            with self.subTest(label), tempfile.TemporaryDirectory() as temp_dir:
+                manager, info = self._running_container_manager(temp_dir, image="python:3.11")
+                with patch.object(manager, "status", return_value=info), patch.object(
+                    manager, "_run", return_value=self._probe(0, probe_stdout)
+                ):
+                    with self.assertRaisesRegex(RuntimeError, r"python:3\.11.*contains git"):
+                        manager.ensure_container("demo")
+
+    def test_sandbox_accepts_git_free_image_and_verifies_once(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            with patch.object(manager, "status", return_value=info), patch.object(
+                manager, "_run", return_value=self._probe(0, "")
+            ) as run:
+                self.assertIs(manager.ensure_container("demo"), info)
+                self.assertIs(manager.ensure_container("demo"), info)
+
+        probe_calls = [call for call in run.call_args_list if call.args[0][:1] == ["exec"]]
+        self.assertEqual(len(probe_calls), 1)
+
+    def test_sandbox_refuses_when_git_check_cannot_run(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager, info = self._running_container_manager(temp_dir)
+            with patch.object(manager, "status", return_value=info), patch.object(
+                manager, "_run", return_value=self._probe(126, stderr="exec: sh: not found")
+            ):
+                with self.assertRaisesRegex(RuntimeError, "Could not verify"):
+                    manager.ensure_container("demo")
+
+    def test_docker_command_is_blocked_when_image_contains_git(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = WorkspaceManager(Path(temp_dir))
+            policy = SandboxPolicy(timeout_seconds=5)
+            executor = DockerSandboxExecutor(
+                PythonExecutor(manager, 5, policy=policy),
+                manager,
+                policy,
+                DockerSandboxConfig(backend_preference="docker", image="python:3.11"),
+            )
+            _, info = self._running_container_manager(temp_dir, image="python:3.11")
+            with patch.object(executor.container_manager, "status", return_value=info), patch.object(
+                executor.container_manager, "_run", return_value=self._probe(0, "/usr/bin/git\n")
+            ), patch("evolving_ai.app.execution_backends.subprocess.run") as docker_exec:
+                result = executor.execute_command(
+                    session_id="demo",
+                    command=["pip", "install", "-r", "requirements.txt"],
+                    cwd=".",
+                    timeout_seconds=5,
+                    requested_backend="docker",
+                    command_policy={},
+                )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("contains git", result.stderr)
+        self.assertTrue(result.sandbox["blocked"])
+        docker_exec.assert_not_called()
+
     def test_docker_status_reports_missing_cli_instead_of_raising(self) -> None:
         # Stock macOS runners have no docker binary; the desktop snapshot must not crash.
         with tempfile.TemporaryDirectory() as temp_dir:
