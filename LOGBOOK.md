@@ -2140,6 +2140,8 @@ Review follow-up (Codex review on PR #8):
 - Tests updated and added; both fail against the first version. Full suite: 227 passed, 1 failed (Inspect panel).
 - Git refusals are recorded with `policy_refusal: true` and excluded from `_recent_unsafe_escalations`. Before this, two git refusals followed by any ordinary rejection triggered `hard_kill` (`repeated_unsafe_escalation_attempts`). Genuine repeated unsafe attempts still trigger it; `test_git_refusals_do_not_count_toward_unsafe_escalation` pins both.
 - git's helper programs (`/usr/lib/git-core/git-status`, `git-upload-pack`, `git-*.exe`) are matched too; they run git directly and honor `core.fsmonitor`. `ls /usr/lib/git-core/` and `pre-commit` still pass.
+- `git+` VCS URLs (`pip install git+file:///…`, `pkg @ git+https://…`, `uv pip install git+ssh://…`) are refused; pip and uv run git to clone them.
+- Known limit: allowed programs that can start other programs (pip with a requirements file, python, uv) can still launch git in ways their arguments don't show. An argument check cannot close that; the boundary is the execution environment (no git binary in the sandbox image or on its PATH).
 
 ## 2026-10-11 - Desktop Smokecheck Without Docker CLI
 What changed:

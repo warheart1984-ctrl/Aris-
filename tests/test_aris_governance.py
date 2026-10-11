@@ -901,6 +901,10 @@ class ArisServiceTests(unittest.TestCase):
             ["find", ".", "-maxdepth", "0", "-exec", "/usr/lib/git-core/git-status", "--short", ";"],
             ["git-upload-pack", "."],
             ["C:\\Program Files\\Git\\mingw64\\libexec\\git-core\\git-status.exe"],
+            # Package managers clone VCS URLs with git themselves.
+            ["pip", "install", "git+file:///workspace/repo"],
+            ["pip", "install", "pkg @ git+https://example.com/repo.git"],
+            ["uv", "pip", "install", "git+ssh://git@example.com/repo.git"],
             # Deliberately conservative: a bare git word is refused even when harmless.
             ["echo", "git"],
         ):
